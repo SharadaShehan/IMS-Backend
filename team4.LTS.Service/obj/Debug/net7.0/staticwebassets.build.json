@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "08MQOuNgtOrhgzVtpdtdtZOIk91PiP9CH3SHTV7sbrk=",
+  "Source": "team4.LTS.Service",
+  "BasePath": "_content/team4.LTS.Service",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
