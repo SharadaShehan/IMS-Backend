@@ -1,32 +1,33 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\Team4.LTS.Infra\\team4.LTS.Infra.csproj": {}
+    "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\Team4.LTS.Infra\\team4.LTS.Infra.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\team4.LTS.Core.csproj": {
+    "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\team4.LTS.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\team4.LTS.Core.csproj",
+        "projectUniqueName": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\team4.LTS.Core.csproj",
         "projectName": "team4.LTS.Core",
-        "projectPath": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\team4.LTS.Core.csproj",
+        "projectPath": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\team4.LTS.Core.csproj",
         "packagesPath": "C:\\Users\\Pamudu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\obj\\",
+        "outputPath": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Pamudu\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net7.0"
+          "net8.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net7.0": {
-            "targetAlias": "net7.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -34,19 +35,24 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
-        "net7.0": {
-          "targetAlias": "net7.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[7.0.20, )"
+              "version": "[8.0.7, )"
             },
             "Microsoft.EntityFrameworkCore.Relational": {
               "target": "Package",
-              "version": "[7.0.20, )"
+              "version": "[8.0.7, )"
             }
           },
           "imports": [
@@ -65,36 +71,37 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\Team4.LTS.Infra\\team4.LTS.Infra.csproj": {
+    "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\Team4.LTS.Infra\\team4.LTS.Infra.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\Team4.LTS.Infra\\team4.LTS.Infra.csproj",
+        "projectUniqueName": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\Team4.LTS.Infra\\team4.LTS.Infra.csproj",
         "projectName": "team4.LTS.Infra",
-        "projectPath": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\Team4.LTS.Infra\\team4.LTS.Infra.csproj",
+        "projectPath": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\Team4.LTS.Infra\\team4.LTS.Infra.csproj",
         "packagesPath": "C:\\Users\\Pamudu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\Team4.LTS.Infra\\obj\\",
+        "outputPath": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\Team4.LTS.Infra\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Pamudu\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net7.0"
+          "net8.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net7.0": {
-            "targetAlias": "net7.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\team4.LTS.Core.csproj": {
-                "projectPath": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\team4.LTS.Core.csproj"
+              "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\team4.LTS.Core.csproj": {
+                "projectPath": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\team4.LTS.Core.csproj"
               }
             }
           }
@@ -103,19 +110,24 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
-        "net7.0": {
-          "targetAlias": "net7.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[7.0.20, )"
+              "version": "[8.0.7, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[7.0.20, )"
+              "version": "[8.0.7, )"
             }
           },
           "imports": [
@@ -134,7 +146,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

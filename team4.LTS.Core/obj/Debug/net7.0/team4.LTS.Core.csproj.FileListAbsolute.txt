@@ -10,3 +10,4 @@ C:\Users\Pamudu\source\repos\LabTracker\team4.LTS.Core\obj\Debug\net7.0\team4.LT
 C:\Users\Pamudu\source\repos\LabTracker\team4.LTS.Core\obj\Debug\net7.0\refint\team4.LTS.Core.dll
 C:\Users\Pamudu\source\repos\LabTracker\team4.LTS.Core\obj\Debug\net7.0\team4.LTS.Core.pdb
 C:\Users\Pamudu\source\repos\LabTracker\team4.LTS.Core\obj\Debug\net7.0\ref\team4.LTS.Core.dll
+C:\Users\Pamudu\source\repos\LabTracker\team4.LTS.Core\obj\Debug\net7.0\team4.LTS.Core.sourcelink.json

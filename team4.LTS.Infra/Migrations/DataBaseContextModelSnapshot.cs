@@ -56,7 +56,7 @@ namespace team4.LTS.Infra.Migrations
 
                     b.HasIndex("LabId");
 
-                    b.ToTable("Equipments");
+                    b.ToTable("Equipments", (string)null);
                 });
 
             modelBuilder.Entity("team4.LTS.Core.Model.Item", b =>
@@ -83,7 +83,7 @@ namespace team4.LTS.Infra.Migrations
 
                     b.HasIndex("EquipmentId");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("team4.LTS.Core.Model.ItemReservation", b =>
@@ -157,7 +157,7 @@ namespace team4.LTS.Infra.Migrations
 
                     b.HasIndex("ReturnedTo");
 
-                    b.ToTable("ItemReservations");
+                    b.ToTable("ItemReservations", (string)null);
                 });
 
             modelBuilder.Entity("team4.LTS.Core.Model.Lab", b =>
@@ -182,7 +182,7 @@ namespace team4.LTS.Infra.Migrations
 
                     b.HasKey("LabId");
 
-                    b.ToTable("Labs");
+                    b.ToTable("Labs", (string)null);
                 });
 
             modelBuilder.Entity("team4.LTS.Core.Model.Maintenance", b =>
@@ -251,7 +251,7 @@ namespace team4.LTS.Infra.Migrations
 
                     b.HasIndex("ReviwedBy");
 
-                    b.ToTable("Maintenances");
+                    b.ToTable("Maintenances", (string)null);
                 });
 
             modelBuilder.Entity("team4.LTS.Core.Model.User", b =>
@@ -280,7 +280,7 @@ namespace team4.LTS.Infra.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("users");
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("team4.LTS.Core.Model.Equipment", b =>

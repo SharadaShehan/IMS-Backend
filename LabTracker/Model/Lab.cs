@@ -7,9 +7,11 @@ namespace LabTracker.Model
 		[Key] 
 		public int LabId { get; set; }
 		[Required]
-		public int Code { get; set; }
+		public int LabCode { get; set; }
+		public string ImageURL { get; set; }
 		[Required]
 		[RegularExpression(@"^(Computer Lab|Embeded System Lab|IoT Lab)$", ErrorMessage = "ADD ERROR MESSAGE")]
 		public string Name { get; set; }
+		public Boolean IsActive { get; set; }
 	}
 }
