@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using team4.LTS.Core.Model;
 using team4.LTS.Core.Model.DTO;
 using Team4.LTS.Infra.Data;
@@ -17,8 +19,9 @@ namespace team4.LTS.Service.Controllers
 		{
 			_context = context;
 		}
-		[HttpPost]
+		[HttpPost("AddUser")]
 		[ProducesResponseType(201)]
+		[ProducesResponseType(204)]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(500)]
 		public async Task<IActionResult> AddUser([FromBody] UserDTO userdto)
@@ -40,14 +43,55 @@ namespace team4.LTS.Service.Controllers
 			return Created();
 		}
 
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+		[HttpGet("GetUserRole")]
+		public async Task<ActionResult<String>> GetUserRole([FromBody] string IDToken)
 		{
-			return await _context.users.ToListAsync();
+			if (string.IsNullOrEmpty(IDToken))
+			{
+				return BadRequest("Email is required.");
+			}
+			try
+			{
+				// Decode the JWT token
+				var handler = new JwtSecurityTokenHandler();
+				var jwtToken = handler.ReadJwtToken(IDToken);
+
+				// Extract the email from the JWT token claims
+				var emailClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+				if (emailClaim == null)
+				{
+					throw new Exception("Email not found in JWT token.");
+				}
+
+				var email = emailClaim.Value;
+
+				// Query the database for the user with this email
+				 var user = await _context.users.FirstOrDefaultAsync(u => u.Email == email);
+
+				if (user == null)
+				{
+					throw new Exception("User not found.");
+				}
+	
+				// Return the role associated with the user
+				return user.Role;
+			}
+			catch (Exception ex)
+			{
+				// Handle any exceptions (logging, etc.)
+				return ex.Message;
+				
+			}
 		}
 
+		//[HttpGet]
+		//public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+		//{
+		//	return await _context.users.ToListAsync();
+		//}
+
 		//admin: add new labs
-		[HttpPost]
+		[HttpPost("AddNewLab")]
 		[ProducesResponseType(201)]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(500)]
@@ -68,21 +112,27 @@ namespace team4.LTS.Service.Controllers
 
 			return Created();
 		}
+
+
 		//student: request equipment reservation 
-		[HttpPost("{equipmentid:int},{reservedid:int}")]
+		[HttpPost("RequestEquipment")]
 		[ProducesResponseType(201)]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(404)]
-		public async Task<IActionResult> RequestEquipment([FromBody] int equipmentid, int reservedid)
+		[ProducesResponseType(500)]
+		public async Task<IActionResult> RequestEquipment([FromBody] ReservetionRequestDTO requestdto)
 		{
 			if (!ModelState.IsValid)
 			{
 				return BadRequest(ModelState);
 			}
 	        var reservation  = new ItemReservation();
-			reservation.RequstedEquipmentId = equipmentid;
-			reservation.ReservedBy = reservedid;
+			reservation.RequstedEquipmentId = requestdto.RequstedEquipmentId;
+			reservation.ReservedBy = requestdto.ReservedBy;
 			reservation.CreatedAt = DateTime.UtcNow;
+			reservation.FromDate = DateTime.UtcNow.AddDays(3);
+			reservation.ToDate = DateTime.UtcNow.AddDays(17);
+			reservation.Status = "Pending";
 			_context.ItemReservations.Add(reservation);
 			await _context.SaveChangesAsync();
 			return Created();
