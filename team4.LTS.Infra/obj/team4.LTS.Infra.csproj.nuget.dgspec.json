@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\Team4.LTS.Infra\\team4.LTS.Infra.csproj": {}
+    "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\Team4.LTS.Infra\\team4.LTS.Infra.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\team4.LTS.Core.csproj": {
+    "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\team4.LTS.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\team4.LTS.Core.csproj",
+        "projectUniqueName": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\team4.LTS.Core.csproj",
         "projectName": "team4.LTS.Core",
-        "projectPath": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\team4.LTS.Core.csproj",
+        "projectPath": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\team4.LTS.Core.csproj",
         "packagesPath": "C:\\Users\\Pamudu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\obj\\",
+        "outputPath": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Pamudu\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -75,14 +75,14 @@
         }
       }
     },
-    "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\Team4.LTS.Infra\\team4.LTS.Infra.csproj": {
+    "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\Team4.LTS.Infra\\team4.LTS.Infra.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\Team4.LTS.Infra\\team4.LTS.Infra.csproj",
+        "projectUniqueName": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\Team4.LTS.Infra\\team4.LTS.Infra.csproj",
         "projectName": "team4.LTS.Infra",
-        "projectPath": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\Team4.LTS.Infra\\team4.LTS.Infra.csproj",
+        "projectPath": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\Team4.LTS.Infra\\team4.LTS.Infra.csproj",
         "packagesPath": "C:\\Users\\Pamudu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\Team4.LTS.Infra\\obj\\",
+        "outputPath": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\Team4.LTS.Infra\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Pamudu\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -100,8 +100,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\team4.LTS.Core.csproj": {
-                "projectPath": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\team4.LTS.Core.csproj"
+              "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\team4.LTS.Core.csproj": {
+                "projectPath": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\team4.LTS.Core.csproj"
               }
             }
           }
@@ -128,6 +128,10 @@
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[8.0.7, )"
+            },
+            "Microsoft.Extensions.Hosting.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             }
           },
           "imports": [

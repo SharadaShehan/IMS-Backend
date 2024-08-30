@@ -648,11 +648,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\team4.LTS.Core.csproj",
+      "projectUniqueName": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\team4.LTS.Core.csproj",
       "projectName": "team4.LTS.Core",
-      "projectPath": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\team4.LTS.Core.csproj",
+      "projectPath": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\team4.LTS.Core.csproj",
       "packagesPath": "C:\\Users\\Pamudu\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Pamudu\\OneDrive\\Documents\\GitHub\\IMS-Backend\\team4.LTS.Core\\obj\\",
+      "outputPath": "C:\\Users\\Pamudu\\source\\repos\\LabTracker\\team4.LTS.Core\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Pamudu\\AppData\\Roaming\\NuGet\\NuGet.Config",
