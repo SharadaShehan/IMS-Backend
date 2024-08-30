@@ -17,7 +17,7 @@ namespace team4.LTS.Infra.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.20")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -56,7 +56,7 @@ namespace team4.LTS.Infra.Migrations
 
                     b.HasIndex("LabId");
 
-                    b.ToTable("Equipments", (string)null);
+                    b.ToTable("Equipments");
                 });
 
             modelBuilder.Entity("team4.LTS.Core.Model.Item", b =>
@@ -83,7 +83,7 @@ namespace team4.LTS.Infra.Migrations
 
                     b.HasIndex("EquipmentId");
 
-                    b.ToTable("Items", (string)null);
+                    b.ToTable("Items");
                 });
 
             modelBuilder.Entity("team4.LTS.Core.Model.ItemReservation", b =>
@@ -157,7 +157,7 @@ namespace team4.LTS.Infra.Migrations
 
                     b.HasIndex("ReturnedTo");
 
-                    b.ToTable("ItemReservations", (string)null);
+                    b.ToTable("ItemReservations");
                 });
 
             modelBuilder.Entity("team4.LTS.Core.Model.Lab", b =>
@@ -182,7 +182,7 @@ namespace team4.LTS.Infra.Migrations
 
                     b.HasKey("LabId");
 
-                    b.ToTable("Labs", (string)null);
+                    b.ToTable("Labs");
                 });
 
             modelBuilder.Entity("team4.LTS.Core.Model.Maintenance", b =>
@@ -251,7 +251,7 @@ namespace team4.LTS.Infra.Migrations
 
                     b.HasIndex("ReviwedBy");
 
-                    b.ToTable("Maintenances", (string)null);
+                    b.ToTable("Maintenances");
                 });
 
             modelBuilder.Entity("team4.LTS.Core.Model.User", b =>
@@ -280,7 +280,7 @@ namespace team4.LTS.Infra.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("users", (string)null);
+                    b.ToTable("users");
                 });
 
             modelBuilder.Entity("team4.LTS.Core.Model.Equipment", b =>
