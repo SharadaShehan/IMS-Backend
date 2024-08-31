@@ -5,7 +5,7 @@ namespace IMS.Infrastructure.Services
 {
     public interface IAuthServerContext
     {
-        public Task<List<DBUserDTO>?> PollUserData();
+        public Task<List<AuthUserDTO>?> PollUserData();
     }
 
     public class AuthServerContext : IAuthServerContext
@@ -23,7 +23,7 @@ namespace IMS.Infrastructure.Services
             this.httpClient = new HttpClient();
         }
 
-        public async Task<List<DBUserDTO>?> PollUserData()
+        public async Task<List<AuthUserDTO>?> PollUserData()
         {
             try
             {
@@ -41,7 +41,7 @@ namespace IMS.Infrastructure.Services
                 // if response is successful, deserialize the response to list of DBUserDTO
                 if (response.IsSuccessStatusCode)
                 {
-                    List<DBUserDTO> userDTOs = JsonSerializer.Deserialize<List<DBUserDTO>>(responseString) as List<DBUserDTO>;
+                    List<AuthUserDTO> userDTOs = JsonSerializer.Deserialize<List<AuthUserDTO>>(responseString) as List<AuthUserDTO>;
                     return userDTOs;
                 }
                 // if response is not successful, return null
@@ -62,7 +62,7 @@ namespace IMS.Infrastructure.Services
         public string ClientSecret { get; set; }
     }
 
-    public class DBUserDTO
+    public class AuthUserDTO
     {
         public string email { get; set; }
         public string firstName { get; set; }

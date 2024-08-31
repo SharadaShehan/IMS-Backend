@@ -12,8 +12,17 @@ namespace IMS.Infrastructure.Services
 		public DbSet<ItemReservation> ItemReservations { get; set; }
 		public DbSet<Lab> Labs { get; set; }
 		public DbSet<Maintenance> Maintenances { get; set; }
+		
+		// Use this constructor for Presentation Layer
 		public DataBaseContext(DbContextOptions<DataBaseContext> option) : base(option) { }
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+		// Use this constructor to apply migrations to the database, changing the connection string
+		/*
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+			optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=LabTracker;Trusted_Connection=True;TrustServerCertificate=True");
+		}
+		*/
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<User>(entity =>
 			{
