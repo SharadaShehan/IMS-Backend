@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using IMS.Infrastructure.ScheduledJobs;
+using IMS.Infrastructure.Services;
 namespace IMS.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
@@ -27,6 +28,14 @@ public static class ServiceCollectionExtensions
 
         // Set the service provider for the service locator
         ServiceLocator.SetServiceProvider(services.BuildServiceProvider());
+
+        // Blob Storage Service
+        services.AddSingleton<IBlobStorageClient>(sp =>
+        {
+            var connectionString = configuration.GetSection("AzureBlobStorage")["ConnectionString"];
+            var containerName = configuration.GetSection("AzureBlobStorage")["ContainerName"];
+            return new BlobStorageClient(connectionString, containerName);
+        });
 
     }
 }
