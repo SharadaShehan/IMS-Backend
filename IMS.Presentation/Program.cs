@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using IMS.Infrastructure.Extensions;
+using System.Diagnostics;
+using IMS.Presentation.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // Add services from Infrastructure Layer
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddScoped<ITokenParser, TokenParser>();
+
 //Authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -19,16 +23,15 @@ builder.Services.AddAuthentication(options =>
 	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
-	options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+	options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
 	{
-		ValidateIssuer = true,
-		ValidateAudience = true,
-		ValidateLifetime = true,
+		ValidateLifetime = false,
 		ValidateIssuerSigningKey = true,
-		ValidIssuer = builder.Configuration["Jwt:Issuer"],
-		ValidAudience = builder.Configuration["Jwt:Audience"],
-		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-	};
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
 });
 var app = builder.Build();
 
@@ -40,9 +43,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
+app.UseRouting();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

@@ -23,7 +23,10 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<AuthServerContext>(sp => new AuthServerContext(authServerOptions));
 
         // Authentication Server Polling Job
-        services.AddHostedService<AuthServerPollingService>();
+        // services.AddHostedService<AuthServerPollingService>();
+
+        // Set the service provider for the service locator
+        ServiceLocator.SetServiceProvider(services.BuildServiceProvider());
 
     }
 }

@@ -1,11 +1,9 @@
 ﻿using Microsoft.Extensions.Hosting;
 using IMS.Infrastructure.Services;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using IMS.ApplicationCore.Model;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace IMS.Infrastructure.ScheduledJobs
 {
@@ -14,7 +12,7 @@ namespace IMS.Infrastructure.ScheduledJobs
         private readonly ILogger<AuthServerPollingService> _logger;
         private readonly AuthServerContext _authServerContext;
         private readonly IServiceProvider _serviceProvider;
-        private readonly TimeSpan _interval = TimeSpan.FromMinutes(1);
+        private readonly TimeSpan _interval = TimeSpan.FromMinutes(30);
 
         public AuthServerPollingService(ILogger<AuthServerPollingService> logger, AuthServerContext context, IServiceProvider serviceProvider)
         {

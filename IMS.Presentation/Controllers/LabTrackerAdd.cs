@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -41,47 +40,6 @@ namespace IMS.Presentation.Controllers
 			await _context.SaveChangesAsync();
 
 			return Created();
-		}
-
-		[HttpGet("GetUserRole")]
-		public async Task<ActionResult<String>> GetUserRole([FromBody] string IDToken)
-		{
-			if (string.IsNullOrEmpty(IDToken))
-			{
-				return BadRequest("Email is required.");
-			}
-			try
-			{
-				// Decode the JWT token
-				var handler = new JwtSecurityTokenHandler();
-				var jwtToken = handler.ReadJwtToken(IDToken);
-
-				// Extract the email from the JWT token claims
-				var emailClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-				if (emailClaim == null)
-				{
-					throw new Exception("Email not found in JWT token.");
-				}
-
-				var email = emailClaim.Value;
-
-				// Query the database for the user with this email
-				 var user = await _context.users.FirstOrDefaultAsync(u => u.Email == email);
-
-				if (user == null)
-				{
-					throw new Exception("User not found.");
-				}
-	
-				// Return the role associated with the user
-				return user.Role;
-			}
-			catch (Exception ex)
-			{
-				// Handle any exceptions (logging, etc.)
-				return ex.Message;
-				
-			}
 		}
 
 		//[HttpGet]
