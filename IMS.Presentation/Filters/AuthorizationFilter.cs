@@ -28,7 +28,7 @@ namespace IMS.Presentation.Filters
                     string email = contextUser.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress" || c.Type == "email")?.Value;
                     // Get the database context via service locator
                     var dbContext = ServiceLocator.GetService<DataBaseContext>();
-                    var dbUser = await dbContext.users.FirstOrDefaultAsync(u => u.Email == email);
+                    var dbUser = await dbContext.users.Where(dbUser => dbUser.IsActive).FirstOrDefaultAsync(u => u.Email == email);
                     if (dbUser == null) {
                         // User not found in database
                         context.Result = new UnauthorizedResult();

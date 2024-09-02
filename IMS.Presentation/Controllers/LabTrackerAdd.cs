@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using IMS.ApplicationCore.Model;
-using IMS.ApplicationCore.Model.DTO;
 using IMS.Infrastructure.Services;
+using IMS.ApplicationCore.DTO;
 
 namespace IMS.Presentation.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class LabTrackerAdd : ControllerBase
 	{
@@ -17,29 +17,6 @@ namespace IMS.Presentation.Controllers
 		public LabTrackerAdd(DataBaseContext context)
 		{
 			_context = context;
-		}
-		[HttpPost("AddUser")]
-		[ProducesResponseType(201)]
-		[ProducesResponseType(204)]
-		[ProducesResponseType(400)]
-		[ProducesResponseType(500)]
-		public async Task<IActionResult> AddUser([FromBody] UserDTO userdto)
-		{
-			if (!ModelState.IsValid)
-			{
-				return BadRequest(ModelState);
-			}
-			var user = new User();
-			user.Email = userdto.Email;
-			user.FirstName = userdto.FirstName;
-			user.LastName = userdto.LastName;
-			user.Role = userdto.Role;
-			user.IsActive = userdto.IsActive;
-
-			_context.users.Add(user);
-			await _context.SaveChangesAsync();
-
-			return Created();
 		}
 
 		//[HttpGet]

@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using IMS.Infrastructure.Services;
 using IMS.Presentation.Filters;
-using IMS.Presentation.DTOs;
 using System.Text.Json;
+using IMS.ApplicationCore.DTO;
 
 namespace IMS.Presentation.Controllers
 {
-	[Route("api/upload-url")]
+    [Route("api/upload-url")]
 	[ApiController]
 	public class ImgUploadControllers : ControllerBase
     {

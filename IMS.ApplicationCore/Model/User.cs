@@ -12,7 +12,7 @@ namespace IMS.ApplicationCore.Model
 		public string? ContactNumber { get; set; }
 		[Required]
 		[RegularExpression(@"^(Clerk|Technician|Student|AcademicStaff|SystemAdmin)$", ErrorMessage = "Not a Valid Role Name")]
-		public string? Role { get; set; } 
+		public string Role { get; set; } 
 		public Boolean IsActive { get; set; }
 
 

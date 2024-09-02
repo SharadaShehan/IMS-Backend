@@ -13,6 +13,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="DTO\EquipmentDTO.cs" />
+    <Compile Include="DTO\ItemDTO.cs" />
+    <Compile Include="DTO\ItemReservationDTO.cs" />
+    <Compile Include="DTO\LabDTO.cs" />
+    <Compile Include="DTO\MaintenanceDTO.cs" />
+    <Compile Include="DTO\PresignedUrlRequestDTO.cs" />
+    <Compile Include="DTO\PresignedUrlResponseDTO.cs" />
+    <Compile Include="DTO\ReservetionRequestDTO.cs" />
+    <Compile Include="DTO\UserDTO.cs" />
+    <Compile Include="DTO\UserLogin.cs" />
+    <Compile Include="DTO\UserRoleDTO.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Services\" />
   </ItemGroup>
 

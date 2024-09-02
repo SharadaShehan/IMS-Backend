@@ -1,4 +1,4 @@
-﻿namespace IMS.Presentation.DTOs
+﻿namespace IMS.ApplicationCore.DTO
 {
     public class PresignedUrlResponseDTO
     {

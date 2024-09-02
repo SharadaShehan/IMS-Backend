@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 
-namespace IMS.Presentation.DTOs
+namespace IMS.ApplicationCore.DTO
 {
     public class PresignedUrlRequestDTO
     {
@@ -15,14 +15,17 @@ namespace IMS.Presentation.DTOs
         }
         public bool Validate()
         {
-            try {
+            try
+            {
                 imageName = jsonElement.GetProperty("imageName").ToString();
                 extension = jsonElement.GetProperty("extension").ToString();
-                if ((imageName == null) || (extension == null)) return false;
-                if ((imageName.Length > 20) || (imageName.Length < 5)) return false;
-                if ((!validExtensions.Contains(extension))) return false;
+                if (imageName == null || extension == null) return false;
+                if (imageName.Length > 20 || imageName.Length < 5) return false;
+                if (!validExtensions.Contains(extension)) return false;
                 return true;
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Debug.WriteLine(ex.Message);
                 return false;
             }
