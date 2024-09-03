@@ -1,23 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace IMS.ApplicationCore.Model
 {
 	public class Item
 	{
-		[Key]
+        [Required]
+        [Key]
 		public int ItemId { get; set; }
-		[ForeignKey("Equipment")]
-		public int EquipmentId { get; set; }
-		public Equipment? Equipment { get; set; }
-		public int SerialNumber { get; set; }
-		[RegularExpression(@"^(Available|PendingRepair|UnderRepair )$", ErrorMessage = "ADD ERROR MESSAGE")]
-		public string? Status { get; set; } 
-		public Boolean IsActive { get; set; }
-	}
+        [Required]
+        public int EquipmentId { get; set; }
+        [Required]
+        public Equipment Equipment { get; set; }
+        [Required]
+        public string SerialNumber { get; set; }
+        [Required]
+        [RegularExpression(@"^(Available|PendingRepair|UnderRepair )$", ErrorMessage = "Invalid Item Status")]
+		public string Status { get; set; }
+        [Required]
+        public Boolean IsActive { get; set; }
+
+        //For Foreign keys in Maintenance
+        [Required]
+        public ICollection<Maintenance> Maintenances { get; set; }
+
+        //For Foreign keys in Reservations
+        [Required]
+        public ICollection<ItemReservation> Reservations { get; set; }
+    }
 }

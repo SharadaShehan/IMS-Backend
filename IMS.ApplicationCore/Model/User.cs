@@ -4,27 +4,39 @@ namespace IMS.ApplicationCore.Model
 {
 	public class User
 	{
-		[Key]
+        [Required]
+        [Key]
 		public int UserId { get; set; }
+        [Required]
         public string Email { get; set; }
-        public string? FirstName { get; set; } 
-		public string? LastName { get; set; } 
-		public string? ContactNumber { get; set; }
+        [Required]
+        public string FirstName { get; set; }
+        [Required]
+        public string LastName { get; set; }
+        [Required]
+        public string ContactNumber { get; set; }
 		[Required]
-		[RegularExpression(@"^(Clerk|Technician|Student|AcademicStaff|SystemAdmin)$", ErrorMessage = "Not a Valid Role Name")]
-		public string Role { get; set; } 
-		public Boolean IsActive { get; set; }
+		[RegularExpression(@"^(Clerk|Technician|Student|AcademicStaff|SystemAdmin)$", ErrorMessage = "Invalid Role Name")]
+		public string Role { get; set; }
+        [Required]
+        public Boolean IsActive { get; set; }
 
+        //For Foreign keys in Maintenace
+        [Required]
+        public ICollection<Maintenance> MaintenancesAssignedTo { get; set; }
+        [Required]
+        public ICollection<Maintenance> MaintenancesCreatedBy { get; set; }
+        [Required]
+        public ICollection<Maintenance> MaintenancesReviewedBy { get; set; }
 
-		//For Foreign keys in Maintenace
-		public ICollection<Maintenance>? MaintenancesAssignedTechnician { get; set; }
-		public ICollection<Maintenance>? MaintenancesAssignedBy { get; set; }
-		public ICollection<Maintenance>? MaintenancesReviewedBy { get; set; }
-
-		//For Foreign keys in ItemReservation 
-		public ICollection<ItemReservation>? ReservedItems { get; set; }
-		public ICollection<ItemReservation>? ResponseItems { get; set; }
-		public ICollection<ItemReservation>? BorrowedItems { get; set; }
-		public ICollection<ItemReservation>? ReturnedItems { get; set; }
+        //For Foreign keys in ItemReservation 
+        [Required]
+        public ICollection<ItemReservation> ItemsReservedBy { get; set; }
+        [Required]
+        public ICollection<ItemReservation> ReservationsRespondedTo { get; set; }
+        [Required]
+        public ICollection<ItemReservation> ItemsBorrowedFrom { get; set; }
+        [Required]
+        public ICollection<ItemReservation> ItemsReturnedTo { get; set; }
 	}
 }

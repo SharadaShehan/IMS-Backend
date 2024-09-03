@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace IMS.ApplicationCore.Model
 {
 	public class Lab
 	{
-		[Key]
+        [Required]
+        [Key]
 		public int LabId { get; set; }
-		[Required]
-		public int LabCode { get; set; }
-		public string? ImageURL { get; set; } 
-		[RegularExpression(@"^(Computer Lab|Embeded System Lab|IoT Lab)$", ErrorMessage = "ADD ERROR MESSAGE")]
-		public string? LabName { get; set; }
-		public Boolean IsActive { get; set; }
-	}
+        [Required]
+        public string LabName { get; set; }
+        [Required]
+		public string LabCode { get; set; }
+		public string? ImageURL { get; set; }
+        [Required]
+        public Boolean IsActive { get; set; }
+
+        //For Foreign keys in Equipments
+        [Required]
+        public ICollection<Equipment> Equipments { get; set; }
+    }
 }

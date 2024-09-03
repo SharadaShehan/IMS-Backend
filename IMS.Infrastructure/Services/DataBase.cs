@@ -7,15 +7,16 @@ namespace IMS.Infrastructure.Services
 	public class DataBaseContext : DbContext
 	{
 		public DbSet<User> users { get; set; }
-		public DbSet<Item> Items { get; set; }
-		public DbSet<Equipment> Equipments { get; set; }
-		public DbSet<ItemReservation> ItemReservations { get; set; }
-		public DbSet<Lab> Labs { get; set; }
-		public DbSet<Maintenance> Maintenances { get; set; }
+		public DbSet<Item> items { get; set; }
+		public DbSet<Equipment> equipments { get; set; }
+		public DbSet<ItemReservation> itemReservations { get; set; }
+		public DbSet<Lab> labs { get; set; }
+		public DbSet<Maintenance> maintenances { get; set; }
 		
 		// Use this constructor for Presentation Layer
+		
 		public DataBaseContext(DbContextOptions<DataBaseContext> option) : base(option) { }
-
+		
 		// Use this constructor to apply migrations to the database, changing the connection string
 		/*
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
@@ -49,47 +50,86 @@ namespace IMS.Infrastructure.Services
 				entity.HasKey(k => k.MaintenanceId);
 			});
 
+			// user table collections from maintenance table
 			modelBuilder.Entity<Maintenance>()
 				.HasOne(m => m.Technician)
-				.WithMany(u => u.MaintenancesAssignedTechnician)
-				.HasForeignKey(m => m.AssignedTechnician)
+				.WithMany(u => u.MaintenancesAssignedTo)
+				.HasForeignKey(m => m.TechnicianId)
 				.OnDelete(DeleteBehavior.Restrict);
 
 			modelBuilder.Entity<Maintenance>()
-				.HasOne(m => m.Assigner)
-				.WithMany(u => u.MaintenancesAssignedBy)
-				.HasForeignKey(m => m.AssignedBy)
+				.HasOne(m => m.CreatedClerk)
+				.WithMany(u => u.MaintenancesCreatedBy)
+				.HasForeignKey(m => m.CreatedClerkId)
 				.OnDelete(DeleteBehavior.Restrict);
 
 			modelBuilder.Entity<Maintenance>()
-				.HasOne(m => m.Reviewer)
+				.HasOne(m => m.ReviewedClerk)
 				.WithMany(u => u.MaintenancesReviewedBy)
-				.HasForeignKey(m => m.ReviwedBy)
+				.HasForeignKey(m => m.ReviewedClerkId)
 				.OnDelete(DeleteBehavior.Restrict);
+
+			// user table collections from item reservations table
 			modelBuilder.Entity<ItemReservation>()
-				.HasOne(ir => ir.ReservedByUser)
-				.WithMany(u => u.ReservedItems)
-				.HasForeignKey(ir => ir.ReservedBy)
+				.HasOne(ir => ir.ReservedUser)
+				.WithMany(u => u.ItemsReservedBy)
+				.HasForeignKey(ir => ir.ReservedUserId)
 				.OnDelete(DeleteBehavior.Restrict);
 
 			modelBuilder.Entity<ItemReservation>()
-				.HasOne(ir => ir.ResponseedByUser)
-				.WithMany(u => u.ResponseItems)
-				.HasForeignKey(ir => ir.ResponseedBy)
+				.HasOne(ir => ir.RespondedClerk)
+				.WithMany(u => u.ReservationsRespondedTo)
+				.HasForeignKey(ir => ir.RespondedClerkId)
 				.OnDelete(DeleteBehavior.Restrict);
 
 			modelBuilder.Entity<ItemReservation>()
-				.HasOne(ir => ir.BorrowedFromUser)
-				.WithMany(u => u.BorrowedItems)
-				.HasForeignKey(ir => ir.BorrowedFrom)
+				.HasOne(ir => ir.LentClerk)
+				.WithMany(u => u.ItemsBorrowedFrom)
+				.HasForeignKey(ir => ir.LentClerkId)
 				.OnDelete(DeleteBehavior.Restrict);
 
 			modelBuilder.Entity<ItemReservation>()
-				.HasOne(ir => ir.ReturnedToUser)
-				.WithMany(u => u.ReturnedItems)
-				.HasForeignKey(ir => ir.ReturnedTo)
+				.HasOne(ir => ir.ReturnAcceptedClerk)
+				.WithMany(u => u.ItemsReturnedTo)
+				.HasForeignKey(ir => ir.ReturnAcceptedClerkId)
 				.OnDelete(DeleteBehavior.Restrict);
-			base.OnModelCreating(modelBuilder);
+
+			// item table collections from maintenance table
+            modelBuilder.Entity<Maintenance>()
+                .HasOne(m => m.Item)
+                .WithMany(i => i.Maintenances)
+                .HasForeignKey(m => m.ItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+			// item table collections from item reservations table
+            modelBuilder.Entity<ItemReservation>()
+                .HasOne(ir => ir.Item)
+                .WithMany(i => i.Reservations)
+                .HasForeignKey(ir => ir.ItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ItemReservation>()
+                .HasOne(ir => ir.Equipment)
+                .WithMany(i => i.ItemReservations)
+                .HasForeignKey(ir => ir.EquipmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+			// equipment table collections from item table
+            modelBuilder.Entity<Item>()
+                .HasOne(i => i.Equipment)
+                .WithMany(e => e.Items)
+                .HasForeignKey(i => i.EquipmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+			// lab table collections from equipment table
+            modelBuilder.Entity<Equipment>()
+                .HasOne(e => e.Lab)
+                .WithMany(l => l.Equipments)
+                .HasForeignKey(e => e.LabId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            base.OnModelCreating(modelBuilder);
+
 		}
 	}
 }

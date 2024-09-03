@@ -24,7 +24,8 @@ namespace IMS.Presentation.Controllers
             try {
                 // Validate the request body
                 PresignedUrlRequestDTO presignedUrlRequestDTO = new PresignedUrlRequestDTO(jsonBody);
-                if (!presignedUrlRequestDTO.Validate()) return BadRequest("Invalid request body");
+                ValidationDTO validationDTO = presignedUrlRequestDTO.Validate();
+                if (!validationDTO.success) return BadRequest(validationDTO.message);
                 // Generate the presigned URL
                 string blobName = "labs/" + presignedUrlRequestDTO.imageName + "." + presignedUrlRequestDTO.extension;
                 TimeSpan expiryDuration = TimeSpan.FromMinutes(10);
@@ -42,7 +43,8 @@ namespace IMS.Presentation.Controllers
             try {
                 // Validate the request body
                 PresignedUrlRequestDTO presignedUrlRequestDTO = new PresignedUrlRequestDTO(jsonBody);
-                if (!presignedUrlRequestDTO.Validate()) return BadRequest("Invalid request body");
+                ValidationDTO validationDTO = presignedUrlRequestDTO.Validate();
+                if (!validationDTO.success) return BadRequest(validationDTO.message);
                 // Generate the presigned URL
                 string blobName = "equipments/" + presignedUrlRequestDTO.imageName + "." + presignedUrlRequestDTO.extension;
                 TimeSpan expiryDuration = TimeSpan.FromMinutes(10);
