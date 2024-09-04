@@ -67,6 +67,7 @@ namespace IMS.Presentation.Controllers
             }
         }
 
+        /*
         [HttpPatch("equipments/{id}")]
         [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<EquipmentDTO>> UpdateEquipment([FromBody] JsonElement jsonBody, int id)
@@ -78,7 +79,7 @@ namespace IMS.Presentation.Controllers
                 if (!validationDTO.success) return BadRequest(validationDTO.message);
                 // Get the Equipment to be Updated
                 Equipment? equipment = await _dbContext.equipments.Where(e => e.EquipmentId == id && e.IsActive).FirstOrDefaultAsync();
-                if (equipment != null) return BadRequest("Equipment Not Found");
+                if (equipment == null) return BadRequest("Equipment Not Found");
                 // Update the Equipment
                 if (equipmentDTO.name != null) equipment.Name = equipmentDTO.name;
                 if (equipmentDTO.model != null) equipment.Model = equipmentDTO.model;
@@ -100,7 +101,7 @@ namespace IMS.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        */
         [HttpDelete("equipments/{id}")]
         [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<EquipmentDTO>> DeleteEquipment(int id)
@@ -133,12 +134,13 @@ namespace IMS.Presentation.Controllers
             }
         }
 
+        /*
         [HttpPost("items")]
         [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<ItemDTO>> CreateItem([FromBody] JsonElement jsonBody)
         {
             try {
-                // Parse the JSON
+                // Parse the JSON 
                 CreateItemDTO itemDTO = new CreateItemDTO(jsonBody);
                 ValidationDTO validationDTO = itemDTO.Validate();
                 if (!validationDTO.success) return BadRequest(validationDTO.message);
@@ -170,6 +172,7 @@ namespace IMS.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        */
 
         [HttpDelete("items/{id}")]
         [AuthorizationFilter(["Clerk"])]
@@ -199,7 +202,7 @@ namespace IMS.Presentation.Controllers
 
         [HttpPost("maintenance")]
 		[AuthorizationFilter(["Clerk"])]
-        public async Task<ActionResult<Maintenance>> CreateMaintenance([FromBody] JsonElement jsonBody)
+        public async Task<ActionResult<MaintenanceDTO>> CreateMaintenance([FromBody] JsonElement jsonBody)
         {
             try {
                 // Get the User from the token
@@ -221,7 +224,7 @@ namespace IMS.Presentation.Controllers
                 {
                     ItemId = maintenanceDTO.itemId,
                     Item = item,
-                    StartDate = DateTime.Parse(maintenanceDTO.startDate),
+                    StartDate = DateTime.Now,
                     EndDate = DateTime.Parse(maintenanceDTO.endDate),
                     CreatedClerkId = clerkDto.UserId,
                     CreatedClerk = clerk,
@@ -241,3 +244,4 @@ namespace IMS.Presentation.Controllers
 		}
 	}
 }
+
