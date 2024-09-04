@@ -31,7 +31,7 @@ namespace IMS.ApplicationCore.Model
         public int? RespondedClerkId { get; set; }
 		public User? RespondedClerk { get; set; }
         public string? ResponseNote { get; set; }
-        public DateTime? ResponedAtAt { get; set; }
+        public DateTime? RespondedAt { get; set; }
 
 		public int? LentClerkId { get; set; }
         public User? LentClerk { get; set; }

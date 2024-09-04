@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="DTO\CreateEquipmentDTO.cs" />
     <Compile Include="DTO\RequestEquipmentDTO.cs" />
     <Compile Include="DTO\SubmitMaintenanceDTO.cs" />
     <Compile Include="DTO\EquipmentDTO.cs" />

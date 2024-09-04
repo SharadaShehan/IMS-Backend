@@ -1,32 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace IMS.ApplicationCore.DTO
 {
     public class ItemReservationDTO
     {
-        public int ItemReservationId { get; set; }
-        public int RequstedEquipmentId { get; set; }
-        public int AsignedItemId { get; set; }
-        public int ReservedBy { get; set; }
-        public int ResponseedBy { get; set; }
-        public int BorrowedFrom { get; set; }
-        public int ReturnedTo { get; set; }
-        public string? ResponseNote { get; set; }
-        public DateTime FromDate { get; set; }
-        public DateTime ToDate { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime ResponedAtAt { get; set; }
-        public DateTime BorrowedAt { get; set; }
-        public DateTime ReturnedAt { get; set; }
-        public DateTime CancelledAt { get; set; }
-        [RegularExpression(@"^(Pending|Rejected|Reserved|Canceled)$", ErrorMessage = "ADD ERROR MESSAGE")]
-        public string? Status { get; set; }
-        public bool IsActive { get; set; }
+        [Required]
+        public int itemReservationId { get; set; }
+        [Required]
+        public int equipmentId { get; set; }
+        public int? itemId { get; set; }
+        [Required]
+        public DateTime startDate { get; set; }
+        [Required]
+        public DateTime endDate { get; set; }
+        [Required]
+        public int reservedUserId { get; set; }
+        [Required]
+        public DateTime createdAt { get; set; }
+
+        public int? respondedClerkId { get; set; }
+        public string? responseNote { get; set; }
+        public DateTime? respondedAt { get; set; }
+
+        public int? lentClerkId { get; set; }
+        public DateTime? borrowedAt { get; set; }
+
+        public int? returnAcceptedClerkId { get; set; }
+        public DateTime? returnedAt { get; set; }
+        public DateTime? cancelledAt { get; set; }
+
+        [Required]
+        [RegularExpression(@"^(Pending|Rejected|Reserved|Borrowed|Returned|Canceled)$", ErrorMessage = "Invalid Reservation Status")]
+        public string status { get; set; }
     }
 }

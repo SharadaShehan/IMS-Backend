@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace IMS.ApplicationCore.DTO
 {
     public class EquipmentDTO
     {
-        public int EquipmentId { get; set; }
-        public string? Name { get; set; }
-        public string? ImageURL { get; set; }
-        public string? Model { get; set; }
-        public string? Specification { get; set; }
-        public int LabId { get; set; }
-        public DateTime MaintenanceInterval { get; set; }
-        public bool IsActive { get; set; }
+        [Required]
+        public int equipmentId { get; set; }
+        [Required]
+        public string name { get; set; }
+        [Required]
+        public string model { get; set; }
+        [Required]
+        public int labId { get; set; }
+        public string? imageURL { get; set; }
+        public string? specification { get; set; }
+        public int? maintenanceIntervalDays { get; set; }
     }
 }

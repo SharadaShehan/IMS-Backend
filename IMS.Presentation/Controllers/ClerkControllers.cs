@@ -7,7 +7,6 @@ using IMS.Presentation.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using IMS.ApplicationCore.Model;
-using System.Collections.Generic;
 
 namespace IMS.Presentation.Controllers
 {
@@ -24,7 +23,181 @@ namespace IMS.Presentation.Controllers
             _tokenParser = tokenParser;
         }
 
-		[HttpPost("maintenance")]
+        [HttpPost("equipments")]
+        [AuthorizationFilter(["Clerk"])]
+        public async Task<ActionResult<EquipmentDTO>> CreateEquipment([FromBody] JsonElement jsonBody)
+        {
+            try {
+                // Parse the JSON
+                CreateEquipmentDTO equipmentDTO = new CreateEquipmentDTO(jsonBody);
+                ValidationDTO validationDTO = equipmentDTO.Validate();
+                if (!validationDTO.success) return BadRequest(validationDTO.message);
+                // Get the Lab
+                Lab? lab = await _dbContext.labs.Where(l => l.LabId == equipmentDTO.labId && l.IsActive).FirstAsync();
+                if (lab == null) return BadRequest("Lab not Found");
+                // Prevent Duplicate Equipment Creation
+                Equipment? existingEquipment = await _dbContext.equipments.Where(e => e.Name == equipmentDTO.name && e.Model == equipmentDTO.model && e.LabId == equipmentDTO.labId && e.IsActive).FirstOrDefaultAsync();
+                if (existingEquipment != null) return BadRequest("Equipment Already Exists");
+                // Create the Equipment
+                Equipment newEquipment = new Equipment
+                {
+                    Name = equipmentDTO.name,
+                    Model = equipmentDTO.model,
+                    LabId = equipmentDTO.labId,
+                    Lab = lab,
+                    ImageURL = equipmentDTO.imageURL,
+                    Specification = equipmentDTO.specification,
+                    MaintenanceIntervalDays = equipmentDTO.maintenanceIntervalDays,
+                    IsActive = true
+                };
+                await _dbContext.equipments.AddAsync(newEquipment);
+                await _dbContext.SaveChangesAsync();
+                return StatusCode(201, new EquipmentDTO
+                {
+                    equipmentId = newEquipment.EquipmentId,
+                    name = newEquipment.Name,
+                    model = newEquipment.Model,
+                    labId = newEquipment.LabId,
+                    imageURL = newEquipment.ImageURL,
+                    specification = newEquipment.Specification,
+                    maintenanceIntervalDays = newEquipment.MaintenanceIntervalDays
+                });
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPatch("equipments/{id}")]
+        [AuthorizationFilter(["Clerk"])]
+        public async Task<ActionResult<EquipmentDTO>> UpdateEquipment([FromBody] JsonElement jsonBody, int id)
+        {
+            try {
+                // Parse the JSON
+                UpdateEquipmentDTO equipmentDTO = new UpdateEquipmentDTO(jsonBody);
+                ValidationDTO validationDTO = equipmentDTO.Validate();
+                if (!validationDTO.success) return BadRequest(validationDTO.message);
+                // Get the Equipment to be Updated
+                Equipment? equipment = await _dbContext.equipments.Where(e => e.EquipmentId == id && e.IsActive).FirstOrDefaultAsync();
+                if (equipment != null) return BadRequest("Equipment Not Found");
+                // Update the Equipment
+                if (equipmentDTO.name != null) equipment.Name = equipmentDTO.name;
+                if (equipmentDTO.model != null) equipment.Model = equipmentDTO.model;
+                if (equipmentDTO.imageURL != null) equipment.ImageURL = equipmentDTO.imageURL;
+                if (equipmentDTO.specification != null) equipment.Specification = equipmentDTO.specification;
+                if (equipmentDTO.maintenanceIntervalDays != null) equipment.MaintenanceIntervalDays = equipmentDTO.maintenanceIntervalDays;
+                await _dbContext.SaveChangesAsync();
+                return Ok(new EquipmentDTO
+                {
+                    equipmentId = equipment.EquipmentId,
+                    name = equipment.Name,
+                    model = equipment.Model,
+                    labId = equipment.LabId,
+                    imageURL = equipment.ImageURL,
+                    specification = equipment.Specification,
+                    maintenanceIntervalDays = equipment.MaintenanceIntervalDays
+                });
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("equipments/{id}")]
+        [AuthorizationFilter(["Clerk"])]
+        public async Task<ActionResult<EquipmentDTO>> DeleteEquipment(int id)
+        {
+            try {
+                // Delete the Equipment
+                Equipment? equipment = await _dbContext.equipments.Where(e => e.EquipmentId == id && e.IsActive).FirstOrDefaultAsync();
+                if (equipment == null) return BadRequest("Equipment Not Found");
+                equipment.IsActive = false;
+                // Delete all items of the equipment
+                List<Item> items = await _dbContext.items.Where(i => i.EquipmentId == id).ToListAsync();
+                foreach (Item item in items) {
+                    item.IsActive = false;
+                }
+                // Delete all maintenance of items of the equipment
+                List<Maintenance> maintenances = await _dbContext.maintenances.Where(m => m.Item.EquipmentId == id).ToListAsync();
+                foreach (Maintenance maintenance in maintenances) {
+                    maintenance.IsActive = false;
+                }
+                // Delete all reservations of items of the equipment
+                List<ItemReservation> reservations = await _dbContext.itemReservations.Where(ir => ir.Item != null && ir.Item.EquipmentId == id).ToListAsync();
+                foreach (ItemReservation reservation in reservations) {
+                    reservation.IsActive = false;
+                }
+                await _dbContext.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("items")]
+        [AuthorizationFilter(["Clerk"])]
+        public async Task<ActionResult<ItemDTO>> CreateItem([FromBody] JsonElement jsonBody)
+        {
+            try {
+                // Parse the JSON
+                CreateItemDTO itemDTO = new CreateItemDTO(jsonBody);
+                ValidationDTO validationDTO = itemDTO.Validate();
+                if (!validationDTO.success) return BadRequest(validationDTO.message);
+                // Get the Equipment
+                Equipment? equipment = await _dbContext.equipments.Where(e => e.EquipmentId == itemDTO.equipmentId && e.IsActive).FirstAsync();
+                if (equipment == null) return BadRequest("Equipment not Found");
+                // Prevent Duplicate Item Creation
+                Item? existingItem = await _dbContext.items.Where(i => i.EquipmentId == itemDTO.equipmentId && i.SerialNumber == itemDTO.serialNumber && i.IsActive).FirstOrDefaultAsync();
+                if (existingItem != null) return BadRequest("Item Already Exists");
+                // Create the Equipment
+                Item newItem = new Item
+                {
+                    EquipmentId = itemDTO.equipmentId,
+                    Equipment = equipment,
+                    SerialNumber = itemDTO.serialNumber,
+                    Status = "Available",
+                    IsActive = true
+                };
+                await _dbContext.items.AddAsync(newItem);
+                await _dbContext.SaveChangesAsync();
+                return StatusCode(201, new ItemDTO
+                {
+                    itemId = newItem.ItemId,
+                    equipmentId = newItem.EquipmentId,
+                    serialNumber = newItem.SerialNumber,
+                    status = newItem.Status
+                });
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("items/{id}")]
+        [AuthorizationFilter(["Clerk"])]
+        public async Task<ActionResult<EquipmentDTO>> DeleteItem(int id)
+        {
+            try {
+                // Delete the Item
+                Item? item = await _dbContext.items.Where(i => i.ItemId == id && i.IsActive).FirstOrDefaultAsync();
+                if (item == null) return BadRequest("Item Not Found");
+                item.IsActive = false;
+                // Delete all maintenance of the item
+                List<Maintenance> maintenances = await _dbContext.maintenances.Where(m => m.ItemId == id).ToListAsync();
+                foreach (Maintenance maintenance in maintenances) {
+                    maintenance.IsActive = false;
+                }
+                // Delete all reservations of the item
+                List<ItemReservation> reservations = await _dbContext.itemReservations.Where(ir => ir.ItemId == id).ToListAsync();
+                foreach (ItemReservation reservation in reservations) {
+                    reservation.IsActive = false;
+                }
+                await _dbContext.SaveChangesAsync();
+                return NoContent();
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("maintenance")]
 		[AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<Maintenance>> CreateMaintenance([FromBody] JsonElement jsonBody)
         {

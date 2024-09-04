@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace IMS.ApplicationCore.DTO
 {
     public class ItemDTO
     {
-        public int ItemId { get; set; }
-        public int EquipmentId { get; set; }
-        public int SerialNumber { get; set; }
-        [RegularExpression(@"^(Available|PendingRepair|UnderRepair )$", ErrorMessage = "ADD ERROR MESSAGE")]
-        public string? Status { get; set; }
-        public bool IsActive { get; set; }
+        [Required]
+        public int itemId { get; set; }
+        [Required]
+        public int equipmentId { get; set; }
+        [Required]
+        public string serialNumber { get; set; }
+        [Required]
+        [RegularExpression(@"^(Available|Borrowed|UnderRepair|Unavailable)$", ErrorMessage = "Invalid Item Status")]
+        public string status { get; set; }
     }
 }
