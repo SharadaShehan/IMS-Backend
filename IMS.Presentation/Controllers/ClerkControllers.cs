@@ -67,7 +67,7 @@ namespace IMS.Presentation.Controllers
             }
         }
 
-        /*
+        
         [HttpPatch("equipments/{id}")]
         [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<EquipmentDTO>> UpdateEquipment([FromBody] JsonElement jsonBody, int id)
@@ -101,7 +101,8 @@ namespace IMS.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        */
+        
+
         [HttpDelete("equipments/{id}")]
         [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<EquipmentDTO>> DeleteEquipment(int id)
@@ -134,7 +135,7 @@ namespace IMS.Presentation.Controllers
             }
         }
 
-        /*
+        
         [HttpPost("items")]
         [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<ItemDTO>> CreateItem([FromBody] JsonElement jsonBody)
@@ -172,7 +173,7 @@ namespace IMS.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        */
+        
 
         [HttpDelete("items/{id}")]
         [AuthorizationFilter(["Clerk"])]
@@ -199,6 +200,7 @@ namespace IMS.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpPost("maintenance")]
 		[AuthorizationFilter(["Clerk"])]
