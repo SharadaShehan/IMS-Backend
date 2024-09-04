@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*
+using Microsoft.AspNetCore.Mvc;
 using IMS.Infrastructure.Services;
 using System.Diagnostics;
 using IMS.Presentation.Filters;
@@ -43,3 +44,4 @@ namespace IMS.Presentation.Controllers
 		}
 	}
 }
+*/

@@ -26,34 +26,42 @@ namespace IMS.Presentation.Controllers
 
 		[HttpPost("maintenance")]
 		[AuthorizationFilter(["Clerk"])]
-        public async Task<ActionResult<List<UserDTO>>> CreateMaintenance([FromBody] JsonElement jsonBody)
+        public async Task<ActionResult<Maintenance>> CreateMaintenance([FromBody] JsonElement jsonBody)
         {
             try {
+                // Get the User from the token
+                UserDTO? clerkDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+                if (clerkDto == null) throw new Exception("Invalid Token/Authorization Header");
+                User clerk = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == clerkDto.UserId).FirstAsync();
+                // Parse the JSON
                 CreateMaintenanceDTO maintenanceDTO = new CreateMaintenanceDTO(jsonBody);
                 ValidationDTO validationDTO = maintenanceDTO.Validate();
                 if (!validationDTO.success) return BadRequest(validationDTO.message);
-                // Get the item
-                Item? item = await _dbContext.items.Where(it => it.ItemId == maintenanceDTO.itemId && it.IsActive).FirstOrDefaultAsync();
-                if (item == null) return BadRequest("Item not Found");
+                // Get the item if Available
+                Item? item = await _dbContext.items.Where(it => it.ItemId == maintenanceDTO.itemId && it.IsActive && it.Status == "Available").FirstAsync();
+                if (item == null) return BadRequest("Item not Available for Maintenance");
                 // Get the technician
-                //User? technician = await _dbContext.users.Where(u => u.UserId == maintenanceDTO.assignedTechnicianId && u.IsActive).FirstOrDefaultAsync();
-                //if (technician == null) return BadRequest("Technician not Found");
-                //// Create the maintenance
-                //Maintenance maintenance = await _dbContext.Maintenances.AddAsync(new Maintenance
-                //{
-
-                //}
-
-                List < UserDTO > users = await _dbContext.users.Where(dbUser => dbUser.IsActive).Select(dbUser => new UserDTO
+                User? technician = await _dbContext.users.Where(u => u.UserId == maintenanceDTO.technicianId && u.IsActive && u.Role == "Technician").FirstAsync();
+                if (technician == null) return BadRequest("Technician not Found");
+                // Create the maintenance
+                Maintenance newMaintenance = new Maintenance
                 {
-                    UserId = dbUser.UserId,
-                    Email = dbUser.Email,
-                    FirstName = dbUser.FirstName,
-                    LastName = dbUser.LastName,
-                    ContactNumber = dbUser.ContactNumber,
-                    Role = dbUser.Role
-                }).ToListAsync();
-                return Ok(users);
+                    ItemId = maintenanceDTO.itemId,
+                    Item = item,
+                    StartDate = DateTime.Parse(maintenanceDTO.startDate),
+                    EndDate = DateTime.Parse(maintenanceDTO.endDate),
+                    CreatedClerkId = clerkDto.UserId,
+                    CreatedClerk = clerk,
+                    TaskDescription = maintenanceDTO.taskDescription,
+                    CreatedAt = DateTime.Now,
+                    TechnicianId = technician.UserId,
+                    Technician = technician,
+                    Status = "Ongoing",
+                    IsActive = true
+                };
+                await _dbContext.maintenances.AddAsync(newMaintenance);
+                await _dbContext.SaveChangesAsync();
+                return StatusCode(201, newMaintenance);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }

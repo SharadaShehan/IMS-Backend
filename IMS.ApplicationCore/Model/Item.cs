@@ -14,7 +14,7 @@ namespace IMS.ApplicationCore.Model
         [Required]
         public string SerialNumber { get; set; }
         [Required]
-        [RegularExpression(@"^(Available|PendingRepair|UnderRepair )$", ErrorMessage = "Invalid Item Status")]
+        [RegularExpression(@"^(Available|Borrowed|UnderRepair|Unavailable)$", ErrorMessage = "Invalid Item Status")]
 		public string Status { get; set; }
         [Required]
         public Boolean IsActive { get; set; }

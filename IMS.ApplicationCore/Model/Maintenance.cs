@@ -39,7 +39,7 @@ namespace IMS.ApplicationCore.Model
 
 		public int? Cost { get; set; }
         [Required]
-        [RegularExpression(@"^(Unassigned|Ongoin|UnderReview|Completed)$", ErrorMessage = "Invalid Maintenance Status")]
+        [RegularExpression(@"^(Ongoing|UnderReview|Completed)$", ErrorMessage = "Invalid Maintenance Status")]
         public string Status { get; set; }
         [Required]
         public Boolean IsActive { get; set; }

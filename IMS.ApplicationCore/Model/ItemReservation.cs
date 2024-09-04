@@ -44,7 +44,7 @@ namespace IMS.ApplicationCore.Model
 		public DateTime? CancelledAt { get; set;}
 
 		[Required]
-		[RegularExpression(@"^(Pending|Rejected|Reserved|Canceled)$", ErrorMessage = "Invalid Reservation Status")]
+		[RegularExpression(@"^(Pending|Rejected|Reserved|Borrowed|Returned|Canceled)$", ErrorMessage = "Invalid Reservation Status")]
 		public string Status { get; set; }
         [Required]
         public Boolean IsActive { get; set; }
