@@ -23,9 +23,47 @@ namespace IMS.Presentation.Controllers
             _tokenParser = tokenParser;
         }
 
-		[HttpPatch("maintenance/{id}")]
+        [HttpPatch("maintenance")]
         [AuthorizationFilter(["Technician"])]
-        public async Task<ActionResult<Maintenance>> UpdateMaintenance([FromBody] JsonElement jsonBody, int id)
+        public async Task<ActionResult<List<MaintenanceDTO>>> ViewMaintenance([FromQuery] bool completed)
+        {
+            try
+            {
+                // Get the User from the token
+                UserDTO? technicianDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+                if (technicianDto == null) throw new Exception("Invalid Token/Authorization Header");
+                // Get the maintenances from DB
+                List<MaintenanceDTO> maintenanceDTOs = await _dbContext.maintenances.Where(mnt => mnt.TechnicianId == technicianDto.UserId && (completed ? mnt.Status == "Completed" : (mnt.Status == "Ongoing" || mnt.Status == "UnderReview")) && mnt.IsActive).Select(mnt => new MaintenanceDTO
+                {
+                    maintenanceId = mnt.MaintenanceId,
+                    itemId = mnt.ItemId,
+                    startDate = mnt.StartDate,
+                    endDate = mnt.EndDate,
+                    createdClerkId = mnt.CreatedClerkId,
+                    taskDescription = mnt.TaskDescription,
+                    createdAt = mnt.CreatedAt,
+                    technicianId = mnt.TechnicianId,
+                    submitNote = mnt.SubmitNote,
+                    submittedAt = mnt.SubmittedAt,
+                    reviewedClerkId = mnt.ReviewedClerkId,
+                    reviewNote = mnt.ReviewNote,
+                    reviewedAt = mnt.ReviewedAt,
+                    cost = mnt.Cost,
+                    status = mnt.Status
+                }).ToListAsync();
+                return Ok(maintenanceDTOs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+        [HttpPatch("maintenance/{id}")]
+        [AuthorizationFilter(["Technician"])]
+        public async Task<ActionResult<MaintenanceDTO>> UpdateMaintenance([FromBody] JsonElement jsonBody, int id)
         {
             try {
                 // Get the User from the token
@@ -36,9 +74,11 @@ namespace IMS.Presentation.Controllers
                 ValidationDTO validationDTO = maintenanceDTO.Validate();
                 if (!validationDTO.success) return BadRequest(validationDTO.message);
                 // Get the maintenance from DB
-                Maintenance maintenance = await _dbContext.maintenances.Where(mnt => mnt.MaintenanceId == id && mnt.TechnicianId == technicianDto.UserId && mnt.Status == "Ongoing" && mnt.IsActive).FirstAsync();
+                Maintenance maintenance = await _dbContext.maintenances.Where(mnt => mnt.MaintenanceId == id && mnt.Status == "Ongoing" && mnt.IsActive).FirstAsync();
                 if (maintenance == null) return BadRequest("Maintenance Not Available for Updating");
+                if (maintenance.TechnicianId != technicianDto.UserId) return StatusCode(403, "Only Assigned Technician can Update Maintenance");
                 maintenance.SubmitNote = maintenanceDTO.submitNote;
+                maintenance.Cost = maintenanceDTO.cost;
                 maintenance.SubmittedAt = DateTime.Now;
                 await _dbContext.SaveChangesAsync();
                 return Ok(maintenance);

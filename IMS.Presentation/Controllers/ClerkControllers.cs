@@ -23,6 +23,7 @@ namespace IMS.Presentation.Controllers
             _tokenParser = tokenParser;
         }
 
+
         [HttpPost("equipments")]
         [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<EquipmentDTO>> CreateEquipment([FromBody] JsonElement jsonBody)
@@ -239,7 +240,18 @@ namespace IMS.Presentation.Controllers
                 };
                 await _dbContext.maintenances.AddAsync(newMaintenance);
                 await _dbContext.SaveChangesAsync();
-                return StatusCode(201, newMaintenance);
+                return StatusCode(201, new MaintenanceDTO
+                {
+                    maintenanceId = newMaintenance.MaintenanceId,
+                    itemId = newMaintenance.ItemId,
+                    startDate = newMaintenance.StartDate,
+                    endDate = newMaintenance.EndDate,
+                    createdClerkId = newMaintenance.CreatedClerkId,
+                    taskDescription = newMaintenance.TaskDescription,
+                    createdAt = newMaintenance.CreatedAt,
+                    technicianId = newMaintenance.TechnicianId,
+                    status = newMaintenance.Status
+                });
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }

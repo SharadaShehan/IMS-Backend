@@ -32,17 +32,25 @@ namespace IMS.ApplicationCore.DTO
                 labId = tempLabId;
                 name = jsonElement.GetProperty("name").ToString(); if (!Regex.IsMatch(name, textPattern)) { return new ValidationDTO("Invalid Equipment Name"); }
                 model = jsonElement.GetProperty("model").ToString(); if (!Regex.IsMatch(model, textPattern)) { return new ValidationDTO("Invalid Equipment Model"); }
-                if (imageURL != null) {
-                    imageURL = jsonElement.GetProperty("imageURL").ToString();
-                    if (!Regex.IsMatch(imageURL, imageUrlPattern)) { return new ValidationDTO("Invalid Image Url"); }
+                if (jsonElement.TryGetProperty("imageURL", out JsonElement imageURLElm)) {
+                    if (imageURLElm.GetType() == typeof(string))
+                    {
+                        imageURL = imageURLElm.GetString();
+                        if (!Regex.IsMatch(imageURL, imageUrlPattern)) { return new ValidationDTO("Invalid Image Url"); }
+                    } else {
+                        return new ValidationDTO("Invalid Image Url");
+                    }
                 }
-                if (specification != null) {
-                    specification = jsonElement.GetProperty("specification").ToString();
+                if (jsonElement.TryGetProperty("specification", out JsonElement specificationElm)) {
+                    if (specificationElm.GetType() == typeof(string)) specification = specificationElm.GetString();
+                    else return new ValidationDTO("Invalid Specification");
                 }
-                if (maintenanceIntervalDays != null) {
-                    int tempMaintenanceIntervalDays;
-                    if (jsonElement.GetProperty("maintenanceIntervalDays").TryGetInt32(out tempMaintenanceIntervalDays)) { } else { return new ValidationDTO("Invalid Maintenance Interval Days"); }
-                    maintenanceIntervalDays = tempMaintenanceIntervalDays;
+                if (jsonElement.TryGetProperty("maintenanceIntervalDays", out JsonElement mIntervalDays)) {
+                    if (mIntervalDays.TryGetInt32(out int tempMaintenanceIntervalDays)) {
+                        maintenanceIntervalDays = tempMaintenanceIntervalDays;
+                    } else {
+                        return new ValidationDTO("Invalid Maintenance Interval Days");
+                    }
                 }
                 return new ValidationDTO();
             }
