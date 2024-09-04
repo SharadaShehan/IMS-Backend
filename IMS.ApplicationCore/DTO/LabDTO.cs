@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace IMS.ApplicationCore.DTO
 {
     public class LabDTO
     {
-        public int LabId { get; set; }
-        public int LabCode { get; set; }
+        [Required]
+        public int labId { get; set; }
+        [Required]
+        public string labName { get; set; }
+        [Required]
+        public string labCode { get; set; }
         public string? ImageURL { get; set; }
-        [RegularExpression(@"^(Computer Lab|Embeded System Lab|IoT Lab)$", ErrorMessage = "ADD ERROR MESSAGE")]
-        public string? LabName { get; set; }
-        public bool IsActive { get; set; }
     }
 }

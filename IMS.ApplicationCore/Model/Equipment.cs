@@ -17,7 +17,7 @@ namespace IMS.ApplicationCore.Model
         public Lab Lab { get; set; }
         public string? ImageURL { get; set; }
         public string? Specification { get; set; }
-		public DateTime? MaintenanceInterval { get; set; }
+		public int? MaintenanceIntervalDays { get; set; }
         [Required]
         public Boolean IsActive { get; set; }
 

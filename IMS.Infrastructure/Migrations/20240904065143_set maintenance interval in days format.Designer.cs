@@ -4,6 +4,7 @@ using IMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IMS.Infrastructure.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    partial class DataBaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240904065143_set maintenance interval in days format")]
+    partial class setmaintenanceintervalindaysformat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,11 +127,11 @@ namespace IMS.Infrastructure.Migrations
                     b.Property<int>("ReservedUserId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("RespondedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<int?>("RespondedClerkId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("ResponedAtAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ResponseNote")
                         .HasColumnType("nvarchar(max)");
