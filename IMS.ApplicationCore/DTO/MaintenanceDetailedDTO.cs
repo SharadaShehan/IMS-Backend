@@ -2,7 +2,7 @@
 
 namespace IMS.ApplicationCore.DTO
 {
-    public class MaintenanceDTO
+    public class MaintenanceDetailedDTO
     {
         [Required]
         public int maintenanceId { get; set; }
@@ -24,9 +24,27 @@ namespace IMS.ApplicationCore.DTO
         [Required]
         public DateTime endDate { get; set; }
         [Required]
+        public int createdClerkId { get; set; }
+        [Required]
+        public string createdClerkName { get; set; }
+        [Required]
+        public string taskDescription { get; set; }
+        [Required]
         public DateTime createdAt { get; set; }
+
+        [Required]
+        public int technicianId { get; set; }
+        [Required]
+        public string technicianName { get; set; }
+        public string? submitNote { get; set; }
         public DateTime? submittedAt { get; set; }
+
+        public int? reviewedClerkId { get; set; }
+        public string? reviewedClerkName { get; set; }
+        public string? reviewNote { get; set; }
         public DateTime? reviewedAt { get; set; }
+
+        public int? cost { get; set; }
         [Required]
         [RegularExpression(@"^(Scheduled|Ongoing|UnderReview|Completed|Canceled)$", ErrorMessage = "Invalid Maintenance Status")]
         public string status { get; set; }

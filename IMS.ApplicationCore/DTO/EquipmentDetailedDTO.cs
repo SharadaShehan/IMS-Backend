@@ -2,7 +2,7 @@
 
 namespace IMS.ApplicationCore.DTO
 {
-    public class EquipmentDTO
+    public class EquipmentDetailedDTO
     {
         [Required]
         public int equipmentId { get; set; }
@@ -17,5 +17,12 @@ namespace IMS.ApplicationCore.DTO
         public string labName { get; set; }
         public string? specification { get; set; }
         public int? maintenanceIntervalDays { get; set; }
+        [Required]
+        public int totalCount { get; set; }
+        [Required]
+        public int reservedCount { get; set; }
+        [Required]
+        public int availableCount { get; set; }
+        
     }
 }
