@@ -23,9 +23,9 @@ namespace IMS.Presentation.Controllers
             _tokenParser = tokenParser;
         }
 
-        [HttpPatch("maintenance")]
+        [HttpGet("maintenance")]
         [AuthorizationFilter(["Technician"])]
-        public async Task<ActionResult<List<MaintenanceDTO>>> ViewMaintenance([FromQuery] bool completed)
+        public async Task<ActionResult<List<MaintenanceDTO>>> ViewMaintenances([FromQuery] bool completed)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace IMS.Presentation.Controllers
                     reviewedAt = mnt.ReviewedAt,
                     cost = mnt.Cost,
                     status = mnt.Status
-                }).ToListAsync();
+                }).OrderByDescending(i => i.endDate).ToListAsync();
                 return Ok(maintenanceDTOs);
             }
             catch (Exception ex)
@@ -79,6 +79,7 @@ namespace IMS.Presentation.Controllers
                 if (maintenance.TechnicianId != technicianDto.UserId) return StatusCode(403, "Only Assigned Technician can Update Maintenance");
                 maintenance.SubmitNote = maintenanceDTO.submitNote;
                 maintenance.Cost = maintenanceDTO.cost;
+                maintenance.Status = "UnderReview";
                 maintenance.SubmittedAt = DateTime.Now;
                 await _dbContext.SaveChangesAsync();
                 return Ok(maintenance);

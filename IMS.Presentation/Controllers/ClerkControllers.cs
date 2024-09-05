@@ -256,6 +256,124 @@ namespace IMS.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
 		}
-	}
+
+
+        [HttpPatch("maintenance/{id}")]
+        [AuthorizationFilter(["Clerk"])]
+        public async Task<ActionResult<MaintenanceDTO>> ReviewMaintenance([FromBody] JsonElement jsonBody, [FromQuery] bool accepted, int id)
+        {
+            try
+            {
+                // Get the User from the token
+                UserDTO? clerkDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+                if (clerkDto == null) throw new Exception("Invalid Token/Authorization Header");
+                User clerk = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == clerkDto.UserId).FirstAsync();
+                // Parse the JSON
+                ReviewMaintenanceDTO maintenanceDTO = new ReviewMaintenanceDTO(jsonBody, accepted);
+                ValidationDTO validationDTO = maintenanceDTO.Validate();
+                if (!validationDTO.success) return BadRequest(validationDTO.message);
+                // Get the maintenance if Available
+                Maintenance? maintenance = await _dbContext.maintenances.Where(mnt => mnt.MaintenanceId == id && mnt.IsActive && mnt.Status == "UnderReview").FirstAsync();
+                if (maintenance == null) return BadRequest("Maintenance not Available for Review");
+                maintenance.ReviewedClerkId = clerkDto.UserId;
+                maintenance.ReviewedClerk = clerk;
+                maintenance.ReviewNote = maintenanceDTO.reviewNote;
+                maintenance.ReviewedAt = DateTime.Now;
+                maintenance.Status = accepted ? "Completed" : "Ongoing";
+                await _dbContext.SaveChangesAsync();
+                return Ok(new MaintenanceDTO
+                {
+                    maintenanceId = maintenance.MaintenanceId,
+                    itemId = maintenance.ItemId,
+                    startDate = maintenance.StartDate,
+                    endDate = maintenance.EndDate,
+                    createdClerkId = maintenance.CreatedClerkId,
+                    taskDescription = maintenance.TaskDescription,
+                    createdAt = maintenance.CreatedAt,
+                    technicianId = maintenance.TechnicianId,
+                    submitNote = maintenance.SubmitNote,
+                    submittedAt = maintenance.SubmittedAt,
+                    reviewedClerkId = maintenance.ReviewedClerkId,
+                    reviewNote = maintenance.ReviewNote,
+                    reviewedAt = maintenance.ReviewedAt,
+                    cost = maintenance.Cost,
+                    status = maintenance.Status
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpGet("maintenance")]
+        [AuthorizationFilter(["Clerk"])]
+        public async Task<ActionResult<List<MaintenanceDTO>>> ViewMaintenances([FromQuery] bool completed)
+        {
+            try
+            {
+                // Get the maintenances from DB
+                List<MaintenanceDTO> maintenanceDTOs = await _dbContext.maintenances.Where(mnt => mnt.IsActive && (completed ? mnt.Status == "Completed" : (mnt.Status == "Ongoing" || mnt.Status == "UnderReview"))).Select(mnt => new MaintenanceDTO
+                {
+                    maintenanceId = mnt.MaintenanceId,
+                    itemId = mnt.ItemId,
+                    startDate = mnt.StartDate,
+                    endDate = mnt.EndDate,
+                    createdClerkId = mnt.CreatedClerkId,
+                    taskDescription = mnt.TaskDescription,
+                    createdAt = mnt.CreatedAt,
+                    technicianId = mnt.TechnicianId,
+                    submitNote = mnt.SubmitNote,
+                    submittedAt = mnt.SubmittedAt,
+                    reviewedClerkId = mnt.ReviewedClerkId,
+                    reviewNote = mnt.ReviewNote,
+                    reviewedAt = mnt.ReviewedAt,
+                    cost = mnt.Cost,
+                    status = mnt.Status
+                }).OrderByDescending(i => i.endDate).ToListAsync();
+                return Ok(maintenanceDTOs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpGet("maintenance/pending")]
+        [AuthorizationFilter(["Clerk"])]
+        public async Task<ActionResult<List<PendingMaintenanceDTO>>> ViewPendingMaintenances()
+        {
+            try
+            {
+                // Get last maintenances and filter the pending ones
+                List<PendingMaintenanceDTO> maintenanceDTOs = await _dbContext.maintenances
+                    .GroupBy(mnt => mnt.ItemId)
+                    .Select(grp => grp.OrderByDescending(mnt => mnt.EndDate).FirstOrDefault())
+                    .Where(mnt => mnt != null && mnt.IsActive && (mnt.EndDate.AddDays(mnt.Item.Equipment.MaintenanceIntervalDays ?? 10000) < DateTime.Now))
+                    .Select(mnt => new PendingMaintenanceDTO
+                    {
+                        itemId = mnt.ItemId,
+                        itemName = mnt.Item.Equipment.Name,
+                        itemModel = mnt.Item.Equipment.Model,
+                        itemSerialNumber = mnt.Item.SerialNumber,
+                        imageUrl = mnt.Item.Equipment.ImageURL,
+                        LabId = mnt.Item.Equipment.LabId,
+                        LabName = mnt.Item.Equipment.Lab.LabName,
+                        lastMaintenanceId = mnt.MaintenanceId,
+                        lastMaintenanceStartDate = mnt.StartDate,
+                        lastMaintenanceEndDate = mnt.EndDate
+                    }).ToListAsync();
+                return Ok(maintenanceDTOs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+    }
 }
 

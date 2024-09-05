@@ -101,7 +101,7 @@ namespace IMS.Presentation.Controllers
                     reviewedAt = i.ReviewedAt,
                     cost = i.Cost,
                     status = i.Status
-                }).ToListAsync();
+                }).OrderByDescending(i => i.endDate).ToListAsync();
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -131,7 +131,7 @@ namespace IMS.Presentation.Controllers
                     returnedAt = r.ReturnedAt,
                     cancelledAt = r.CancelledAt,
                     status = r.Status
-                }).ToListAsync();
+                }).OrderByDescending(i => i.startDate).ToListAsync();
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
