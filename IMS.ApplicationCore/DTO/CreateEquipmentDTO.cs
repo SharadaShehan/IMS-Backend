@@ -32,23 +32,31 @@ namespace IMS.ApplicationCore.DTO
                 labId = tempLabId;
                 name = jsonElement.GetProperty("name").ToString(); if (!Regex.IsMatch(name, textPattern)) { return new ValidationDTO("Invalid Equipment Name"); }
                 model = jsonElement.GetProperty("model").ToString(); if (!Regex.IsMatch(model, textPattern)) { return new ValidationDTO("Invalid Equipment Model"); }
-                if (jsonElement.TryGetProperty("imageURL", out JsonElement imageURLElm)) {
+                if (jsonElement.TryGetProperty("imageURL", out JsonElement imageURLElm))
+                {
                     if (imageURLElm.GetType() == typeof(string))
                     {
                         imageURL = imageURLElm.GetString();
                         if (!Regex.IsMatch(imageURL, imageUrlPattern)) { return new ValidationDTO("Invalid Image Url"); }
-                    } else {
+                    }
+                    else
+                    {
                         return new ValidationDTO("Invalid Image Url");
                     }
                 }
-                if (jsonElement.TryGetProperty("specification", out JsonElement specificationElm)) {
+                if (jsonElement.TryGetProperty("specification", out JsonElement specificationElm))
+                {
                     if (specificationElm.GetType() == typeof(string)) specification = specificationElm.GetString();
                     else return new ValidationDTO("Invalid Specification");
                 }
-                if (jsonElement.TryGetProperty("maintenanceIntervalDays", out JsonElement mIntervalDays)) {
-                    if (mIntervalDays.TryGetInt32(out int tempMaintenanceIntervalDays)) {
+                if (jsonElement.TryGetProperty("maintenanceIntervalDays", out JsonElement mIntervalDays))
+                {
+                    if (mIntervalDays.TryGetInt32(out int tempMaintenanceIntervalDays))
+                    {
                         maintenanceIntervalDays = tempMaintenanceIntervalDays;
-                    } else {
+                    }
+                    else
+                    {
                         return new ValidationDTO("Invalid Maintenance Interval Days");
                     }
                 }

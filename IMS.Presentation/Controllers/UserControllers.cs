@@ -33,7 +33,7 @@ namespace IMS.Presentation.Controllers
                     labId = e.LabId,
                     labName = e.LabName,
                     labCode = e.LabCode,
-                    ImageUrl = e.ImageURL
+                    imageUrl = e.ImageURL
                 }).ToListAsync();
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
