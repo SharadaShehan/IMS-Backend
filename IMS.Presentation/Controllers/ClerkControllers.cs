@@ -10,17 +10,19 @@ using IMS.ApplicationCore.Model;
 
 namespace IMS.Presentation.Controllers
 {
-	[Route("api/clerk")]
-	[ApiController]
-	public class ClerkController : ControllerBase
+    [Route("api/clerk")]
+    [ApiController]
+    public class ClerkController : ControllerBase
     {
-		private readonly DataBaseContext _dbContext;
+        private readonly DataBaseContext _dbContext;
         private readonly ITokenParser _tokenParser;
+        private readonly IQRTokenProvider _qRTokenProvider;
 
-		public ClerkController(DataBaseContext dbContext, ITokenParser tokenParser)
+        public ClerkController(DataBaseContext dbContext, ITokenParser tokenParser, IQRTokenProvider qRTokenProvider)
         {
             _dbContext = dbContext;
             _tokenParser = tokenParser;
+            _qRTokenProvider = qRTokenProvider;
         }
 
 
@@ -28,7 +30,8 @@ namespace IMS.Presentation.Controllers
         [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<EquipmentDetailedDTO>> CreateEquipment([FromBody] JsonElement jsonBody)
         {
-            try {
+            try
+            {
                 // Parse the JSON
                 CreateEquipmentDTO equipmentDTO = new CreateEquipmentDTO(jsonBody);
                 ValidationDTO validationDTO = equipmentDTO.Validate();
@@ -67,17 +70,20 @@ namespace IMS.Presentation.Controllers
                     reservedCount = 0,
                     availableCount = 0
                 });
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
 
-        
+
         [HttpPatch("equipments/{id}")]
         [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<EquipmentDetailedDTO>> UpdateEquipment([FromBody] JsonElement jsonBody, int id)
         {
-            try {
+            try
+            {
                 // Parse the JSON
                 UpdateEquipmentDTO equipmentDTO = new UpdateEquipmentDTO(jsonBody);
                 ValidationDTO validationDTO = equipmentDTO.Validate();
@@ -110,50 +116,58 @@ namespace IMS.Presentation.Controllers
                     reservedCount = reservedCount,
                     availableCount = availableCount
                 });
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
-        
+
 
         [HttpDelete("equipments/{id}")]
         [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<EquipmentDTO>> DeleteEquipment(int id)
         {
-            try {
+            try
+            {
                 // Delete the Equipment
                 Equipment? equipment = await _dbContext.equipments.Where(e => e.EquipmentId == id && e.IsActive).FirstOrDefaultAsync();
                 if (equipment == null) return BadRequest("Equipment Not Found");
                 equipment.IsActive = false;
                 // Delete all items of the equipment
                 List<Item> items = await _dbContext.items.Where(i => i.EquipmentId == id).ToListAsync();
-                foreach (Item item in items) {
+                foreach (Item item in items)
+                {
                     item.IsActive = false;
                 }
                 // Delete all maintenance of items of the equipment
                 List<Maintenance> maintenances = await _dbContext.maintenances.Where(m => m.Item.EquipmentId == id).ToListAsync();
-                foreach (Maintenance maintenance in maintenances) {
+                foreach (Maintenance maintenance in maintenances)
+                {
                     maintenance.IsActive = false;
                 }
                 // Delete all reservations of items of the equipment
                 List<ItemReservation> reservations = await _dbContext.itemReservations.Where(ir => ir.Item != null && ir.Item.EquipmentId == id).ToListAsync();
-                foreach (ItemReservation reservation in reservations) {
+                foreach (ItemReservation reservation in reservations)
+                {
                     reservation.IsActive = false;
                 }
                 await _dbContext.SaveChangesAsync();
                 return NoContent();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
 
-        
+
         [HttpPost("items")]
         [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<ItemDetailedDTO>> CreateItem([FromBody] JsonElement jsonBody)
         {
-            try {
+            try
+            {
                 // Parse the JSON 
                 CreateItemDTO itemDTO = new CreateItemDTO(jsonBody);
                 ValidationDTO validationDTO = itemDTO.Validate();
@@ -187,44 +201,52 @@ namespace IMS.Presentation.Controllers
                     serialNumber = newItem.SerialNumber,
                     status = newItem.Status
                 });
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
-        
+
 
         [HttpDelete("items/{id}")]
         [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<ItemDTO>> DeleteItem(int id)
         {
-            try {
+            try
+            {
                 // Delete the Item
                 Item? item = await _dbContext.items.Where(i => i.ItemId == id && i.IsActive).FirstOrDefaultAsync();
                 if (item == null) return BadRequest("Item Not Found");
                 item.IsActive = false;
                 // Delete all maintenance of the item
                 List<Maintenance> maintenances = await _dbContext.maintenances.Where(m => m.ItemId == id).ToListAsync();
-                foreach (Maintenance maintenance in maintenances) {
+                foreach (Maintenance maintenance in maintenances)
+                {
                     maintenance.IsActive = false;
                 }
                 // Delete all reservations of the item
                 List<ItemReservation> reservations = await _dbContext.itemReservations.Where(ir => ir.ItemId == id).ToListAsync();
-                foreach (ItemReservation reservation in reservations) {
+                foreach (ItemReservation reservation in reservations)
+                {
                     reservation.IsActive = false;
                 }
                 await _dbContext.SaveChangesAsync();
                 return NoContent();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
 
 
         [HttpPost("maintenance")]
-		[AuthorizationFilter(["Clerk"])]
+        [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<MaintenanceDetailedDTO>> CreateMaintenance([FromBody] JsonElement jsonBody)
         {
-            try {
+            try
+            {
                 // Get the User from the token
                 UserDTO? clerkDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
                 if (clerkDto == null) throw new Exception("Invalid Token/Authorization Header");
@@ -282,10 +304,12 @@ namespace IMS.Presentation.Controllers
                     technicianName = newMaintenance.Technician.FirstName + " " + newMaintenance.Technician.LastName,
                     status = newMaintenance.Status
                 });
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
-		}
+        }
 
 
         [HttpPatch("maintenance/{id}")]
@@ -380,6 +404,7 @@ namespace IMS.Presentation.Controllers
             }
         }
 
+
         [HttpGet("maintenance/pending")]
         [AuthorizationFilter(["Clerk"])]
         public async Task<ActionResult<List<PendingMaintenanceDTO>>> ViewPendingMaintenances()
@@ -449,6 +474,7 @@ namespace IMS.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpPatch("reservations/{id}")]
         [AuthorizationFilter(["Clerk"])]
@@ -552,6 +578,69 @@ namespace IMS.Presentation.Controllers
             }
         }
 
+
+        [HttpPatch("reservations/{id}/verify")]
+        [AuthorizationFilter(["Clerk"])]
+        public async Task<ActionResult<QRTokenValidatedDTO>> VerifyItemBorrowing([FromQuery] string token, int id)
+        {
+            try
+            {
+                // Get the User from the token
+                UserDTO? clerkDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+                if (clerkDto == null) throw new Exception("Invalid Token/Authorization Header");
+                User clerk = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == clerkDto.UserId).FirstAsync();
+                // Get the reservation if Available
+                ItemReservation? reservation = await _dbContext.itemReservations.Where(rsv => rsv.ItemReservationId == id && rsv.IsActive && rsv.Status == "Reserved").FirstAsync();
+                if (reservation == null) return BadRequest("Reservation not Available for Borrowing");
+                // Verify the token
+                DecodedQRToken decodedQRToken = await _qRTokenProvider.validateQRToken(token);
+                if (!decodedQRToken.success) return BadRequest(decodedQRToken.message);
+                if (decodedQRToken.eventId == null) return BadRequest("Invalid Token");
+                if (decodedQRToken.isReservation != true) return BadRequest("Invalid Token");
+                // Verify the reservation
+                if (decodedQRToken.userId != reservation.ReservedUserId) return BadRequest("Invalid Token");
+                if (decodedQRToken.eventId != reservation.ItemReservationId) return BadRequest("Invalid Token");
+                // Borrow the item
+                reservation.LentClerk = clerk;
+                reservation.LentClerkId = clerkDto.UserId;
+                reservation.BorrowedAt = DateTime.Now;
+                reservation.Status = "Borrowed";
+                Item borrowedItem = reservation.Item;
+                borrowedItem.Status = "Borrowed";
+                await _dbContext.SaveChangesAsync();
+                return Ok(new QRTokenValidatedDTO());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpGet("reservations/{id}/token")]
+        [AuthorizationFilter(["Clerk"])]
+        public async Task<ActionResult<QRTokenGeneratedDTO>> GetTokenForReturningItem(int id)
+        {
+            try
+            {
+                // Get the User from the token
+                UserDTO? clerkDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+                if (clerkDto == null) throw new Exception("Invalid Token/Authorization Header");
+                User clerk = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == clerkDto.UserId).FirstAsync();
+                // Get the reservation if Available
+                ItemReservation? reservation = await _dbContext.itemReservations.Where(rsv => rsv.ItemReservationId == id && rsv.IsActive && rsv.Status == "Borrowed").FirstAsync();
+                if (reservation == null) return BadRequest("Reservation not Available for Returning");
+                // Get the token
+                string? token = await _qRTokenProvider.getQRToken(reservation.ItemReservationId, clerkDto.UserId, true);
+                if (token == null) return BadRequest("Token Generation Failed");
+                // Return the token
+                return Ok(new QRTokenGeneratedDTO(token));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
 
