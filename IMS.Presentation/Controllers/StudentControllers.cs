@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using IMS.ApplicationCore.Model;
 using System.Text.Json.Nodes;
 using System.Text.Json;
+using System.Collections.ObjectModel;
 
 namespace IMS.Presentation.Controllers
 {
@@ -60,5 +61,24 @@ namespace IMS.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
 		}
+        [HttpGet("StudentReservation")]
+        [AuthorizationFilter(["Student"])]
+        public async Task<ActionResult<ICollection<ItemReservation>>> ShowReservationList()
+        {
+            try
+            {
+                // Get the User from the token
+                UserDTO? studentDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+                if (studentDto == null) throw new Exception("Invalid Token/Authorization Header");
+                User student = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == studentDto.UserId).FirstAsync();
+
+                var reservationlist = student.ItemsReservedBy;
+				return StatusCode(201, reservationlist); ;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 	}
 }
