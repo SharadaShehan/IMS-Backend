@@ -5,6 +5,7 @@ using IMS.Presentation.Filters;
 using IMS.ApplicationCore.DTO;
 using IMS.Presentation.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace IMS.Presentation.Controllers
 {
@@ -41,5 +42,10 @@ namespace IMS.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
 		}
+		[HttpPost("Users")]
+		public async Task<IActionResult> AddUsers([FromBody] JsonElement jasonElemet)
+        {
+
+        }
 	}
 }

@@ -16,14 +16,15 @@ namespace IMS.Infrastructure.Services
 		// Use this constructor for Presentation Layer
 		
 		public DataBaseContext(DbContextOptions<DataBaseContext> option) : base(option) { }
-		
+
 		// Use this constructor to apply migrations to the database, changing the connection string
-		/*
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-			optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=LabTracker;Trusted_Connection=True;TrustServerCertificate=True");
+
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		{
+			optionsBuilder.UseSqlServer("Server=DESKTOP-1S4H8OV\\SQLEXPRESS;Database=LabTracker1;Trusted_Connection=True;TrustServerCertificate=True");
 		}
-		*/
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<User>(entity =>
 			{
