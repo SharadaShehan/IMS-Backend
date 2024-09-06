@@ -4,6 +4,7 @@ using IMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IMS.Infrastructure.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    partial class DataBaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240902183348_Maintenance table updated")]
+    partial class Maintenancetableupdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,11 +42,10 @@ namespace IMS.Infrastructure.Migrations
                     b.Property<int>("LabId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MaintenanceIntervalDays")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("MaintenanceInterval")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Model")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -57,7 +59,7 @@ namespace IMS.Infrastructure.Migrations
 
                     b.HasIndex("LabId");
 
-                    b.ToTable("equipments");
+                    b.ToTable("Equipments");
                 });
 
             modelBuilder.Entity("IMS.ApplicationCore.Model.Item", b =>
@@ -74,19 +76,17 @@ namespace IMS.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("SerialNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("SerialNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ItemId");
 
                     b.HasIndex("EquipmentId");
 
-                    b.ToTable("items");
+                    b.ToTable("Items");
                 });
 
             modelBuilder.Entity("IMS.ApplicationCore.Model.ItemReservation", b =>
@@ -97,70 +97,70 @@ namespace IMS.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ItemReservationId"));
 
-                    b.Property<DateTime?>("BorrowedAt")
+                    b.Property<int>("AsignedItemId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("BorrowedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("CancelledAt")
+                    b.Property<int>("BorrowedFrom")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CancelledAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime>("FromDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("EquipmentId")
-                        .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ItemId")
+                    b.Property<int>("RequstedEquipmentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("LentClerkId")
+                    b.Property<int>("ReservedBy")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReservedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("RespondedAt")
+                    b.Property<DateTime>("ResponedAtAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("RespondedClerkId")
-                        .HasColumnType("int");
 
                     b.Property<string>("ResponseNote")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ReturnAcceptedClerkId")
+                    b.Property<int>("ResponseedBy")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("ReturnedAt")
+                    b.Property<DateTime>("ReturnedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("ReturnedTo")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("ToDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("ItemReservationId");
 
-                    b.HasIndex("EquipmentId");
+                    b.HasIndex("AsignedItemId");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("BorrowedFrom");
 
-                    b.HasIndex("LentClerkId");
+                    b.HasIndex("RequstedEquipmentId");
 
-                    b.HasIndex("ReservedUserId");
+                    b.HasIndex("ReservedBy");
 
-                    b.HasIndex("RespondedClerkId");
+                    b.HasIndex("ResponseedBy");
 
-                    b.HasIndex("ReturnAcceptedClerkId");
+                    b.HasIndex("ReturnedTo");
 
-                    b.ToTable("itemReservations");
+                    b.ToTable("ItemReservations");
                 });
 
             modelBuilder.Entity("IMS.ApplicationCore.Model.Lab", b =>
@@ -177,17 +177,15 @@ namespace IMS.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("LabCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LabCode")
+                        .HasColumnType("int");
 
                     b.Property<string>("LabName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("LabId");
 
-                    b.ToTable("labs");
+                    b.ToTable("Labs");
                 });
 
             modelBuilder.Entity("IMS.ApplicationCore.Model.Maintenance", b =>
@@ -255,7 +253,7 @@ namespace IMS.Infrastructure.Migrations
 
                     b.HasIndex("TechnicianId");
 
-                    b.ToTable("maintenances");
+                    b.ToTable("Maintenances");
                 });
 
             modelBuilder.Entity("IMS.ApplicationCore.Model.User", b =>
@@ -267,7 +265,6 @@ namespace IMS.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("ContactNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -275,14 +272,12 @@ namespace IMS.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
@@ -297,9 +292,9 @@ namespace IMS.Infrastructure.Migrations
             modelBuilder.Entity("IMS.ApplicationCore.Model.Equipment", b =>
                 {
                     b.HasOne("IMS.ApplicationCore.Model.Lab", "Lab")
-                        .WithMany("Equipments")
+                        .WithMany()
                         .HasForeignKey("LabId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Lab");
@@ -308,9 +303,9 @@ namespace IMS.Infrastructure.Migrations
             modelBuilder.Entity("IMS.ApplicationCore.Model.Item", b =>
                 {
                     b.HasOne("IMS.ApplicationCore.Model.Equipment", "Equipment")
-                        .WithMany("Items")
+                        .WithMany()
                         .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Equipment");
@@ -318,49 +313,53 @@ namespace IMS.Infrastructure.Migrations
 
             modelBuilder.Entity("IMS.ApplicationCore.Model.ItemReservation", b =>
                 {
-                    b.HasOne("IMS.ApplicationCore.Model.Equipment", "Equipment")
-                        .WithMany("ItemReservations")
-                        .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("IMS.ApplicationCore.Model.Item", "Item")
-                        .WithMany("Reservations")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .WithMany()
+                        .HasForeignKey("AsignedItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("IMS.ApplicationCore.Model.User", "LentClerk")
-                        .WithMany("ItemsBorrowedFrom")
-                        .HasForeignKey("LentClerkId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("IMS.ApplicationCore.Model.User", "ReservedUser")
-                        .WithMany("ItemsReservedBy")
-                        .HasForeignKey("ReservedUserId")
+                    b.HasOne("IMS.ApplicationCore.Model.User", "BorrowedFromUser")
+                        .WithMany("BorrowedItems")
+                        .HasForeignKey("BorrowedFrom")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("IMS.ApplicationCore.Model.User", "RespondedClerk")
-                        .WithMany("ReservationsRespondedTo")
-                        .HasForeignKey("RespondedClerkId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                    b.HasOne("IMS.ApplicationCore.Model.Equipment", "Equipment")
+                        .WithMany()
+                        .HasForeignKey("RequstedEquipmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("IMS.ApplicationCore.Model.User", "ReturnAcceptedClerk")
-                        .WithMany("ItemsReturnedTo")
-                        .HasForeignKey("ReturnAcceptedClerkId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                    b.HasOne("IMS.ApplicationCore.Model.User", "ReservedByUser")
+                        .WithMany("ReservedItems")
+                        .HasForeignKey("ReservedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("IMS.ApplicationCore.Model.User", "ResponseedByUser")
+                        .WithMany("ResponseItems")
+                        .HasForeignKey("ResponseedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("IMS.ApplicationCore.Model.User", "ReturnedToUser")
+                        .WithMany("ReturnedItems")
+                        .HasForeignKey("ReturnedTo")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("BorrowedFromUser");
 
                     b.Navigation("Equipment");
 
                     b.Navigation("Item");
 
-                    b.Navigation("LentClerk");
+                    b.Navigation("ReservedByUser");
 
-                    b.Navigation("ReservedUser");
+                    b.Navigation("ResponseedByUser");
 
-                    b.Navigation("RespondedClerk");
-
-                    b.Navigation("ReturnAcceptedClerk");
+                    b.Navigation("ReturnedToUser");
                 });
 
             modelBuilder.Entity("IMS.ApplicationCore.Model.Maintenance", b =>
@@ -372,9 +371,9 @@ namespace IMS.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("IMS.ApplicationCore.Model.Item", "Item")
-                        .WithMany("Maintenances")
+                        .WithMany()
                         .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IMS.ApplicationCore.Model.User", "ReviewedClerk")
@@ -397,32 +396,9 @@ namespace IMS.Infrastructure.Migrations
                     b.Navigation("Technician");
                 });
 
-            modelBuilder.Entity("IMS.ApplicationCore.Model.Equipment", b =>
-                {
-                    b.Navigation("ItemReservations");
-
-                    b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("IMS.ApplicationCore.Model.Item", b =>
-                {
-                    b.Navigation("Maintenances");
-
-                    b.Navigation("Reservations");
-                });
-
-            modelBuilder.Entity("IMS.ApplicationCore.Model.Lab", b =>
-                {
-                    b.Navigation("Equipments");
-                });
-
             modelBuilder.Entity("IMS.ApplicationCore.Model.User", b =>
                 {
-                    b.Navigation("ItemsBorrowedFrom");
-
-                    b.Navigation("ItemsReservedBy");
-
-                    b.Navigation("ItemsReturnedTo");
+                    b.Navigation("BorrowedItems");
 
                     b.Navigation("MaintenancesAssignedTo");
 
@@ -430,7 +406,11 @@ namespace IMS.Infrastructure.Migrations
 
                     b.Navigation("MaintenancesReviewedBy");
 
-                    b.Navigation("ReservationsRespondedTo");
+                    b.Navigation("ReservedItems");
+
+                    b.Navigation("ResponseItems");
+
+                    b.Navigation("ReturnedItems");
                 });
 #pragma warning restore 612, 618
         }

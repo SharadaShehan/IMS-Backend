@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using IMS.ApplicationCore.Model;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 
 namespace IMS.Infrastructure.ScheduledJobs
 {
@@ -46,10 +47,13 @@ namespace IMS.Infrastructure.ScheduledJobs
             using (var scope = _serviceProvider.CreateScope()) // this will use `IServiceScopeFactory` internally
             {
                 var _dbContext = scope.ServiceProvider.GetService<DataBaseContext>();
+                
 
                 foreach (var authUser in authUserDTOs)
                 {
+                    
                     User dbUser = await _dbContext.users.AsNoTracking().FirstOrDefaultAsync(dbUser => dbUser.Email == authUser.email);
+                    
                     // If user is not found in the database, create a new user
                     if (dbUser == null)
                     {
@@ -88,7 +92,6 @@ namespace IMS.Infrastructure.ScheduledJobs
 
                 // Save changes to the database
                 await _dbContext.SaveChangesAsync();
-
             }
 
         }

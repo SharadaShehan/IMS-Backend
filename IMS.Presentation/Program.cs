@@ -15,6 +15,7 @@ builder.Services.AddSwaggerGen();
 // Add services from Infrastructure Layer
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<ITokenParser, TokenParser>();
+builder.Services.AddScoped<IQRTokenProvider, QRTokenProvider>();
 
 //Authentication
 builder.Services.AddAuthentication(options =>

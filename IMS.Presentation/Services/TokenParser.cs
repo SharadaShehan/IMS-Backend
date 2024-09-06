@@ -1,14 +1,14 @@
 ﻿using IMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
-using IMS.ApplicationCore.Model;
 using System.Diagnostics;
+using IMS.ApplicationCore.DTO;
 
 namespace IMS.Presentation.Services
 {
     public interface ITokenParser
     {
-        public Task<User?> getUser(string? authorizationHeader);
+        public Task<UserDTO?> getUser(string? authorizationHeader);
     }
 
     public class TokenParser : ITokenParser 
@@ -19,7 +19,7 @@ namespace IMS.Presentation.Services
             _dbContext = dbContext;
         }
 
-        public async Task<User?> getUser(string? authorizationHeader)
+        public async Task<UserDTO?> getUser(string? authorizationHeader)
         {
             try {
                 if (authorizationHeader != null && authorizationHeader.StartsWith("Bearer ")) {
@@ -32,7 +32,15 @@ namespace IMS.Presentation.Services
                     var emailClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "email");
                     if (emailClaim == null) throw new Exception("Email not found in JWT token.");
                     // Query the database for the user with this email
-                    User? user = await _dbContext.users.FirstOrDefaultAsync(u => u.Email == emailClaim.Value);
+                    UserDTO? user = await _dbContext.users.Where(dbUser => dbUser.IsActive).Select(dbUser => new UserDTO
+                    {
+                        UserId = dbUser.UserId,
+                        Email = dbUser.Email,
+                        FirstName = dbUser.FirstName,
+                        LastName = dbUser.LastName,
+                        ContactNumber = dbUser.ContactNumber,
+                        Role = dbUser.Role
+                    }).FirstOrDefaultAsync(u => u.Email == emailClaim.Value);
                     if (user == null) throw new Exception("User not found");
                     return user;
                 }
