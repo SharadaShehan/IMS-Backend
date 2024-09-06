@@ -6,6 +6,7 @@ using IMS.Presentation.Filters;
 using IMS.Presentation.Services;
 using Microsoft.EntityFrameworkCore;
 using IMS.ApplicationCore.Model;
+using System.Security.Cryptography;
 
 namespace IMS.Presentation.Controllers
 {
@@ -219,24 +220,27 @@ namespace IMS.Presentation.Controllers
         {
             try {
                 if (!(itemId > 0)) { return BadRequest("Invalid Item Id"); }
-                return await _dbContext.itemReservations.Where(r => r.ItemId == itemId && r.IsActive).Select(r => new ItemReservationDTO
+                return await _dbContext.itemReservations.Where(r => r.ItemId == itemId && r.IsActive).Select(rsv => new ItemReservationDTO
                 {
-                    itemReservationId = r.ItemReservationId,
-                    equipmentId = r.EquipmentId,
-                    itemId = r.ItemId,
-                    startDate = r.StartDate,
-                    endDate = r.EndDate,
-                    reservedUserId = r.ReservedUserId,
-                    createdAt = r.CreatedAt,
-                    respondedClerkId = r.RespondedClerkId,
-                    responseNote = r.ResponseNote,
-                    respondedAt = r.RespondedAt,
-                    lentClerkId = r.LentClerkId,
-                    borrowedAt = r.BorrowedAt,
-                    returnAcceptedClerkId = r.ReturnAcceptedClerkId,
-                    returnedAt = r.ReturnedAt,
-                    cancelledAt = r.CancelledAt,
-                    status = r.Status
+                    reservationId = rsv.ItemReservationId,
+                    equipmentId = rsv.EquipmentId,
+                    itemName = rsv.Equipment.Name,
+                    itemModel = rsv.Equipment.Model,
+                    imageUrl = rsv.Equipment.ImageURL,
+                    itemId = rsv.ItemId,
+                    itemSerialNumber = rsv.Item != null ? rsv.Item.SerialNumber : null,
+                    labId = rsv.Equipment.LabId,
+                    labName = rsv.Equipment.Lab.LabName,
+                    startDate = rsv.StartDate,
+                    endDate = rsv.EndDate,
+                    reservedUserId = rsv.ReservedUserId,
+                    reservedUserName = rsv.ReservedUser.FirstName + " " + rsv.ReservedUser.LastName,
+                    createdAt = rsv.CreatedAt,
+                    respondedAt = rsv.RespondedAt,
+                    borrowedAt = rsv.BorrowedAt,
+                    returnedAt = rsv.ReturnedAt,
+                    cancelledAt = rsv.CancelledAt,
+                    status = rsv.Status
                 }).OrderByDescending(i => i.startDate).ToListAsync();
             } catch (Exception ex) {
                 return BadRequest(ex.Message);

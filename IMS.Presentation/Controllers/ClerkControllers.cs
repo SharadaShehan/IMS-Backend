@@ -258,7 +258,7 @@ namespace IMS.Presentation.Controllers
                 // Check if the item will be available during the maintenance period
                 ItemReservation? exReservation = await _dbContext.itemReservations.Where(exrsv => exrsv.EndDate >= maintenanceDTO.startDate && exrsv.StartDate <= maintenanceDTO.endDate && exrsv.ItemId == maintenanceDTO.itemId && exrsv.IsActive && (exrsv.Status == "Reserved" || exrsv.Status == "Borrowed")).FirstAsync();
                 if (exReservation != null) { return BadRequest("Item not Available for Maintenance"); }
-                Maintenance? exMaintenance = await _dbContext.maintenances.Where(exmnt => exmnt.EndDate >= maintenanceDTO.startDate && exmnt.StartDate <= maintenanceDTO.endDate && exmnt.ItemId == maintenanceDTO.itemId && exmnt.IsActive && (exmnt.Status != "Completed" || exmnt.Status == "Canceled")).FirstAsync();
+                Maintenance? exMaintenance = await _dbContext.maintenances.Where(exmnt => exmnt.EndDate >= maintenanceDTO.startDate && exmnt.StartDate <= maintenanceDTO.endDate && exmnt.ItemId == maintenanceDTO.itemId && exmnt.IsActive && (exmnt.Status != "Completed" || exmnt.Status != "Canceled")).FirstAsync();
                 if (exMaintenance != null) { return BadRequest("Item not Available for Maintenance"); }
                 // Get the item if Available
                 Item? item = await _dbContext.items.Where(it => it.ItemId == maintenanceDTO.itemId && it.IsActive && it.Status != "Unavailable").FirstAsync();
@@ -440,12 +440,12 @@ namespace IMS.Presentation.Controllers
 
         [HttpGet("reservations")]
         [AuthorizationFilter(["Clerk"])]
-        public async Task<ActionResult<List<ItemReservationDTO1>>> ViewReservations([FromQuery] bool requested, [FromQuery] bool reserved, [FromQuery] bool borrowed)
+        public async Task<ActionResult<List<ItemReservationDTO>>> ViewReservations([FromQuery] bool requested, [FromQuery] bool reserved, [FromQuery] bool borrowed)
         {
             try
             {
                 // Get item reservations from DB
-                List<ItemReservationDTO1> reservationDTOs = await _dbContext.itemReservations.Where(rsv => rsv.IsActive && (requested ? rsv.Status == "Pending" : reserved ? rsv.Status == "Reserved" : borrowed ? rsv.Status == "Borrowed" : (rsv.Status == "Pending" || rsv.Status == "Reserved" || rsv.Status == "Borrowed"))).Select(rsv => new ItemReservationDTO1
+                List<ItemReservationDTO> reservationDTOs = await _dbContext.itemReservations.Where(rsv => rsv.IsActive && (requested ? rsv.Status == "Pending" : reserved ? rsv.Status == "Reserved" : borrowed ? rsv.Status == "Borrowed" : (rsv.Status == "Pending" || rsv.Status == "Reserved" || rsv.Status == "Borrowed"))).Select(rsv => new ItemReservationDTO
                 {
                     reservationId = rsv.ItemReservationId,
                     equipmentId = rsv.EquipmentId,
@@ -537,7 +537,7 @@ namespace IMS.Presentation.Controllers
                 // Check if the item is available during the reservation period
                 ItemReservation? exReservation = await _dbContext.itemReservations.Where(exrsv => exrsv.EndDate >= reservation.StartDate && exrsv.StartDate <= reservation.EndDate && exrsv.ItemId == reservation.ItemId && exrsv.IsActive && (exrsv.Status == "Reserved" || exrsv.Status == "Borrowed")).FirstAsync();
                 if (exReservation != null) return BadRequest("Item not Available for Reservation");
-                Maintenance? exMaintenance = await _dbContext.maintenances.Where(exmnt => exmnt.EndDate >= reservation.StartDate && exmnt.StartDate <= reservation.EndDate && exmnt.ItemId == reservation.ItemId && exmnt.IsActive && (exmnt.Status != "Completed" || exmnt.Status == "Canceled")).FirstAsync();
+                Maintenance? exMaintenance = await _dbContext.maintenances.Where(exmnt => exmnt.EndDate >= reservation.StartDate && exmnt.StartDate <= reservation.EndDate && exmnt.ItemId == reservation.ItemId && exmnt.IsActive && (exmnt.Status != "Completed" || exmnt.Status != "Canceled")).FirstAsync();
                 if (exMaintenance != null) return BadRequest("Item not Available for Reservation");
                 if (reservation.Item.Status == "Unavailable") return BadRequest("Item not Available for Reservation");
                 // Accept the reservation
@@ -605,8 +605,8 @@ namespace IMS.Presentation.Controllers
                 reservation.LentClerkId = clerkDto.UserId;
                 reservation.BorrowedAt = DateTime.Now;
                 reservation.Status = "Borrowed";
-                Item borrowedItem = reservation.Item;
-                borrowedItem.Status = "Borrowed";
+                Item reservedItem = reservation.Item;
+                reservedItem.Status = "Borrowed";
                 await _dbContext.SaveChangesAsync();
                 return Ok(new QRTokenValidatedDTO());
             }

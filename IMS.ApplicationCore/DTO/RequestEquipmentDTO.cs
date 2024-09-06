@@ -8,8 +8,8 @@ namespace IMS.ApplicationCore.DTO
     {
         public JsonElement jsonElement { get; set; }
         public int equipmentId { get; set; }
-        public string startDate { get; set; }
-        public string endDate { get; set; }
+        public DateTime startDate { get; set; }
+        public DateTime endDate { get; set; }
         private string datePattern = @"^\d{4}-\d{2}-\d{2}$";
         public RequestEquipmentDTO(JsonElement jsonElement)
         {
@@ -22,8 +22,8 @@ namespace IMS.ApplicationCore.DTO
                 int tempEquipmentId;
                 if (jsonElement.GetProperty("equipmentId").TryGetInt32(out tempEquipmentId)) { } else { return new ValidationDTO("Invalid Equipment Id"); }
                 equipmentId = tempEquipmentId;
-                startDate = jsonElement.GetProperty("startDate").ToString(); if (!Regex.IsMatch(startDate, datePattern)) { return new ValidationDTO("Invalid Start Date"); }
-                endDate = jsonElement.GetProperty("endDate").ToString(); if (!Regex.IsMatch(endDate, datePattern)) { return new ValidationDTO("Invalid End Date"); }
+                string tempStartDate = jsonElement.GetProperty("startDate").ToString(); if (!Regex.IsMatch(tempStartDate, datePattern)) { return new ValidationDTO("Invalid Start Date"); } else { startDate = DateTime.Parse(tempStartDate); }
+                string tempEndDate = jsonElement.GetProperty("endDate").ToString(); if (!Regex.IsMatch(tempEndDate, datePattern)) { return new ValidationDTO("Invalid End Date"); } else { endDate = DateTime.Parse(tempEndDate); }
                 return new ValidationDTO();
             }
             catch (Exception ex)
