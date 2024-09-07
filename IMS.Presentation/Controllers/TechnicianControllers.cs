@@ -33,7 +33,7 @@ namespace IMS.Presentation.Controllers
                 UserDTO? technicianDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
                 if (technicianDto == null) throw new Exception("Invalid Token/Authorization Header");
                 // Get the maintenances from DB
-                List<MaintenanceDTO> maintenanceDTOs = await _dbContext.maintenances.Where(mnt => mnt.TechnicianId == technicianDto.UserId && (completed ? mnt.Status == "Completed" : (mnt.Status == "Ongoing" || mnt.Status == "UnderReview" || mnt.Status == "Scheduled")) && mnt.IsActive).Select(mnt => new MaintenanceDTO
+                List<MaintenanceDTO> maintenanceDTOs = await _dbContext.maintenances.Where(mnt => mnt.TechnicianId == technicianDto.userId && (completed ? mnt.Status == "Completed" : (mnt.Status == "Ongoing" || mnt.Status == "UnderReview" || mnt.Status == "Scheduled")) && mnt.IsActive).Select(mnt => new MaintenanceDTO
                 {
                     maintenanceId = mnt.MaintenanceId,
                     itemId = mnt.ItemId,
@@ -70,7 +70,7 @@ namespace IMS.Presentation.Controllers
                 // Get the maintenance from DB
                 Maintenance maintenance = await _dbContext.maintenances.Where(mnt => mnt.MaintenanceId == id && mnt.Status == "Scheduled" && mnt.IsActive).FirstAsync();
                 if (maintenance == null) return BadRequest("Maintenance Not Available");
-                if (maintenance.TechnicianId != technicianDto.UserId) return StatusCode(403, "Only Assigned Technician can Borrow Item");
+                if (maintenance.TechnicianId != technicianDto.userId) return StatusCode(403, "Only Assigned Technician can Borrow Item");
                 // Get the item from DB
                 Item item = await _dbContext.items.Where(itm => itm.ItemId == maintenance.ItemId && itm.Status == "Available" && itm.IsActive).FirstAsync();
                 if (item == null) return BadRequest("Item Not Available for Borrowing");
@@ -117,7 +117,7 @@ namespace IMS.Presentation.Controllers
                 // Get the maintenance from DB
                 Maintenance maintenance = await _dbContext.maintenances.Where(mnt => mnt.MaintenanceId == id && mnt.Status == "Ongoing" && mnt.IsActive).FirstAsync();
                 if (maintenance == null) return BadRequest("Maintenance Not Available for Updating");
-                if (maintenance.TechnicianId != technicianDto.UserId) return StatusCode(403, "Only Assigned Technician can Update Maintenance");
+                if (maintenance.TechnicianId != technicianDto.userId) return StatusCode(403, "Only Assigned Technician can Update Maintenance");
                 maintenance.SubmitNote = maintenanceDTO.submitNote;
                 maintenance.Cost = maintenanceDTO.cost;
                 maintenance.Status = "UnderReview";

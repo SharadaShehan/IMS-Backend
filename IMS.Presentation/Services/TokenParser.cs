@@ -34,13 +34,13 @@ namespace IMS.Presentation.Services
                     // Query the database for the user with this email
                     UserDTO? user = await _dbContext.users.Where(dbUser => dbUser.IsActive).Select(dbUser => new UserDTO
                     {
-                        UserId = dbUser.UserId,
-                        Email = dbUser.Email,
-                        FirstName = dbUser.FirstName,
-                        LastName = dbUser.LastName,
-                        ContactNumber = dbUser.ContactNumber,
-                        Role = dbUser.Role
-                    }).FirstOrDefaultAsync(u => u.Email == emailClaim.Value);
+                        userId = dbUser.UserId,
+                        email = dbUser.Email,
+                        firstName = dbUser.FirstName,
+                        lastName = dbUser.LastName,
+                        contactNumber = dbUser.ContactNumber,
+                        role = dbUser.Role
+                    }).FirstOrDefaultAsync(u => u.email == emailClaim.Value);
                     if (user == null) throw new Exception("User not found");
                     return user;
                 }

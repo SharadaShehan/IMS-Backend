@@ -1,0 +1,13 @@
+﻿
+namespace IMS.ApplicationCore.DTO
+{
+    public class UpdateEquipmentDTO
+    {
+        public string? name { get; set; }
+        public string? model { get; set; }
+        public string? imageURL { get; set; }
+        public string? specification { get; set; }
+        public int? maintenanceIntervalDays { get; set; }
+        
+    }
+}

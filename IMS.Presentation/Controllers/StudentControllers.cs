@@ -33,7 +33,7 @@ namespace IMS.Presentation.Controllers
                 // Get the User from the token
                 UserDTO? studentDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
                 if (studentDto == null) throw new Exception("Invalid Token/Authorization Header");
-                User student = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == studentDto.UserId).FirstAsync();
+                User student = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == studentDto.userId).FirstAsync();
                 // Parse the JSON
                 RequestEquipmentDTO reservationDTO = new RequestEquipmentDTO(jsonBody);
                 ValidationDTO validationDTO = reservationDTO.Validate();
@@ -48,7 +48,7 @@ namespace IMS.Presentation.Controllers
                     Equipment = equipment,
                     StartDate = reservationDTO.startDate,
                     EndDate = reservationDTO.endDate,
-                    ReservedUserId = studentDto.UserId,
+                    ReservedUserId = studentDto.userId,
                     ReservedUser = student,
                     CreatedAt = DateTime.Now,
                     Status = "Pending",
@@ -129,9 +129,9 @@ namespace IMS.Presentation.Controllers
                 // Get the User from the token
                 UserDTO? studentDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
                 if (studentDto == null) throw new Exception("Invalid Token/Authorization Header");
-                User student = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == studentDto.UserId).FirstAsync();
+                User student = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == studentDto.userId).FirstAsync();
                 // Get the reservation
-                ItemReservation? reservation = await _dbContext.itemReservations.Where(rsv => rsv.IsActive && rsv.ItemReservationId == id && rsv.ReservedUserId == studentDto.UserId && rsv.Status != "Borrowed").FirstAsync();
+                ItemReservation? reservation = await _dbContext.itemReservations.Where(rsv => rsv.IsActive && rsv.ItemReservationId == id && rsv.ReservedUserId == studentDto.userId && rsv.Status != "Borrowed").FirstAsync();
                 if (reservation == null) return BadRequest("Reservation not Available for Cancellation");
                 // Cancel the reservation
                 reservation.IsActive = false;
@@ -155,12 +155,12 @@ namespace IMS.Presentation.Controllers
                 // Get the User from the token
                 UserDTO? studentDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
                 if (studentDto == null) throw new Exception("Invalid Token/Authorization Header");
-                User student = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == studentDto.UserId).FirstAsync();
+                User student = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == studentDto.userId).FirstAsync();
                 // Get the reservation if Available
                 ItemReservation? reservation = await _dbContext.itemReservations.Where(rsv => rsv.ItemReservationId == id && rsv.IsActive && rsv.Status == "Reserved").FirstAsync();
                 if (reservation == null) return BadRequest("Reservation not Available for Borrowing");
                 // Get the token
-                string? token = await _qRTokenProvider.getQRToken(reservation.ItemReservationId, studentDto.UserId, true);
+                string? token = await _qRTokenProvider.getQRToken(reservation.ItemReservationId, studentDto.userId, true);
                 if (token == null) return BadRequest("Token Generation Failed");
                 // Return the token
                 return Ok(new QRTokenGeneratedDTO(token));
@@ -180,7 +180,7 @@ namespace IMS.Presentation.Controllers
                 // Get the User from the token
                 UserDTO? studentDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
                 if (studentDto == null) throw new Exception("Invalid Token/Authorization Header");
-                User student = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == studentDto.UserId).FirstAsync(); 
+                User student = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == studentDto.userId).FirstAsync(); 
                 // Get the reservation if Available
                 ItemReservation? reservation = await _dbContext.itemReservations.Where(rsv => rsv.ItemReservationId == id && rsv.IsActive && rsv.Status == "Borrowed").FirstAsync();
                 if (reservation == null) return BadRequest("Reservation not Available for Returning");
