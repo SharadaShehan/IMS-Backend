@@ -61,7 +61,7 @@ namespace IMS.Presentation.Controllers
             }
         }
 
-        [HttpPatch("reservations/{id}")]
+        [HttpDelete("reservations/{id}")]
         [AuthorizationFilter(["Student", "AcademicStaff"])]
         public async Task<ActionResult> CancelReservation(int id)
         {
@@ -73,7 +73,7 @@ namespace IMS.Presentation.Controllers
                 // Cancel the reservation
                 ResponseDTO<ItemReservationDetailedDTO> responseDTO = _reservationService.CancelReservation(id, studentDto.userId);
                 if (!responseDTO.success) return BadRequest(responseDTO.message);
-                return Ok(responseDTO.result);
+                return NoContent();
             }
             catch (Exception ex)
             {

@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using IMS.ApplicationCore.DTO;
-using System.Text.RegularExpressions;
 
 namespace IMS.Presentation.Validators
 {

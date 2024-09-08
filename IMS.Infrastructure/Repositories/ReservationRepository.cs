@@ -296,6 +296,7 @@ namespace IMS.Infrastructure.Repositories
         {
             reservation.Status = "Canceled";
             reservation.CancelledAt = DateTime.Now;
+            reservation.IsActive = false;
             _dbContext.Update(reservation);
             _dbContext.SaveChanges();
             return GetReservationDTOById(reservation.ItemReservationId);

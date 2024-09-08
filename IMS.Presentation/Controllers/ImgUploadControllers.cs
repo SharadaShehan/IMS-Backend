@@ -3,6 +3,7 @@ using IMS.Infrastructure.Services;
 using IMS.Presentation.Filters;
 using System.Text.Json;
 using IMS.ApplicationCore.DTO;
+using IMS.Presentation.Validators;
 
 namespace IMS.Presentation.Controllers
 {
@@ -19,13 +20,11 @@ namespace IMS.Presentation.Controllers
 
 		[HttpPost("lab")]
 		[AuthorizationFilter(["SystemAdmin"])]
-        public async Task<ActionResult<PresignedUrlResponseDTO>> GetPresignedURLForLab([FromBody]JsonElement jsonBody)
+        public async Task<ActionResult<PresignedUrlResponseDTO>> GetPresignedURLForLab(PresignedUrlRequestDTO presignedUrlRequestDTO)
 		{
             try {
-                // Validate the request body
-                PresignedUrlRequestDTO presignedUrlRequestDTO = new PresignedUrlRequestDTO(jsonBody);
-                ValidationDTO validationDTO = presignedUrlRequestDTO.Validate();
-                if (!validationDTO.success) return BadRequest(validationDTO.message);
+                // Validate the DTO
+                if (!ModelState.IsValid) return BadRequest(ModelState);
                 // Generate the presigned URL
                 string blobName = "labs/" + presignedUrlRequestDTO.imageName + "." + presignedUrlRequestDTO.extension;
                 TimeSpan expiryDuration = TimeSpan.FromMinutes(10);
@@ -38,13 +37,11 @@ namespace IMS.Presentation.Controllers
 
         [HttpPost("equipment")]
         [AuthorizationFilter(["Clerk"])]
-        public async Task<ActionResult<PresignedUrlResponseDTO>> GetPresignedURLForEquipment([FromBody] JsonElement jsonBody)
+        public async Task<ActionResult<PresignedUrlResponseDTO>> GetPresignedURLForEquipment(PresignedUrlRequestDTO presignedUrlRequestDTO)
         {
             try {
-                // Validate the request body
-                PresignedUrlRequestDTO presignedUrlRequestDTO = new PresignedUrlRequestDTO(jsonBody);
-                ValidationDTO validationDTO = presignedUrlRequestDTO.Validate();
-                if (!validationDTO.success) return BadRequest(validationDTO.message);
+                // Validate the DTO
+                if (!ModelState.IsValid) return BadRequest(ModelState);
                 // Generate the presigned URL
                 string blobName = "equipments/" + presignedUrlRequestDTO.imageName + "." + presignedUrlRequestDTO.extension;
                 TimeSpan expiryDuration = TimeSpan.FromMinutes(10);
@@ -54,5 +51,6 @@ namespace IMS.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
     }
 }
