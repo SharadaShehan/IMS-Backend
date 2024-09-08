@@ -24,7 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IMS.ApplicationCore\IMS.ApplicationCore.csproj" />
+    <ProjectReference Include="..\IMS.Application\IMS.Application.csproj" />
+    <ProjectReference Include="..\IMS.Core\IMS.Core.csproj" />
   </ItemGroup>
 
 </Project>

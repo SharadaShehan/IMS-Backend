@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Diagnostics;
-using IMS.ApplicationCore.DTO;
+using IMS.Application.DTO;
 
 namespace IMS.Presentation.Services
 {

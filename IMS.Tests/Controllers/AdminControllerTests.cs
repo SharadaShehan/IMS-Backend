@@ -2,8 +2,8 @@
 using Moq;
 using Microsoft.AspNetCore.Mvc;
 using IMS.Presentation.Controllers;
-using IMS.ApplicationCore.DTO;
-using IMS.ApplicationCore.Model;
+using IMS.Application.DTO;
+using IMS.Application.Model;
 using IMS.Infrastructure.Services;
 using IMS.Presentation.Services;
 using Microsoft.EntityFrameworkCore;

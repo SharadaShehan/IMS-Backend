@@ -2,8 +2,7 @@
 using IMS.Infrastructure.Services;
 using IMS.Presentation.Filters;
 using System.Text.Json;
-using IMS.ApplicationCore.DTO;
-using IMS.Presentation.Validators;
+using IMS.Application.DTO;
 
 namespace IMS.Presentation.Controllers
 {

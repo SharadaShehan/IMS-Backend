@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using IMS.ApplicationCore.Model;
+using IMS.Core.Model;
 
 namespace IMS.Infrastructure.Services
 {

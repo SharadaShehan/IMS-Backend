@@ -4,8 +4,8 @@ using System.Text;
 using IMS.Infrastructure.Extensions;
 using System.Diagnostics;
 using IMS.Presentation.Services;
-using IMS.ApplicationCore.Services;
-using IMS.ApplicationCore.Interfaces;
+using IMS.Application.Services;
+using IMS.Application.Interfaces;
 using IMS.Infrastructure.Repositories;
 using FluentValidation.AspNetCore;
 

@@ -1,6 +1,6 @@
-﻿using IMS.ApplicationCore.DTO;
-using IMS.ApplicationCore.Interfaces;
-using IMS.ApplicationCore.Model;
+﻿using IMS.Application.DTO;
+using IMS.Application.Interfaces;
+using IMS.Core.Model;
 using IMS.Infrastructure.Services;
 
 namespace IMS.Infrastructure.Repositories

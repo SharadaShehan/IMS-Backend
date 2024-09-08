@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using IMS.Infrastructure.Services;
 using IMS.Presentation.Filters;
-using IMS.ApplicationCore.DTO;
+using IMS.Application.DTO;
 using IMS.Presentation.Services;
 using System.Text.RegularExpressions;
-using IMS.ApplicationCore.Services;
+using IMS.Application.Services;
 
 namespace IMS.Presentation.Controllers
 {

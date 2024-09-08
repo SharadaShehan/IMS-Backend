@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using IMS.ApplicationCore.DTO;
+using IMS.Application.DTO;
 
 namespace IMS.Presentation.Validators
 {

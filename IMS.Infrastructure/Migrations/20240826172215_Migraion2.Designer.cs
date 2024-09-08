@@ -25,7 +25,7 @@ namespace IMS.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("IMS.ApplicationCore.Model.Equipment", b =>
+            modelBuilder.Entity("IMS.Application.Model.Equipment", b =>
                 {
                     b.Property<int>("EquipmentId")
                         .ValueGeneratedOnAdd()
@@ -62,7 +62,7 @@ namespace IMS.Infrastructure.Migrations
                     b.ToTable("Equipments");
                 });
 
-            modelBuilder.Entity("IMS.ApplicationCore.Model.Item", b =>
+            modelBuilder.Entity("IMS.Application.Model.Item", b =>
                 {
                     b.Property<int>("ItemId")
                         .ValueGeneratedOnAdd()
@@ -89,7 +89,7 @@ namespace IMS.Infrastructure.Migrations
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("IMS.ApplicationCore.Model.ItemReservation", b =>
+            modelBuilder.Entity("IMS.Application.Model.ItemReservation", b =>
                 {
                     b.Property<int>("ItemReservationId")
                         .ValueGeneratedOnAdd()
@@ -163,7 +163,7 @@ namespace IMS.Infrastructure.Migrations
                     b.ToTable("ItemReservations");
                 });
 
-            modelBuilder.Entity("IMS.ApplicationCore.Model.Lab", b =>
+            modelBuilder.Entity("IMS.Application.Model.Lab", b =>
                 {
                     b.Property<int>("LabId")
                         .ValueGeneratedOnAdd()
@@ -188,7 +188,7 @@ namespace IMS.Infrastructure.Migrations
                     b.ToTable("Labs");
                 });
 
-            modelBuilder.Entity("IMS.ApplicationCore.Model.Maintenance", b =>
+            modelBuilder.Entity("IMS.Application.Model.Maintenance", b =>
                 {
                     b.Property<int>("MaintenanceId")
                         .ValueGeneratedOnAdd()
@@ -257,7 +257,7 @@ namespace IMS.Infrastructure.Migrations
                     b.ToTable("Maintenances");
                 });
 
-            modelBuilder.Entity("IMS.ApplicationCore.Model.User", b =>
+            modelBuilder.Entity("IMS.Application.Model.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
@@ -286,9 +286,9 @@ namespace IMS.Infrastructure.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("IMS.ApplicationCore.Model.Equipment", b =>
+            modelBuilder.Entity("IMS.Application.Model.Equipment", b =>
                 {
-                    b.HasOne("IMS.ApplicationCore.Model.Lab", "Lab")
+                    b.HasOne("IMS.Application.Model.Lab", "Lab")
                         .WithMany()
                         .HasForeignKey("LabId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -297,9 +297,9 @@ namespace IMS.Infrastructure.Migrations
                     b.Navigation("Lab");
                 });
 
-            modelBuilder.Entity("IMS.ApplicationCore.Model.Item", b =>
+            modelBuilder.Entity("IMS.Application.Model.Item", b =>
                 {
-                    b.HasOne("IMS.ApplicationCore.Model.Equipment", "Equipment")
+                    b.HasOne("IMS.Application.Model.Equipment", "Equipment")
                         .WithMany()
                         .HasForeignKey("EquipmentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -308,39 +308,39 @@ namespace IMS.Infrastructure.Migrations
                     b.Navigation("Equipment");
                 });
 
-            modelBuilder.Entity("IMS.ApplicationCore.Model.ItemReservation", b =>
+            modelBuilder.Entity("IMS.Application.Model.ItemReservation", b =>
                 {
-                    b.HasOne("IMS.ApplicationCore.Model.Item", "Item")
+                    b.HasOne("IMS.Application.Model.Item", "Item")
                         .WithMany()
                         .HasForeignKey("AsignedItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IMS.ApplicationCore.Model.User", "BorrowedFromUser")
+                    b.HasOne("IMS.Application.Model.User", "BorrowedFromUser")
                         .WithMany("BorrowedItems")
                         .HasForeignKey("BorrowedFrom")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("IMS.ApplicationCore.Model.Equipment", "Equipment")
+                    b.HasOne("IMS.Application.Model.Equipment", "Equipment")
                         .WithMany()
                         .HasForeignKey("RequstedEquipmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IMS.ApplicationCore.Model.User", "ReservedByUser")
+                    b.HasOne("IMS.Application.Model.User", "ReservedByUser")
                         .WithMany("ReservedItems")
                         .HasForeignKey("ReservedBy")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("IMS.ApplicationCore.Model.User", "ResponseedByUser")
+                    b.HasOne("IMS.Application.Model.User", "ResponseedByUser")
                         .WithMany("ResponseItems")
                         .HasForeignKey("ResponseedBy")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("IMS.ApplicationCore.Model.User", "ReturnedToUser")
+                    b.HasOne("IMS.Application.Model.User", "ReturnedToUser")
                         .WithMany("ReturnedItems")
                         .HasForeignKey("ReturnedTo")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -359,27 +359,27 @@ namespace IMS.Infrastructure.Migrations
                     b.Navigation("ReturnedToUser");
                 });
 
-            modelBuilder.Entity("IMS.ApplicationCore.Model.Maintenance", b =>
+            modelBuilder.Entity("IMS.Application.Model.Maintenance", b =>
                 {
-                    b.HasOne("IMS.ApplicationCore.Model.User", "Assigner")
+                    b.HasOne("IMS.Application.Model.User", "Assigner")
                         .WithMany("MaintenancesAssignedBy")
                         .HasForeignKey("AssignedBy")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("IMS.ApplicationCore.Model.User", "Technician")
+                    b.HasOne("IMS.Application.Model.User", "Technician")
                         .WithMany("MaintenancesAssignedTechnician")
                         .HasForeignKey("AssignedTechnician")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("IMS.ApplicationCore.Model.Item", "Item")
+                    b.HasOne("IMS.Application.Model.Item", "Item")
                         .WithMany()
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IMS.ApplicationCore.Model.User", "Reviewer")
+                    b.HasOne("IMS.Application.Model.User", "Reviewer")
                         .WithMany("MaintenancesReviewedBy")
                         .HasForeignKey("ReviwedBy")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -394,7 +394,7 @@ namespace IMS.Infrastructure.Migrations
                     b.Navigation("Technician");
                 });
 
-            modelBuilder.Entity("IMS.ApplicationCore.Model.User", b =>
+            modelBuilder.Entity("IMS.Application.Model.User", b =>
                 {
                     b.Navigation("BorrowedItems");
 

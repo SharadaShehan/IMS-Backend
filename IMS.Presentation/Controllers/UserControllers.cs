@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using IMS.ApplicationCore.DTO;
+using IMS.Application.DTO;
 using IMS.Presentation.Filters;
 using IMS.Presentation.Services;
-using IMS.ApplicationCore.Services;
+using IMS.Application.Services;
 
 namespace IMS.Presentation.Controllers
 {
