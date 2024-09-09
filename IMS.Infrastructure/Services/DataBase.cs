@@ -14,13 +14,13 @@ namespace IMS.Infrastructure.Services
         public DbSet<Maintenance> maintenances { get; set; }
 
         // Use this constructor for Presentation Layer
-
+        
         public DataBaseContext(DbContextOptions<DataBaseContext> option) : base(option) { }
-
+        
         // Use this constructor to apply migrations to the database, changing the connection string
         /*
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-			optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=LabTracker;Trusted_Connection=True;TrustServerCertificate=True");
+			optionsBuilder.UseSqlServer("Server=tcp:ims-db-server.database.windows.net,1433;Initial Catalog=ims-db;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Default;");
 		}
 		*/
         protected override void OnModelCreating(ModelBuilder modelBuilder)
