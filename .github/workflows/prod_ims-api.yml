@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: imsreg.azurecr.io/ims-app:${{ github.sha }}
+        tags: imsreg.azurecr.io/ims-app:latest
         file: ./Dockerfile
 
   deploy:
@@ -48,4 +48,4 @@ jobs:
         app-name: 'ims-api'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_96a7595b4f8b4d77a49dd7324224c13f }}
-        images: 'imsreg.azurecr.io/ims-app:${{ github.sha }}'
+        images: 'imsreg.azurecr.io/ims-app:latest'
