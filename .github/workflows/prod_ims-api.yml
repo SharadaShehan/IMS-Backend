@@ -6,7 +6,7 @@ name: Build and deploy container app to Azure Web App - ims-api
 on:
   push:
     branches:
-      - prod
+    - prod
   workflow_dispatch:
 
 jobs:
@@ -15,8 +15,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
     - name: Set up Docker Buildx
+
       uses: docker/setup-buildx-action@v2
 
     - name: Log in to registry
@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: imsreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_75bf9e12a00349dc996d64af4a81773c }}/ims-app:${{ github.sha }}
+        tags: imsreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_75bf9e12a00349dc996d64af4a81773c.Lowercase }}/ims-app:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -48,4 +48,4 @@ jobs:
         app-name: 'ims-api'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_96a7595b4f8b4d77a49dd7324224c13f }}
-        images: 'imsreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_75bf9e12a00349dc996d64af4a81773c }}/ims-app:${{ github.sha }}'
+        images: 'imsreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_75bf9e12a00349dc996d64af4a81773c.Lowercase }}/ims-app:${{ github.sha }}'
