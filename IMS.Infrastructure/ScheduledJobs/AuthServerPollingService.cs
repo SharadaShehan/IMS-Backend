@@ -2,7 +2,7 @@
 using IMS.Infrastructure.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using IMS.ApplicationCore.Model;
+using IMS.Core.Model;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 

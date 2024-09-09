@@ -1,11 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Diagnostics;
-using IMS.ApplicationCore.DTO;
 using Microsoft.IdentityModel.Tokens;
-using System.Data;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace IMS.Presentation.Services
 {

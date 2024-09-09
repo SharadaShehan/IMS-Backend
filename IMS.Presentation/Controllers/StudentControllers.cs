@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using IMS.Infrastructure.Services;
 using System.Diagnostics;
 using IMS.Presentation.Filters;
-using IMS.ApplicationCore.DTO;
+using IMS.Application.DTO;
 using IMS.Presentation.Services;
-using Microsoft.EntityFrameworkCore;
-using IMS.ApplicationCore.Model;
-using System.Text.Json.Nodes;
-using System.Text.Json;
+using IMS.Application.Services;
 
 namespace IMS.Presentation.Controllers
 {
@@ -15,50 +11,131 @@ namespace IMS.Presentation.Controllers
 	[ApiController]
 	public class StudentController : ControllerBase
     {
-		private readonly DataBaseContext _dbContext;
         private readonly ITokenParser _tokenParser;
+        private readonly IQRTokenProvider _qRTokenProvider;
+        private readonly ReservationService _reservationService;
+        private readonly UserService _userService;
 
-		public StudentController(DataBaseContext dbContext, ITokenParser tokenParser)
+        public StudentController(ITokenParser tokenParser, IQRTokenProvider qRTokenProvider, ReservationService reservationService, UserService userService)
         {
-            _dbContext = dbContext;
             _tokenParser = tokenParser;
+            _qRTokenProvider = qRTokenProvider;
+            _reservationService = reservationService;
+            _userService = userService;
         }
 
 		[HttpPost("reservations")]
 		[AuthorizationFilter(["Student", "AcademicStaff"])]
-        public async Task<ActionResult<ItemReservation>> RequestReservation([FromBody] JsonElement jsonBody)
+        public async Task<ActionResult<ItemReservationDTO>> RequestReservation(RequestEquipmentDTO requestEquipmentDTO)
 		{
             try {
-                // Get the User from the token
+                // Validate the DTO
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                // Get the User from auth token
                 UserDTO? studentDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
                 if (studentDto == null) throw new Exception("Invalid Token/Authorization Header");
-                User student = await _dbContext.users.Where(dbUser => dbUser.IsActive && dbUser.UserId == studentDto.UserId).FirstAsync();
-                // Parse the JSON
-                RequestEquipmentDTO reservationDTO = new RequestEquipmentDTO(jsonBody);
-                ValidationDTO validationDTO = reservationDTO.Validate();
-                if (!validationDTO.success) return BadRequest(validationDTO.message);
-                // Get the equipment if Available
-                Equipment? equipment = await _dbContext.equipments.Where(e => e.EquipmentId == reservationDTO.equipmentId && e.IsActive).FirstAsync();
-                if (equipment == null) return BadRequest("Equipment not Found");
                 // Create the reservation
-                ItemReservation newItemReservation = new ItemReservation
-                {
-                    EquipmentId = reservationDTO.equipmentId,
-                    Equipment = equipment,
-                    StartDate = DateTime.Parse(reservationDTO.startDate),
-                    EndDate = DateTime.Parse(reservationDTO.endDate),
-                    ReservedUserId = studentDto.UserId,
-                    ReservedUser = student,
-                    CreatedAt = DateTime.Now,
-                    Status = "Pending",
-                    IsActive = true
-                };
-                await _dbContext.itemReservations.AddAsync(newItemReservation);
-                await _dbContext.SaveChangesAsync();
-                return StatusCode(201, newItemReservation);
+                ResponseDTO<ItemReservationDetailedDTO> responseDTO = _reservationService.CreateNewReservation(studentDto.userId, requestEquipmentDTO);
+                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                return Ok(responseDTO.result);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
 		}
-	}
+
+        [HttpGet("reservations")]
+        [AuthorizationFilter(["Student", "AcademicStaff"])]
+        public async Task<ActionResult<List<ItemReservationDTO>>> ViewReservations([FromQuery] bool borrowed)
+        {
+            try
+            {
+                // Get the User from auth token
+                UserDTO? studentDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+                if (studentDto == null) throw new Exception("Invalid Token/Authorization Header");
+                // Get the reservations
+                return _reservationService.GetAllReservationsByStudent(studentDto.userId, borrowed);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("reservations/{id}")]
+        [AuthorizationFilter(["Student", "AcademicStaff"])]
+        public async Task<ActionResult> CancelReservation(int id)
+        {
+            try
+            {
+                // Get the User from auth token
+                UserDTO? studentDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+                if (studentDto == null) throw new Exception("Invalid Token/Authorization Header");
+                // Cancel the reservation
+                ResponseDTO<ItemReservationDetailedDTO> responseDTO = _reservationService.CancelReservation(id, studentDto.userId);
+                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("reservations/{id}/token")]
+        [AuthorizationFilter(["Student", "AcademicStaff"])]
+        public async Task<ActionResult<QRTokenGeneratedDTO>> GetTokenForBorrowingItem(int id)
+        {
+            try
+            {
+                // Get the User from auth token
+                UserDTO? studentDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+                if (studentDto == null) throw new Exception("Invalid Token/Authorization Header");
+                // Get the reservation if Available
+                ItemReservationDetailedDTO? itemReservationDTO = _reservationService.GetReservationById(id);
+                if (itemReservationDTO == null || itemReservationDTO.status != "Reserved") return BadRequest("Item not Available for Borrowing");
+                // Get the QR token
+                string? token = await _qRTokenProvider.getQRToken(itemReservationDTO.reservationId, studentDto.userId, true);
+                if (token == null) return BadRequest("Token Generation Failed");
+                // Return the token
+                return Ok(new QRTokenGeneratedDTO(token));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPatch("reservations/{id}/verify")]
+        [AuthorizationFilter(["Student", "AcademicStaff"])]
+        public async Task<ActionResult<QRTokenValidatedDTO>> VerifyItemReturning(int id, [FromQuery] string token)
+        {
+            try
+            {
+                // Get the User from the token
+                UserDTO? studentDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
+                if (studentDto == null) throw new Exception("Invalid Token/Authorization Header");
+                // Verify the token
+                DecodedQRToken decodedQRToken = await _qRTokenProvider.validateQRToken(token);
+                if (!decodedQRToken.success) return BadRequest(decodedQRToken.message);
+                if (decodedQRToken.eventId == null || decodedQRToken.isReservation != true) return BadRequest("Invalid Token");
+                // Get the reservationDTO if Available
+                ItemReservationDetailedDTO? itemReservationDTO = _reservationService.GetReservationById(id);
+                if (itemReservationDTO == null || itemReservationDTO.status != "Borrowed") return BadRequest("Item not Available for Returning");
+                // Verify the reservation
+                if (itemReservationDTO.reservedUserId != studentDto.userId) return BadRequest("Only Borrowed User Can Return Item");
+                UserDTO? clerk = _userService.GetUserById(decodedQRToken.userId.Value);
+                if (clerk == null || clerk.role != "Clerk") return BadRequest("Invalid Clerk User");
+                if (decodedQRToken.eventId != itemReservationDTO.reservationId) return BadRequest("Invalid Token");
+                // Borrow the item
+                ResponseDTO<ItemReservationDetailedDTO> responseDTO = _reservationService.ReturnBorrowedItem(id, clerk.userId);
+                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                return Ok(new QRTokenValidatedDTO());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+    }
 }
