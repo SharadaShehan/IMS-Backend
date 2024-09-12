@@ -25,7 +25,7 @@ namespace IMS.Infrastructure.Services
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
 
-            // Specify the permissions for the SAS (e.g., Read, Write, etc.)
+            // Specify the permissions for the SAS
             BlobSasBuilder sasBuilder = new BlobSasBuilder()
             {
                 BlobContainerName = containerName,
@@ -34,8 +34,8 @@ namespace IMS.Infrastructure.Services
                 ExpiresOn = DateTimeOffset.UtcNow.Add(expiryDuration)
             };
 
-            // Set the permissions (e.g., Read permission)
-            sasBuilder.SetPermissions(BlobSasPermissions.Read);
+            // Set the permissions for uploading
+            sasBuilder.SetPermissions(BlobSasPermissions.Write);
 
             // Generate the SAS token
             Uri sasUri = blobClient.GenerateSasUri(sasBuilder);
