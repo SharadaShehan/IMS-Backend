@@ -68,7 +68,7 @@ namespace IMS.Application.Services
             // Check if Student Exists
             User? student = _userRepository.GetUserEntityById(studentId);
             if (student == null) return new ResponseDTO<ItemReservationDetailedDTO>("Student Not Found");
-            if (student.Role != "Student" || student.Role != "AcademicStaff") return new ResponseDTO<ItemReservationDetailedDTO>("Only Students/Academic Staff can make reservation requests");
+            if (student.Role != "Student" && student.Role != "AcademicStaff") return new ResponseDTO<ItemReservationDetailedDTO>("Only Students/Academic Staff can make reservation requests");
             // Check if Equipment Exists
             Equipment? equipment = _equipmentRepository.GetEquipmentEntityById(requestEquipmentDTO.equipmentId);
             if (equipment == null) return new ResponseDTO<ItemReservationDetailedDTO>("Equipment Not Found");
