@@ -3,6 +3,7 @@ using IMS.Application.Interfaces;
 using IMS.Core.Model;
 using IMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace IMS.Infrastructure.Repositories
 {
@@ -23,7 +24,7 @@ namespace IMS.Infrastructure.Repositories
         public EquipmentDetailedDTO? GetEquipmentDTOById(int id)
         {
             int totalCount = _dbContext.items.Where(i => i.EquipmentId == id && i.IsActive).Count();
-            int reservedCount = _dbContext.itemReservations.Where(ir => ir.EquipmentId == id && ir.Status == "Reserved" && ir.IsActive).Count();
+            int reservedCount = _dbContext.itemReservations.Where(ir => ir.EquipmentId == id && (ir.Status == "Reserved" || ir.Status == "Borrowed") && ir.IsActive).Count();
             // availableCount = number of items currently physically available in the lab
             int availableCount = _dbContext.items.Where(i => i.EquipmentId == id && i.IsActive && i.Status == "Available").Count();
             return _dbContext.equipments.Where(e => e.EquipmentId == id && e.IsActive).Select(e => new EquipmentDetailedDTO
@@ -69,7 +70,7 @@ namespace IMS.Infrastructure.Repositories
             {
                 Name = createEquipmentDTO.name,
                 Model = createEquipmentDTO.model,
-                LabId = createEquipmentDTO.labId,
+                LabId = lab.LabId,
                 Lab = lab,
                 ImageURL = createEquipmentDTO.imageURL,
                 Specification = createEquipmentDTO.specification,
