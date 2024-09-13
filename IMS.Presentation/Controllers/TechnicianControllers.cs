@@ -11,11 +11,13 @@ namespace IMS.Presentation.Controllers
 	public class TechnicianController : ControllerBase
     {
         private readonly ITokenParser _tokenParser;
+        private readonly ILogger<TechnicianController> _logger;
         private readonly MaintenanceService _maintenanceService;
 
-		public TechnicianController(ITokenParser tokenParser, MaintenanceService maintenanceService)
+		public TechnicianController(ITokenParser tokenParser, ILogger<TechnicianController> logger, MaintenanceService maintenanceService)
         {
             _tokenParser = tokenParser;
+            _logger = logger;
             _maintenanceService = maintenanceService;
         }
 

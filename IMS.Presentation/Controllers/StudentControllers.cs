@@ -13,13 +13,15 @@ namespace IMS.Presentation.Controllers
     {
         private readonly ITokenParser _tokenParser;
         private readonly IQRTokenProvider _qRTokenProvider;
+        private readonly ILogger<StudentController> _logger;
         private readonly ReservationService _reservationService;
         private readonly UserService _userService;
 
-        public StudentController(ITokenParser tokenParser, IQRTokenProvider qRTokenProvider, ReservationService reservationService, UserService userService)
+        public StudentController(ITokenParser tokenParser, IQRTokenProvider qRTokenProvider, ILogger<StudentController> logger, ReservationService reservationService, UserService userService)
         {
             _tokenParser = tokenParser;
             _qRTokenProvider = qRTokenProvider;
+            _logger = logger;
             _reservationService = reservationService;
             _userService = userService;
         }
