@@ -1,16 +1,9 @@
 ﻿using IMS.Application.DTO;
-using IMS.Application.Interfaces;
 using IMS.Core.Model;
 using IMS.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Moq;
-using Xunit;
-using System.Collections.Generic;
-using System.Linq;
 using IMS.Infrastructure.Services;
-using IMS.Presentation.Services;
-using Xunit.Abstractions;
-using System;
+namespace IMS.Tests.IntegrationTests;
 
 public class EquipmentRepositoryTests
 {
