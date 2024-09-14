@@ -1,10 +1,11 @@
-﻿using Xunit;
-using Moq;
+﻿using System.Collections.Generic;
+using IMS.Application.DTO;
 using IMS.Application.Interfaces;
 using IMS.Application.Services;
 using IMS.Core.Model;
-using IMS.Application.DTO;
-using System.Collections.Generic;
+using Moq;
+using Xunit;
+
 namespace IMS.Tests.UnitTests;
 
 public class MaintenanceServiceTests
@@ -25,7 +26,8 @@ public class MaintenanceServiceTests
             _mockUserRepository.Object,
             _mockItemRepository.Object,
             _mockMaintenanceRepository.Object,
-            _mockReservationRepository.Object);
+            _mockReservationRepository.Object
+        );
     }
 
     [Fact]
@@ -34,7 +36,9 @@ public class MaintenanceServiceTests
         // Arrange
         var maintenanceId = 1;
         var maintenanceDto = new MaintenanceDetailedDTO();
-        _mockMaintenanceRepository.Setup(repo => repo.GetMaintenanceDTOById(maintenanceId)).Returns(maintenanceDto);
+        _mockMaintenanceRepository
+            .Setup(repo => repo.GetMaintenanceDTOById(maintenanceId))
+            .Returns(maintenanceDto);
 
         // Act
         var result = _maintenanceService.GetMaintenanceById(maintenanceId);
@@ -49,7 +53,9 @@ public class MaintenanceServiceTests
     {
         // Arrange
         var maintenanceId = 1;
-        _mockMaintenanceRepository.Setup(repo => repo.GetMaintenanceDTOById(maintenanceId)).Returns((MaintenanceDetailedDTO?)null);
+        _mockMaintenanceRepository
+            .Setup(repo => repo.GetMaintenanceDTOById(maintenanceId))
+            .Returns((MaintenanceDetailedDTO?)null);
 
         // Act
         var result = _maintenanceService.GetMaintenanceById(maintenanceId);
@@ -82,7 +88,9 @@ public class MaintenanceServiceTests
         var clerk = new User { UserId = clerkId };
         var createMaintenanceDTO = new CreateMaintenanceDTO { itemId = 1 };
         _mockUserRepository.Setup(repo => repo.GetUserEntityById(clerkId)).Returns(clerk);
-        _mockItemRepository.Setup(repo => repo.GetItemEntityById(createMaintenanceDTO.itemId)).Returns((Item?)null);
+        _mockItemRepository
+            .Setup(repo => repo.GetItemEntityById(createMaintenanceDTO.itemId))
+            .Returns((Item?)null);
 
         // Act
         var result = _maintenanceService.CreateNewMaintenance(clerkId, createMaintenanceDTO);
@@ -104,11 +112,25 @@ public class MaintenanceServiceTests
         var maintenanceDetailedDTO = new MaintenanceDetailedDTO();
 
         _mockUserRepository.Setup(repo => repo.GetUserEntityById(clerkId)).Returns(clerk);
-        _mockItemRepository.Setup(repo => repo.GetItemEntityById(createMaintenanceDTO.itemId)).Returns(item);
-        _mockUserRepository.Setup(repo => repo.GetUserEntityById(createMaintenanceDTO.technicianId)).Returns(technician);
-        _mockMaintenanceRepository.Setup(repo => repo.CheckTimeSlotAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>())).Returns(true);
-        _mockReservationRepository.Setup(repo => repo.CheckTimeSlotAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>())).Returns(true);
-        _mockMaintenanceRepository.Setup(repo => repo.CreateNewMaintenance(item, clerk, technician, createMaintenanceDTO)).Returns(maintenanceDetailedDTO);
+        _mockItemRepository
+            .Setup(repo => repo.GetItemEntityById(createMaintenanceDTO.itemId))
+            .Returns(item);
+        _mockUserRepository
+            .Setup(repo => repo.GetUserEntityById(createMaintenanceDTO.technicianId))
+            .Returns(technician);
+        _mockMaintenanceRepository
+            .Setup(repo =>
+                repo.CheckTimeSlotAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>())
+            )
+            .Returns(true);
+        _mockReservationRepository
+            .Setup(repo =>
+                repo.CheckTimeSlotAvailability(It.IsAny<DateTime>(), It.IsAny<DateTime>())
+            )
+            .Returns(true);
+        _mockMaintenanceRepository
+            .Setup(repo => repo.CreateNewMaintenance(item, clerk, technician, createMaintenanceDTO))
+            .Returns(maintenanceDetailedDTO);
 
         // Act
         var result = _maintenanceService.CreateNewMaintenance(clerkId, createMaintenanceDTO);
@@ -124,7 +146,9 @@ public class MaintenanceServiceTests
         // Arrange
         int maintenanceId = 1;
         int technicianId = 2;
-        _mockUserRepository.Setup(repo => repo.GetUserEntityById(technicianId)).Returns((User?)null);
+        _mockUserRepository
+            .Setup(repo => repo.GetUserEntityById(technicianId))
+            .Returns((User?)null);
 
         // Act
         var result = _maintenanceService.BorrowItemForMaintenance(maintenanceId, technicianId);
@@ -141,12 +165,21 @@ public class MaintenanceServiceTests
         int maintenanceId = 1;
         int technicianId = 2;
         var technician = new User { UserId = technicianId, Role = "Technician" };
-        var maintenance = new Maintenance { MaintenanceId = maintenanceId, Status = "Scheduled", TechnicianId = technicianId };
+        var maintenance = new Maintenance
+        {
+            MaintenanceId = maintenanceId,
+            Status = "Scheduled",
+            TechnicianId = technicianId,
+        };
         var maintenanceDetailedDTO = new MaintenanceDetailedDTO();
 
         _mockUserRepository.Setup(repo => repo.GetUserEntityById(technicianId)).Returns(technician);
-        _mockMaintenanceRepository.Setup(repo => repo.GetMaintenanceEntityById(maintenanceId)).Returns(maintenance);
-        _mockMaintenanceRepository.Setup(repo => repo.BorrowItemForMaintenance(maintenance)).Returns(maintenanceDetailedDTO);
+        _mockMaintenanceRepository
+            .Setup(repo => repo.GetMaintenanceEntityById(maintenanceId))
+            .Returns(maintenance);
+        _mockMaintenanceRepository
+            .Setup(repo => repo.BorrowItemForMaintenance(maintenance))
+            .Returns(maintenanceDetailedDTO);
 
         // Act
         var result = _maintenanceService.BorrowItemForMaintenance(maintenanceId, technicianId);
@@ -165,10 +198,16 @@ public class MaintenanceServiceTests
         var technician = new User { UserId = technicianId, Role = "Technician" };
         var submitMaintenanceDTO = new SubmitMaintenanceDTO();
         _mockUserRepository.Setup(repo => repo.GetUserEntityById(technicianId)).Returns(technician);
-        _mockMaintenanceRepository.Setup(repo => repo.GetMaintenanceEntityById(maintenanceId)).Returns((Maintenance?)null);
+        _mockMaintenanceRepository
+            .Setup(repo => repo.GetMaintenanceEntityById(maintenanceId))
+            .Returns((Maintenance?)null);
 
         // Act
-        var result = _maintenanceService.SubmitMaintenanceUpdate(maintenanceId, technicianId, submitMaintenanceDTO);
+        var result = _maintenanceService.SubmitMaintenanceUpdate(
+            maintenanceId,
+            technicianId,
+            submitMaintenanceDTO
+        );
 
         // Assert
         Assert.False(result.success);
@@ -182,16 +221,29 @@ public class MaintenanceServiceTests
         int maintenanceId = 1;
         int technicianId = 2;
         var technician = new User { UserId = technicianId, Role = "Technician" };
-        var maintenance = new Maintenance { MaintenanceId = maintenanceId, Status = "Ongoing", TechnicianId = technicianId };
+        var maintenance = new Maintenance
+        {
+            MaintenanceId = maintenanceId,
+            Status = "Ongoing",
+            TechnicianId = technicianId,
+        };
         var submitMaintenanceDTO = new SubmitMaintenanceDTO();
         var updatedMaintenanceDTO = new MaintenanceDetailedDTO();
 
         _mockUserRepository.Setup(repo => repo.GetUserEntityById(technicianId)).Returns(technician);
-        _mockMaintenanceRepository.Setup(repo => repo.GetMaintenanceEntityById(maintenanceId)).Returns(maintenance);
-        _mockMaintenanceRepository.Setup(repo => repo.SubmitMaintenanceUpdate(maintenance, submitMaintenanceDTO)).Returns(updatedMaintenanceDTO);
+        _mockMaintenanceRepository
+            .Setup(repo => repo.GetMaintenanceEntityById(maintenanceId))
+            .Returns(maintenance);
+        _mockMaintenanceRepository
+            .Setup(repo => repo.SubmitMaintenanceUpdate(maintenance, submitMaintenanceDTO))
+            .Returns(updatedMaintenanceDTO);
 
         // Act
-        var result = _maintenanceService.SubmitMaintenanceUpdate(maintenanceId, technicianId, submitMaintenanceDTO);
+        var result = _maintenanceService.SubmitMaintenanceUpdate(
+            maintenanceId,
+            technicianId,
+            submitMaintenanceDTO
+        );
 
         // Assert
         Assert.True(result.success);
@@ -208,10 +260,16 @@ public class MaintenanceServiceTests
         var maintenance = new Maintenance { Status = "Ongoing" };
         var reviewMaintenanceDTO = new ReviewMaintenanceDTO();
         _mockUserRepository.Setup(repo => repo.GetUserEntityById(clerkId)).Returns(clerk);
-        _mockMaintenanceRepository.Setup(repo => repo.GetMaintenanceEntityById(maintenanceId)).Returns(maintenance);
+        _mockMaintenanceRepository
+            .Setup(repo => repo.GetMaintenanceEntityById(maintenanceId))
+            .Returns(maintenance);
 
         // Act
-        var result = _maintenanceService.ReviewMaintenance(maintenanceId, clerkId, reviewMaintenanceDTO);
+        var result = _maintenanceService.ReviewMaintenance(
+            maintenanceId,
+            clerkId,
+            reviewMaintenanceDTO
+        );
 
         // Assert
         Assert.False(result.success);
@@ -230,15 +288,22 @@ public class MaintenanceServiceTests
         var reviewedMaintenanceDTO = new MaintenanceDetailedDTO();
 
         _mockUserRepository.Setup(repo => repo.GetUserEntityById(clerkId)).Returns(clerk);
-        _mockMaintenanceRepository.Setup(repo => repo.GetMaintenanceEntityById(maintenanceId)).Returns(maintenance);
-        _mockMaintenanceRepository.Setup(repo => repo.ReviewMaintenance(maintenance, clerk, reviewMaintenanceDTO)).Returns(reviewedMaintenanceDTO);
+        _mockMaintenanceRepository
+            .Setup(repo => repo.GetMaintenanceEntityById(maintenanceId))
+            .Returns(maintenance);
+        _mockMaintenanceRepository
+            .Setup(repo => repo.ReviewMaintenance(maintenance, clerk, reviewMaintenanceDTO))
+            .Returns(reviewedMaintenanceDTO);
 
         // Act
-        var result = _maintenanceService.ReviewMaintenance(maintenanceId, clerkId, reviewMaintenanceDTO);
+        var result = _maintenanceService.ReviewMaintenance(
+            maintenanceId,
+            clerkId,
+            reviewMaintenanceDTO
+        );
 
         // Assert
         Assert.True(result.success);
         Assert.Equal(reviewedMaintenanceDTO, result.result);
     }
-
 }

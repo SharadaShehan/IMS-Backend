@@ -1,8 +1,9 @@
 ﻿using IMS.Application.DTO;
 using IMS.Core.Model;
 using IMS.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 using IMS.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+
 namespace IMS.Tests.IntegrationTests;
 
 public class LabRepositoryTests
@@ -24,7 +25,16 @@ public class LabRepositoryTests
         {
             var repository = new LabRepository(context);
 
-            context.labs.Add(new Lab { LabId = 1, LabName = "Lab1", LabCode = "ICE356", ImageURL = "url", IsActive = true });
+            context.labs.Add(
+                new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "ICE356",
+                    ImageURL = "url",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -49,7 +59,16 @@ public class LabRepositoryTests
         {
             var repository = new LabRepository(context);
 
-            context.labs.Add(new Lab { LabId = 1, LabName = "Lab1", LabCode = "ICE356", ImageURL = "url", IsActive = true });
+            context.labs.Add(
+                new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "ICE356",
+                    ImageURL = "url",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -72,7 +91,16 @@ public class LabRepositoryTests
         {
             var repository = new LabRepository(context);
 
-            context.labs.Add(new Lab { LabId = 1, LabName = "Lab1", LabCode = "ICE356", ImageURL = "url", IsActive = true });
+            context.labs.Add(
+                new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "ICE356",
+                    ImageURL = "url",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -93,9 +121,36 @@ public class LabRepositoryTests
         {
             var repository = new LabRepository(context);
 
-            context.labs.Add(new Lab { LabId = 1, LabName = "Lab1", LabCode = "ICE356", ImageURL = "url", IsActive = true });
-            context.labs.Add(new Lab { LabId = 2, LabName = "Lab2", LabCode = "ICE357", ImageURL = "url", IsActive = true });
-            context.labs.Add(new Lab { LabId = 3, LabName = "Lab3", LabCode = "JUT357", ImageURL = "url", IsActive = false });
+            context.labs.Add(
+                new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "ICE356",
+                    ImageURL = "url",
+                    IsActive = true,
+                }
+            );
+            context.labs.Add(
+                new Lab
+                {
+                    LabId = 2,
+                    LabName = "Lab2",
+                    LabCode = "ICE357",
+                    ImageURL = "url",
+                    IsActive = true,
+                }
+            );
+            context.labs.Add(
+                new Lab
+                {
+                    LabId = 3,
+                    LabName = "Lab3",
+                    LabCode = "JUT357",
+                    ImageURL = "url",
+                    IsActive = false,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -119,7 +174,15 @@ public class LabRepositoryTests
         {
             var repository = new LabRepository(context);
 
-            context.labs.Add(new Lab { LabId = 1, LabName = "Lab1", LabCode = "ICE356", IsActive = true });
+            context.labs.Add(
+                new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "ICE356",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -139,7 +202,15 @@ public class LabRepositoryTests
         {
             var repository = new LabRepository(context);
 
-            context.labs.Add(new Lab { LabId = 1, LabName = "Lab1", LabCode = "ICE356", IsActive = true });
+            context.labs.Add(
+                new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "ICE356",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -164,7 +235,7 @@ public class LabRepositoryTests
             {
                 labName = "Lab1",
                 labCode = "ICE356",
-                imageURL = "url"
+                imageURL = "url",
             };
 
             // Act
@@ -188,14 +259,23 @@ public class LabRepositoryTests
         {
             var repository = new LabRepository(context);
 
-            context.labs.Add(new Lab { LabId = 1, LabName = "Lab1", LabCode = "ICE356", ImageURL = "url", IsActive = true });
+            context.labs.Add(
+                new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "ICE356",
+                    ImageURL = "url",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             var updateLabDTO = new UpdateLabDTO
             {
                 labName = "Lab2",
                 labCode = "ICE357",
-                imageURL = "url2"
+                imageURL = "url2",
             };
 
             // Act
@@ -209,6 +289,4 @@ public class LabRepositoryTests
             Assert.Equal("url2", updatedLab.imageUrl);
         }
     }
-
-
 }

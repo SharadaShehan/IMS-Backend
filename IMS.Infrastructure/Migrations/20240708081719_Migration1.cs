@@ -10,29 +10,31 @@ namespace IMS.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Equipments_Labs_LabId",
-                table: "Equipments");
+            migrationBuilder.DropForeignKey(name: "FK_Equipments_Labs_LabId", table: "Equipments");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_ItemReservations_Items_AsignedItemId",
-                table: "ItemReservations");
+                table: "ItemReservations"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Items_Equipments_EquipmentId",
-                table: "Items");
+                table: "Items"
+            );
 
             migrationBuilder.AddColumn<string>(
                 name: "Model",
                 table: "Equipments",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.AddColumn<string>(
                 name: "Specification",
                 table: "Equipments",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Equipments_Labs_LabId",
@@ -40,7 +42,8 @@ namespace IMS.Infrastructure.Migrations
                 column: "LabId",
                 principalTable: "Labs",
                 principalColumn: "LabId",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_ItemReservations_Items_AsignedItemId",
@@ -48,7 +51,8 @@ namespace IMS.Infrastructure.Migrations
                 column: "AsignedItemId",
                 principalTable: "Items",
                 principalColumn: "ItemId",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Items_Equipments_EquipmentId",
@@ -56,31 +60,28 @@ namespace IMS.Infrastructure.Migrations
                 column: "EquipmentId",
                 principalTable: "Equipments",
                 principalColumn: "EquipmentId",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Equipments_Labs_LabId",
-                table: "Equipments");
+            migrationBuilder.DropForeignKey(name: "FK_Equipments_Labs_LabId", table: "Equipments");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_ItemReservations_Items_AsignedItemId",
-                table: "ItemReservations");
+                table: "ItemReservations"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Items_Equipments_EquipmentId",
-                table: "Items");
+                table: "Items"
+            );
 
-            migrationBuilder.DropColumn(
-                name: "Model",
-                table: "Equipments");
+            migrationBuilder.DropColumn(name: "Model", table: "Equipments");
 
-            migrationBuilder.DropColumn(
-                name: "Specification",
-                table: "Equipments");
+            migrationBuilder.DropColumn(name: "Specification", table: "Equipments");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Equipments_Labs_LabId",
@@ -88,7 +89,8 @@ namespace IMS.Infrastructure.Migrations
                 column: "LabId",
                 principalTable: "Labs",
                 principalColumn: "LabId",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Restrict
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_ItemReservations_Items_AsignedItemId",
@@ -96,7 +98,8 @@ namespace IMS.Infrastructure.Migrations
                 column: "AsignedItemId",
                 principalTable: "Items",
                 principalColumn: "ItemId",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Restrict
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Items_Equipments_EquipmentId",
@@ -104,7 +107,8 @@ namespace IMS.Infrastructure.Migrations
                 column: "EquipmentId",
                 principalTable: "Equipments",
                 principalColumn: "EquipmentId",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Restrict
+            );
         }
     }
 }

@@ -17,9 +17,10 @@ namespace IMS.Presentation.Validators
 
             // Validate serialNumber
             RuleFor(x => x.serialNumber)
-                .NotEmpty().WithMessage("Serial Number is required.")
-                .Matches(textPattern).WithMessage("Invalid Serial Number. Must be between 5 and 30 characters.");
-
+                .NotEmpty()
+                .WithMessage("Serial Number is required.")
+                .Matches(textPattern)
+                .WithMessage("Invalid Serial Number. Must be between 5 and 30 characters.");
         }
     }
 }

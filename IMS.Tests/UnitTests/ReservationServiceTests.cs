@@ -1,10 +1,11 @@
-﻿using Xunit;
-using Moq;
+﻿using System.Collections.Generic;
 using IMS.Application.DTO;
 using IMS.Application.Interfaces;
 using IMS.Application.Services;
 using IMS.Core.Model;
-using System.Collections.Generic;
+using Moq;
+using Xunit;
+
 namespace IMS.Tests.UnitTests;
 
 public class ReservationServiceTests
@@ -38,7 +39,8 @@ public class ReservationServiceTests
         // Arrange
         var reservationId = 1;
         var reservationDTO = new ItemReservationDetailedDTO { reservationId = reservationId };
-        _mockReservationRepository.Setup(repo => repo.GetReservationDTOById(reservationId))
+        _mockReservationRepository
+            .Setup(repo => repo.GetReservationDTOById(reservationId))
             .Returns(reservationDTO);
 
         // Act
@@ -54,7 +56,8 @@ public class ReservationServiceTests
     {
         // Arrange
         var reservationId = 1;
-        _mockReservationRepository.Setup(repo => repo.GetReservationDTOById(reservationId))
+        _mockReservationRepository
+            .Setup(repo => repo.GetReservationDTOById(reservationId))
             .Returns((ItemReservationDetailedDTO)null);
 
         // Act
@@ -70,8 +73,7 @@ public class ReservationServiceTests
         // Arrange
         var studentId = 1;
         var requestDTO = new RequestEquipmentDTO();
-        _mockUserRepository.Setup(repo => repo.GetUserEntityById(studentId))
-            .Returns((User)null);
+        _mockUserRepository.Setup(repo => repo.GetUserEntityById(studentId)).Returns((User)null);
 
         // Act
         var result = _reservationService.CreateNewReservation(studentId, requestDTO);
@@ -86,9 +88,9 @@ public class ReservationServiceTests
         // Arrange
         var student = new User { UserId = 1, Role = "Student" };
         var requestDTO = new RequestEquipmentDTO { equipmentId = 1 };
-        _mockUserRepository.Setup(repo => repo.GetUserEntityById(student.UserId))
-            .Returns(student);
-        _mockEquipmentRepository.Setup(repo => repo.GetEquipmentEntityById(requestDTO.equipmentId))
+        _mockUserRepository.Setup(repo => repo.GetUserEntityById(student.UserId)).Returns(student);
+        _mockEquipmentRepository
+            .Setup(repo => repo.GetEquipmentEntityById(requestDTO.equipmentId))
             .Returns((Equipment)null);
 
         // Act
@@ -104,11 +106,20 @@ public class ReservationServiceTests
         // Arrange
         var student = new User { UserId = 1, Role = "Student" };
         var equipment = new Equipment { EquipmentId = 1 };
-        var requestDTO = new RequestEquipmentDTO { equipmentId = equipment.EquipmentId, startDate = System.DateTime.Now, endDate = System.DateTime.Now.AddHours(1) };
+        var requestDTO = new RequestEquipmentDTO
+        {
+            equipmentId = equipment.EquipmentId,
+            startDate = System.DateTime.Now,
+            endDate = System.DateTime.Now.AddHours(1),
+        };
 
         _mockUserRepository.Setup(repo => repo.GetUserEntityById(student.UserId)).Returns(student);
-        _mockEquipmentRepository.Setup(repo => repo.GetEquipmentEntityById(equipment.EquipmentId)).Returns(equipment);
-        _mockReservationRepository.Setup(repo => repo.CheckTimeSlotAvailability(requestDTO.startDate, requestDTO.endDate)).Returns(false);
+        _mockEquipmentRepository
+            .Setup(repo => repo.GetEquipmentEntityById(equipment.EquipmentId))
+            .Returns(equipment);
+        _mockReservationRepository
+            .Setup(repo => repo.CheckTimeSlotAvailability(requestDTO.startDate, requestDTO.endDate))
+            .Returns(false);
 
         // Act
         var result = _reservationService.CreateNewReservation(student.UserId, requestDTO);
@@ -123,14 +134,27 @@ public class ReservationServiceTests
         // Arrange
         var student = new User { UserId = 1, Role = "Student" };
         var equipment = new Equipment { EquipmentId = 1 };
-        var requestDTO = new RequestEquipmentDTO { equipmentId = equipment.EquipmentId, startDate = System.DateTime.Now, endDate = System.DateTime.Now.AddHours(1) };
+        var requestDTO = new RequestEquipmentDTO
+        {
+            equipmentId = equipment.EquipmentId,
+            startDate = System.DateTime.Now,
+            endDate = System.DateTime.Now.AddHours(1),
+        };
         var reservationDTO = new ItemReservationDetailedDTO { equipmentId = 1 };
 
         _mockUserRepository.Setup(repo => repo.GetUserEntityById(student.UserId)).Returns(student);
-        _mockEquipmentRepository.Setup(repo => repo.GetEquipmentEntityById(equipment.EquipmentId)).Returns(equipment);
-        _mockReservationRepository.Setup(repo => repo.CheckTimeSlotAvailability(requestDTO.startDate, requestDTO.endDate)).Returns(true);
-        _mockMaintenanceRepository.Setup(repo => repo.CheckTimeSlotAvailability(requestDTO.startDate, requestDTO.endDate)).Returns(true);
-        _mockReservationRepository.Setup(repo => repo.RequestEquipmentReservation(equipment, student, requestDTO)).Returns(reservationDTO);
+        _mockEquipmentRepository
+            .Setup(repo => repo.GetEquipmentEntityById(equipment.EquipmentId))
+            .Returns(equipment);
+        _mockReservationRepository
+            .Setup(repo => repo.CheckTimeSlotAvailability(requestDTO.startDate, requestDTO.endDate))
+            .Returns(true);
+        _mockMaintenanceRepository
+            .Setup(repo => repo.CheckTimeSlotAvailability(requestDTO.startDate, requestDTO.endDate))
+            .Returns(true);
+        _mockReservationRepository
+            .Setup(repo => repo.RequestEquipmentReservation(equipment, student, requestDTO))
+            .Returns(reservationDTO);
 
         // Act
         var result = _reservationService.CreateNewReservation(student.UserId, requestDTO);
@@ -147,7 +171,11 @@ public class ReservationServiceTests
         _mockUserRepository.Setup(x => x.GetUserEntityById(It.IsAny<int>())).Returns((User)null);
 
         // Act
-        var result = _reservationService.RespondToReservationRequest(1, 1, new RespondReservationDTO());
+        var result = _reservationService.RespondToReservationRequest(
+            1,
+            1,
+            new RespondReservationDTO()
+        );
 
         // Assert
         Assert.False(result.success);
@@ -162,10 +190,16 @@ public class ReservationServiceTests
         var reservation = new ItemReservation { ItemReservationId = 1, Status = "Approved" };
 
         _mockUserRepository.Setup(x => x.GetUserEntityById(It.IsAny<int>())).Returns(clerk);
-        _mockReservationRepository.Setup(x => x.GetReservationEntityById(It.IsAny<int>())).Returns(reservation);
+        _mockReservationRepository
+            .Setup(x => x.GetReservationEntityById(It.IsAny<int>()))
+            .Returns(reservation);
 
         // Act
-        var result = _reservationService.RespondToReservationRequest(1, 1, new RespondReservationDTO { accepted = true });
+        var result = _reservationService.RespondToReservationRequest(
+            1,
+            1,
+            new RespondReservationDTO { accepted = true }
+        );
 
         // Assert
         Assert.False(result.success);
@@ -194,7 +228,9 @@ public class ReservationServiceTests
         var reservation = new ItemReservation { ItemReservationId = 1, Status = "Pending" };
 
         _mockUserRepository.Setup(x => x.GetUserEntityById(It.IsAny<int>())).Returns(clerk);
-        _mockReservationRepository.Setup(x => x.GetReservationEntityById(It.IsAny<int>())).Returns(reservation);
+        _mockReservationRepository
+            .Setup(x => x.GetReservationEntityById(It.IsAny<int>()))
+            .Returns(reservation);
 
         // Act
         var result = _reservationService.BorrowReservedItem(1, 1);
@@ -208,7 +244,9 @@ public class ReservationServiceTests
     public void CancelReservation_ReservationNotFound_ReturnsError()
     {
         // Arrange
-        _mockReservationRepository.Setup(x => x.GetReservationEntityById(It.IsAny<int>())).Returns((ItemReservation)null);
+        _mockReservationRepository
+            .Setup(x => x.GetReservationEntityById(It.IsAny<int>()))
+            .Returns((ItemReservation)null);
 
         // Act
         var result = _reservationService.CancelReservation(1, 1);
@@ -223,7 +261,9 @@ public class ReservationServiceTests
     {
         // Arrange
         var reservation = new ItemReservation { ItemReservationId = 1, ReservedUserId = 2 };
-        _mockReservationRepository.Setup(x => x.GetReservationEntityById(It.IsAny<int>())).Returns(reservation);
+        _mockReservationRepository
+            .Setup(x => x.GetReservationEntityById(It.IsAny<int>()))
+            .Returns(reservation);
 
         // Act
         var result = _reservationService.CancelReservation(1, 1);
@@ -241,7 +281,9 @@ public class ReservationServiceTests
         var reservation = new ItemReservation { ItemReservationId = 1, Status = "Reserved" };
 
         _mockUserRepository.Setup(x => x.GetUserEntityById(It.IsAny<int>())).Returns(clerk);
-        _mockReservationRepository.Setup(x => x.GetReservationEntityById(It.IsAny<int>())).Returns(reservation);
+        _mockReservationRepository
+            .Setup(x => x.GetReservationEntityById(It.IsAny<int>()))
+            .Returns(reservation);
 
         // Act
         var result = _reservationService.ReturnBorrowedItem(1, 1);
@@ -260,8 +302,11 @@ public class ReservationServiceTests
         var returnedReservation = new ItemReservationDetailedDTO();
 
         _mockUserRepository.Setup(x => x.GetUserEntityById(It.IsAny<int>())).Returns(clerk);
-        _mockReservationRepository.Setup(x => x.GetReservationEntityById(It.IsAny<int>())).Returns(reservation);
-        _mockReservationRepository.Setup(x => x.ReturnBorrowedItem(It.IsAny<ItemReservation>(), It.IsAny<User>()))
+        _mockReservationRepository
+            .Setup(x => x.GetReservationEntityById(It.IsAny<int>()))
+            .Returns(reservation);
+        _mockReservationRepository
+            .Setup(x => x.ReturnBorrowedItem(It.IsAny<ItemReservation>(), It.IsAny<User>()))
             .Returns(returnedReservation);
 
         // Act
@@ -271,5 +316,4 @@ public class ReservationServiceTests
         Assert.True(result.success);
         Assert.Equal(returnedReservation, result.result);
     }
-
 }

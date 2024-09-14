@@ -11,10 +11,10 @@ namespace IMS.Infrastructure.Extensions
             _serviceProvider = serviceProvider;
         }
 
-        public static T GetService<T>() where T : class
+        public static T GetService<T>()
+            where T : class
         {
             return _serviceProvider.GetService<T>();
         }
     }
-
 }

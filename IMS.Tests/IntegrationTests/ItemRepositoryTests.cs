@@ -1,8 +1,9 @@
 ﻿using IMS.Application.DTO;
 using IMS.Core.Model;
 using IMS.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 using IMS.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+
 namespace IMS.Tests.IntegrationTests;
 
 public class ItemRepositoryTests
@@ -22,9 +23,36 @@ public class ItemRepositoryTests
         var options = CreateNewContextOptions();
         using (var context = new DataBaseContext(options))
         {
-            context.labs.Add(new Lab { LabId = 1, LabName = "Lab1", LabCode = "5674", IsActive = true });
-            context.equipments.Add(new Equipment { EquipmentId = 1, Name = "Equipment1", Model = "Model1", ImageURL = "url", LabId = 1, IsActive = true });
-            context.items.Add(new Item { ItemId = 1, EquipmentId = 1, Status = "Available", SerialNumber = "RT234trhnefs", IsActive = true });
+            context.labs.Add(
+                new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "5674",
+                    IsActive = true,
+                }
+            );
+            context.equipments.Add(
+                new Equipment
+                {
+                    EquipmentId = 1,
+                    Name = "Equipment1",
+                    Model = "Model1",
+                    ImageURL = "url",
+                    LabId = 1,
+                    IsActive = true,
+                }
+            );
+            context.items.Add(
+                new Item
+                {
+                    ItemId = 1,
+                    EquipmentId = 1,
+                    Status = "Available",
+                    SerialNumber = "RT234trhnefs",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -46,9 +74,34 @@ public class ItemRepositoryTests
         var options = CreateNewContextOptions();
         using (var context = new DataBaseContext(options))
         {
-            context.items.Add(new Item { ItemId = 1, EquipmentId = 1, Status = "Available", SerialNumber = "RT234trhnefs", IsActive = true });
-            context.equipments.Add(new Equipment { EquipmentId = 1, Name = "Equipment1", Model = "Model1", ImageURL = "url", LabId = 1 });
-            context.labs.Add(new Lab { LabId = 1, LabName = "Lab1", LabCode = "5674" });
+            context.items.Add(
+                new Item
+                {
+                    ItemId = 1,
+                    EquipmentId = 1,
+                    Status = "Available",
+                    SerialNumber = "RT234trhnefs",
+                    IsActive = true,
+                }
+            );
+            context.equipments.Add(
+                new Equipment
+                {
+                    EquipmentId = 1,
+                    Name = "Equipment1",
+                    Model = "Model1",
+                    ImageURL = "url",
+                    LabId = 1,
+                }
+            );
+            context.labs.Add(
+                new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "5674",
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -67,7 +120,6 @@ public class ItemRepositoryTests
             Assert.Equal("RT234trhnefs", item.serialNumber);
             Assert.Equal("Available", item.status);
         }
-
     }
 
     // Test for GetAllItemDTOs
@@ -78,8 +130,26 @@ public class ItemRepositoryTests
         var options = CreateNewContextOptions();
         using (var context = new DataBaseContext(options))
         {
-            context.items.Add(new Item { ItemId = 1, EquipmentId = 1, Status = "Available", SerialNumber = "RT234trhnefs", IsActive = true });
-            context.equipments.Add(new Equipment { EquipmentId = 1, Name = "Equipment1", Model = "Model1", ImageURL = "url", LabId = 1 });
+            context.items.Add(
+                new Item
+                {
+                    ItemId = 1,
+                    EquipmentId = 1,
+                    Status = "Available",
+                    SerialNumber = "RT234trhnefs",
+                    IsActive = true,
+                }
+            );
+            context.equipments.Add(
+                new Equipment
+                {
+                    EquipmentId = 1,
+                    Name = "Equipment1",
+                    Model = "Model1",
+                    ImageURL = "url",
+                    LabId = 1,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -105,7 +175,16 @@ public class ItemRepositoryTests
         var options = CreateNewContextOptions();
         using (var context = new DataBaseContext(options))
         {
-            context.items.Add(new Item { ItemId = 1, EquipmentId = 1, Status = "Available", SerialNumber = "RT234trhnefs", IsActive = true });
+            context.items.Add(
+                new Item
+                {
+                    ItemId = 1,
+                    EquipmentId = 1,
+                    Status = "Available",
+                    SerialNumber = "RT234trhnefs",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -125,13 +204,34 @@ public class ItemRepositoryTests
         var options = CreateNewContextOptions();
         using (var context = new DataBaseContext(options))
         {
-            context.labs.Add(new Lab { LabId = 1, LabName = "Lab1", LabCode = "5674", IsActive = true });
-            context.equipments.Add(new Equipment { EquipmentId = 1, Name = "Equipment1", Model = "Model1", ImageURL = "url", LabId = 1, IsActive = true });
+            context.labs.Add(
+                new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "5674",
+                    IsActive = true,
+                }
+            );
+            context.equipments.Add(
+                new Equipment
+                {
+                    EquipmentId = 1,
+                    Name = "Equipment1",
+                    Model = "Model1",
+                    ImageURL = "url",
+                    LabId = 1,
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
             var repository = new ItemRepository(context);
-            var item = repository.CreateNewItem(new CreateItemDTO { equipmentId = 1, serialNumber = "RT234trhnefs" }, context.equipments.Find(1));
+            var item = repository.CreateNewItem(
+                new CreateItemDTO { equipmentId = 1, serialNumber = "RT234trhnefs" },
+                context.equipments.Find(1)
+            );
 
             // Assert
             Assert.NotNull(item);
@@ -154,16 +254,27 @@ public class ItemRepositoryTests
         var options = CreateNewContextOptions();
         using (var context = new DataBaseContext(options))
         {
-            context.equipments.Add(new Equipment { EquipmentId = 1, Name = "Equipment1", Model = "Model1", ImageURL = "url", LabId = 1 });
+            context.equipments.Add(
+                new Equipment
+                {
+                    EquipmentId = 1,
+                    Name = "Equipment1",
+                    Model = "Model1",
+                    ImageURL = "url",
+                    LabId = 1,
+                }
+            );
             context.SaveChanges();
 
             // Act
             var repository = new ItemRepository(context);
-            var item = repository.CreateNewItem(new CreateItemDTO { equipmentId = 1, serialNumber = "RT234trhnefs" }, context.equipments.Find(2));
+            var item = repository.CreateNewItem(
+                new CreateItemDTO { equipmentId = 1, serialNumber = "RT234trhnefs" },
+                context.equipments.Find(2)
+            );
 
             // Assert
             Assert.Null(item);
         }
     }
-
 }

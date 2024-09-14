@@ -1,8 +1,9 @@
 ﻿using IMS.Application.DTO;
 using IMS.Core.Model;
 using IMS.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 using IMS.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+
 namespace IMS.Tests.IntegrationTests;
 
 public class ReservationRepositoryTests
@@ -24,7 +25,20 @@ public class ReservationRepositoryTests
         {
             var repository = new ReservationRepository(context);
 
-            context.itemReservations.Add(new ItemReservation { ItemReservationId = 1, EquipmentId = 1, ItemId = 1, StartDate = DateTime.Parse("2024-10-01"),  EndDate = DateTime.Parse("2024-10-03"), ReservedUserId = 1, CreatedAt = DateTime.Now, Status = "Available", IsActive = true });
+            context.itemReservations.Add(
+                new ItemReservation
+                {
+                    ItemReservationId = 1,
+                    EquipmentId = 1,
+                    ItemId = 1,
+                    StartDate = DateTime.Parse("2024-10-01"),
+                    EndDate = DateTime.Parse("2024-10-03"),
+                    ReservedUserId = 1,
+                    CreatedAt = DateTime.Now,
+                    Status = "Available",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -36,7 +50,6 @@ public class ReservationRepositoryTests
             Assert.Equal(1, reservation.EquipmentId);
             Assert.Equal(1, reservation.ItemId);
             Assert.Equal(DateTime.Parse("2024-10-01"), reservation.StartDate);
-
         }
     }
 
@@ -50,22 +63,47 @@ public class ReservationRepositoryTests
         {
             var repository = new ReservationRepository(context);
 
-            var equipment = new Equipment { EquipmentId = 1, Name = "Equipment1", Model = "Model1", LabId = 1, Lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "12322" }, ImageURL = "image.jpg", IsActive = true };
-            var reservedUser = new User { UserId = 1, Email = "User@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Admin", IsActive = true };
-
-            context.itemReservations.Add(new ItemReservation
+            var equipment = new Equipment
             {
-                ItemReservationId = 1,
-                Equipment = equipment,
-                EquipmentId = equipment.EquipmentId,
-                StartDate = DateTime.Parse("2024-10-01"),
-                EndDate = DateTime.Parse("2024-10-03"),
-                ReservedUserId = reservedUser.UserId,
-                ReservedUser = reservedUser,
-                CreatedAt = DateTime.Now,
-                Status = "Pending",
-                IsActive = true
-            });
+                EquipmentId = 1,
+                Name = "Equipment1",
+                Model = "Model1",
+                LabId = 1,
+                Lab = new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "12322",
+                },
+                ImageURL = "image.jpg",
+                IsActive = true,
+            };
+            var reservedUser = new User
+            {
+                UserId = 1,
+                Email = "User@email.com",
+                FirstName = "John",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Admin",
+                IsActive = true,
+            };
+
+            context.itemReservations.Add(
+                new ItemReservation
+                {
+                    ItemReservationId = 1,
+                    Equipment = equipment,
+                    EquipmentId = equipment.EquipmentId,
+                    StartDate = DateTime.Parse("2024-10-01"),
+                    EndDate = DateTime.Parse("2024-10-03"),
+                    ReservedUserId = reservedUser.UserId,
+                    ReservedUser = reservedUser,
+                    CreatedAt = DateTime.Now,
+                    Status = "Pending",
+                    IsActive = true,
+                }
+            );
 
             context.SaveChanges();
 
@@ -90,10 +128,63 @@ public class ReservationRepositoryTests
         using (var context = new DataBaseContext(options))
         {
             var repository = new ReservationRepository(context);
-            var equipment = new Equipment { EquipmentId = 1, Name = "Equipment1", Model = "Model1", LabId = 1, Lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "12322" }, ImageURL = "image.jpg", IsActive = true };
-            var reservedUser = new User { UserId = 1, Email = "User@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Student", IsActive = true };
-            context.itemReservations.Add(new ItemReservation { ItemReservationId = 1, ItemId = 1, Equipment = equipment, EquipmentId = equipment.EquipmentId, StartDate = DateTime.Parse("2024-10-01"), EndDate = DateTime.Parse("2024-10-03"), ReservedUserId = reservedUser.UserId, ReservedUser = reservedUser, CreatedAt = DateTime.Now, Status = "Available", IsActive = true });
-            context.itemReservations.Add(new ItemReservation { ItemReservationId = 2, ItemId = 1, Equipment = equipment, EquipmentId = equipment.EquipmentId, StartDate = DateTime.Parse("2024-11-01"), EndDate = DateTime.Parse("2024-11-03"), ReservedUserId = reservedUser.UserId, ReservedUser = reservedUser, CreatedAt = DateTime.Now, Status = "Pending", IsActive = true });
+            var equipment = new Equipment
+            {
+                EquipmentId = 1,
+                Name = "Equipment1",
+                Model = "Model1",
+                LabId = 1,
+                Lab = new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "12322",
+                },
+                ImageURL = "image.jpg",
+                IsActive = true,
+            };
+            var reservedUser = new User
+            {
+                UserId = 1,
+                Email = "User@email.com",
+                FirstName = "John",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Student",
+                IsActive = true,
+            };
+            context.itemReservations.Add(
+                new ItemReservation
+                {
+                    ItemReservationId = 1,
+                    ItemId = 1,
+                    Equipment = equipment,
+                    EquipmentId = equipment.EquipmentId,
+                    StartDate = DateTime.Parse("2024-10-01"),
+                    EndDate = DateTime.Parse("2024-10-03"),
+                    ReservedUserId = reservedUser.UserId,
+                    ReservedUser = reservedUser,
+                    CreatedAt = DateTime.Now,
+                    Status = "Available",
+                    IsActive = true,
+                }
+            );
+            context.itemReservations.Add(
+                new ItemReservation
+                {
+                    ItemReservationId = 2,
+                    ItemId = 1,
+                    Equipment = equipment,
+                    EquipmentId = equipment.EquipmentId,
+                    StartDate = DateTime.Parse("2024-11-01"),
+                    EndDate = DateTime.Parse("2024-11-03"),
+                    ReservedUserId = reservedUser.UserId,
+                    ReservedUser = reservedUser,
+                    CreatedAt = DateTime.Now,
+                    Status = "Pending",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -115,10 +206,63 @@ public class ReservationRepositoryTests
         using (var context = new DataBaseContext(options))
         {
             var repository = new ReservationRepository(context);
-            var equipment = new Equipment { EquipmentId = 1, Name = "Equipment1", Model = "Model1", LabId = 1, Lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "12322" }, ImageURL = "image.jpg", IsActive = true };
-            var reservedUser = new User { UserId = 1, Email = "User@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Student", IsActive = true };
-            context.itemReservations.Add(new ItemReservation { ItemReservationId = 1, ItemId = 1, Equipment = equipment, EquipmentId = equipment.EquipmentId, StartDate = DateTime.Parse("2024-10-01"), EndDate = DateTime.Parse("2024-10-03"), ReservedUserId = reservedUser.UserId, ReservedUser = reservedUser, CreatedAt = DateTime.Now, Status = "Pending", IsActive = true });
-            context.itemReservations.Add(new ItemReservation { ItemReservationId = 2, ItemId = 1, Equipment = equipment, EquipmentId = equipment.EquipmentId, StartDate = DateTime.Parse("2024-11-01"), EndDate = DateTime.Parse("2024-11-03"), ReservedUserId = reservedUser.UserId, ReservedUser = reservedUser, CreatedAt = DateTime.Now, Status = "Completed", IsActive = true });
+            var equipment = new Equipment
+            {
+                EquipmentId = 1,
+                Name = "Equipment1",
+                Model = "Model1",
+                LabId = 1,
+                Lab = new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "12322",
+                },
+                ImageURL = "image.jpg",
+                IsActive = true,
+            };
+            var reservedUser = new User
+            {
+                UserId = 1,
+                Email = "User@email.com",
+                FirstName = "John",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Student",
+                IsActive = true,
+            };
+            context.itemReservations.Add(
+                new ItemReservation
+                {
+                    ItemReservationId = 1,
+                    ItemId = 1,
+                    Equipment = equipment,
+                    EquipmentId = equipment.EquipmentId,
+                    StartDate = DateTime.Parse("2024-10-01"),
+                    EndDate = DateTime.Parse("2024-10-03"),
+                    ReservedUserId = reservedUser.UserId,
+                    ReservedUser = reservedUser,
+                    CreatedAt = DateTime.Now,
+                    Status = "Pending",
+                    IsActive = true,
+                }
+            );
+            context.itemReservations.Add(
+                new ItemReservation
+                {
+                    ItemReservationId = 2,
+                    ItemId = 1,
+                    Equipment = equipment,
+                    EquipmentId = equipment.EquipmentId,
+                    StartDate = DateTime.Parse("2024-11-01"),
+                    EndDate = DateTime.Parse("2024-11-03"),
+                    ReservedUserId = reservedUser.UserId,
+                    ReservedUser = reservedUser,
+                    CreatedAt = DateTime.Now,
+                    Status = "Completed",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -139,10 +283,49 @@ public class ReservationRepositoryTests
         using (var context = new DataBaseContext(options))
         {
             var repository = new ReservationRepository(context);
-            var equipment = new Equipment { EquipmentId = 1, Name = "Projector", Model = "BenQ", LabId = 1, Lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "12322" }, IsActive = true };
-            var item = new Item { ItemId = 1, EquipmentId = 1, Equipment = equipment, Status = "Available", SerialNumber = "RT234trhnefs", IsActive = true };
-            var student = new User { UserId = 1, Email = "User2@email.com", FirstName = "Jane", LastName = "Doe", ContactNumber = "123452647", Role = "Student", IsActive = true };
-            var clerk = new User { UserId = 2, Email = "User@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Clerk", IsActive = true };
+            var equipment = new Equipment
+            {
+                EquipmentId = 1,
+                Name = "Projector",
+                Model = "BenQ",
+                LabId = 1,
+                Lab = new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "12322",
+                },
+                IsActive = true,
+            };
+            var item = new Item
+            {
+                ItemId = 1,
+                EquipmentId = 1,
+                Equipment = equipment,
+                Status = "Available",
+                SerialNumber = "RT234trhnefs",
+                IsActive = true,
+            };
+            var student = new User
+            {
+                UserId = 1,
+                Email = "User2@email.com",
+                FirstName = "Jane",
+                LastName = "Doe",
+                ContactNumber = "123452647",
+                Role = "Student",
+                IsActive = true,
+            };
+            var clerk = new User
+            {
+                UserId = 2,
+                Email = "User@email.com",
+                FirstName = "John",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Clerk",
+                IsActive = true,
+            };
 
             var reservation1 = new ItemReservation
             {
@@ -155,7 +338,7 @@ public class ReservationRepositoryTests
                 IsActive = true,
                 StartDate = DateTime.Now.AddDays(1),
                 EndDate = DateTime.Now.AddDays(2),
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
             };
 
             var reservation2 = new ItemReservation
@@ -174,7 +357,7 @@ public class ReservationRepositoryTests
                 StartDate = DateTime.Now.AddDays(3),
                 EndDate = DateTime.Now.AddDays(5),
                 CreatedAt = DateTime.Now.AddDays(-2),
-                RespondedAt = DateTime.Now.AddDays(-1)
+                RespondedAt = DateTime.Now.AddDays(-1),
             };
 
             context.equipments.Add(equipment);
@@ -193,7 +376,10 @@ public class ReservationRepositoryTests
             Assert.Equal(reservation1.ItemReservationId, pendingReservation.reservationId);
             Assert.Equal(equipment.EquipmentId, pendingReservation.equipmentId);
             Assert.Equal(equipment.Name, pendingReservation.itemName);
-            Assert.Equal(student.FirstName + " " + student.LastName, pendingReservation.reservedUserName);
+            Assert.Equal(
+                student.FirstName + " " + student.LastName,
+                pendingReservation.reservedUserName
+            );
             Assert.Equal("Pending", pendingReservation.status);
         }
     }
@@ -207,10 +393,49 @@ public class ReservationRepositoryTests
         using (var context = new DataBaseContext(options))
         {
             var repository = new ReservationRepository(context);
-            var equipment = new Equipment { EquipmentId = 1, Name = "Projector", Model = "BenQ", LabId = 1, Lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "12322" }, IsActive = true };
-            var item = new Item { ItemId = 1, EquipmentId = 1, Equipment = equipment, Status = "Available", SerialNumber = "RT234trhnefs", IsActive = true };
-            var student = new User { UserId = 1, Email = "User2@email.com", FirstName = "Jane", LastName = "Doe", ContactNumber = "123452647", Role = "Student", IsActive = true };
-            var clerk = new User { UserId = 2, Email = "User@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Clerk", IsActive = true };
+            var equipment = new Equipment
+            {
+                EquipmentId = 1,
+                Name = "Projector",
+                Model = "BenQ",
+                LabId = 1,
+                Lab = new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "12322",
+                },
+                IsActive = true,
+            };
+            var item = new Item
+            {
+                ItemId = 1,
+                EquipmentId = 1,
+                Equipment = equipment,
+                Status = "Available",
+                SerialNumber = "RT234trhnefs",
+                IsActive = true,
+            };
+            var student = new User
+            {
+                UserId = 1,
+                Email = "User2@email.com",
+                FirstName = "Jane",
+                LastName = "Doe",
+                ContactNumber = "123452647",
+                Role = "Student",
+                IsActive = true,
+            };
+            var clerk = new User
+            {
+                UserId = 2,
+                Email = "User@email.com",
+                FirstName = "John",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Clerk",
+                IsActive = true,
+            };
 
             var reservedReservation = new ItemReservation
             {
@@ -228,7 +453,7 @@ public class ReservationRepositoryTests
                 StartDate = DateTime.Now.AddDays(3),
                 EndDate = DateTime.Now.AddDays(5),
                 CreatedAt = DateTime.Now.AddDays(-2),
-                RespondedAt = DateTime.Now.AddDays(-1)
+                RespondedAt = DateTime.Now.AddDays(-1),
             };
 
             var nonReservedReservation = new ItemReservation
@@ -242,7 +467,7 @@ public class ReservationRepositoryTests
                 IsActive = true,
                 StartDate = DateTime.Now.AddDays(1),
                 EndDate = DateTime.Now.AddDays(2),
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
             };
 
             context.equipments.Add(equipment);
@@ -261,7 +486,10 @@ public class ReservationRepositoryTests
             Assert.Equal(reservedReservation.ItemReservationId, reservedResult.reservationId);
             Assert.Equal(equipment.EquipmentId, reservedResult.equipmentId);
             Assert.Equal(equipment.Name, reservedResult.itemName);
-            Assert.Equal(student.FirstName + " " + student.LastName, reservedResult.reservedUserName);
+            Assert.Equal(
+                student.FirstName + " " + student.LastName,
+                reservedResult.reservedUserName
+            );
             Assert.Equal("Reserved", reservedResult.status);
             Assert.Equal(reservedReservation.RespondedAt, reservedResult.respondedAt);
         }
@@ -276,10 +504,49 @@ public class ReservationRepositoryTests
         using (var context = new DataBaseContext(options))
         {
             var repository = new ReservationRepository(context);
-            var equipment = new Equipment { EquipmentId = 1, Name = "Projector", Model = "BenQ", LabId = 1, Lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "12322" }, IsActive = true };
-            var item = new Item { ItemId = 1, EquipmentId = 1, Equipment = equipment, Status = "Available", SerialNumber = "RT234trhnefs", IsActive = true };
-            var student = new User { UserId = 1, Email = "User2@email.com", FirstName = "Jane", LastName = "Doe", ContactNumber = "123452647", Role = "Student", IsActive = true };
-            var clerk = new User { UserId = 2, Email = "User@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Clerk", IsActive = true };
+            var equipment = new Equipment
+            {
+                EquipmentId = 1,
+                Name = "Projector",
+                Model = "BenQ",
+                LabId = 1,
+                Lab = new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "12322",
+                },
+                IsActive = true,
+            };
+            var item = new Item
+            {
+                ItemId = 1,
+                EquipmentId = 1,
+                Equipment = equipment,
+                Status = "Available",
+                SerialNumber = "RT234trhnefs",
+                IsActive = true,
+            };
+            var student = new User
+            {
+                UserId = 1,
+                Email = "User2@email.com",
+                FirstName = "Jane",
+                LastName = "Doe",
+                ContactNumber = "123452647",
+                Role = "Student",
+                IsActive = true,
+            };
+            var clerk = new User
+            {
+                UserId = 2,
+                Email = "User@email.com",
+                FirstName = "John",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Clerk",
+                IsActive = true,
+            };
 
             var borrowedReservation = new ItemReservation
             {
@@ -300,7 +567,7 @@ public class ReservationRepositoryTests
                 EndDate = DateTime.Now.AddDays(5),
                 CreatedAt = DateTime.Now.AddDays(-2),
                 RespondedAt = DateTime.Now.AddDays(-1),
-                BorrowedAt = DateTime.Now.AddDays(-1)
+                BorrowedAt = DateTime.Now.AddDays(-1),
             };
 
             var nonBorrowedReservation = new ItemReservation
@@ -314,7 +581,7 @@ public class ReservationRepositoryTests
                 IsActive = true,
                 StartDate = DateTime.Now.AddDays(1),
                 EndDate = DateTime.Now.AddDays(2),
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
             };
 
             context.equipments.Add(equipment);
@@ -333,12 +600,14 @@ public class ReservationRepositoryTests
             Assert.Equal(borrowedReservation.ItemReservationId, borrowedResult.reservationId);
             Assert.Equal(equipment.EquipmentId, borrowedResult.equipmentId);
             Assert.Equal(equipment.Name, borrowedResult.itemName);
-            Assert.Equal(student.FirstName + " " + student.LastName, borrowedResult.reservedUserName);
+            Assert.Equal(
+                student.FirstName + " " + student.LastName,
+                borrowedResult.reservedUserName
+            );
             Assert.Equal("Borrowed", borrowedResult.status);
             Assert.Equal(borrowedReservation.BorrowedAt, borrowedResult.borrowedAt);
         }
     }
-
 
     // Test for GetAllBorrowedReservationDTOsByStudent
     [Fact]
@@ -349,12 +618,89 @@ public class ReservationRepositoryTests
         using (var context = new DataBaseContext(options))
         {
             var repository = new ReservationRepository(context);
-            var equipment = new Equipment { EquipmentId = 1, Name = "Equipment1", Model = "Model1", LabId = 1, Lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "12322" }, ImageURL = "image.jpg", IsActive = true };
-            var reservedUser1 = new User { UserId = 1, Email = "User@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Student", IsActive = true };
-            var reservedUser2 = new User { UserId = 2, Email = "User2@email.com", FirstName = "Jane", LastName = "Doe", ContactNumber = "123453647", Role = "Student", IsActive = true };
-            context.itemReservations.Add(new ItemReservation { ItemReservationId = 1, ItemId = 1, Equipment = equipment, EquipmentId = equipment.EquipmentId, StartDate = DateTime.Parse("2024-10-01"), EndDate = DateTime.Parse("2024-10-03"), ReservedUserId = reservedUser1.UserId, ReservedUser = reservedUser1, CreatedAt = DateTime.Now, Status = "Borrowed", IsActive = true });
-            context.itemReservations.Add(new ItemReservation { ItemReservationId = 2, ItemId = 1, Equipment = equipment, EquipmentId = equipment.EquipmentId, StartDate = DateTime.Parse("2024-11-01"), EndDate = DateTime.Parse("2024-11-03"), ReservedUserId = reservedUser1.UserId, ReservedUser = reservedUser1, CreatedAt = DateTime.Now, Status = "Pending", IsActive = true });
-            context.itemReservations.Add(new ItemReservation { ItemReservationId = 3, ItemId = 1, Equipment = equipment, EquipmentId = equipment.EquipmentId, StartDate = DateTime.Parse("2024-11-05"), EndDate = DateTime.Parse("2024-11-07"), ReservedUserId = reservedUser2.UserId, ReservedUser = reservedUser2, CreatedAt = DateTime.Now, Status = "Borrowed", IsActive = true });
+            var equipment = new Equipment
+            {
+                EquipmentId = 1,
+                Name = "Equipment1",
+                Model = "Model1",
+                LabId = 1,
+                Lab = new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "12322",
+                },
+                ImageURL = "image.jpg",
+                IsActive = true,
+            };
+            var reservedUser1 = new User
+            {
+                UserId = 1,
+                Email = "User@email.com",
+                FirstName = "John",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Student",
+                IsActive = true,
+            };
+            var reservedUser2 = new User
+            {
+                UserId = 2,
+                Email = "User2@email.com",
+                FirstName = "Jane",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Student",
+                IsActive = true,
+            };
+            context.itemReservations.Add(
+                new ItemReservation
+                {
+                    ItemReservationId = 1,
+                    ItemId = 1,
+                    Equipment = equipment,
+                    EquipmentId = equipment.EquipmentId,
+                    StartDate = DateTime.Parse("2024-10-01"),
+                    EndDate = DateTime.Parse("2024-10-03"),
+                    ReservedUserId = reservedUser1.UserId,
+                    ReservedUser = reservedUser1,
+                    CreatedAt = DateTime.Now,
+                    Status = "Borrowed",
+                    IsActive = true,
+                }
+            );
+            context.itemReservations.Add(
+                new ItemReservation
+                {
+                    ItemReservationId = 2,
+                    ItemId = 1,
+                    Equipment = equipment,
+                    EquipmentId = equipment.EquipmentId,
+                    StartDate = DateTime.Parse("2024-11-01"),
+                    EndDate = DateTime.Parse("2024-11-03"),
+                    ReservedUserId = reservedUser1.UserId,
+                    ReservedUser = reservedUser1,
+                    CreatedAt = DateTime.Now,
+                    Status = "Pending",
+                    IsActive = true,
+                }
+            );
+            context.itemReservations.Add(
+                new ItemReservation
+                {
+                    ItemReservationId = 3,
+                    ItemId = 1,
+                    Equipment = equipment,
+                    EquipmentId = equipment.EquipmentId,
+                    StartDate = DateTime.Parse("2024-11-05"),
+                    EndDate = DateTime.Parse("2024-11-07"),
+                    ReservedUserId = reservedUser2.UserId,
+                    ReservedUser = reservedUser2,
+                    CreatedAt = DateTime.Now,
+                    Status = "Borrowed",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -376,11 +722,62 @@ public class ReservationRepositoryTests
         using (var context = new DataBaseContext(options))
         {
             var repository = new ReservationRepository(context);
-            var equipment = new Equipment { EquipmentId = 1, Name = "Projector", Model = "BenQ", LabId = 1, Lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "12322" }, IsActive = true };
-            var item = new Item { ItemId = 1, EquipmentId = 1, Equipment = equipment, Status = "Available", SerialNumber = "RT234trhnefs", IsActive = true };
-            var student = new User { UserId = 1, Email = "User2@email.com", FirstName = "Jane", LastName = "Doe", ContactNumber = "123452647", Role = "Student", IsActive = true };
-            var clerk = new User { UserId = 2, Email = "User@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Clerk", IsActive = true };
-            var reservation = new ItemReservation { ItemReservationId = 1, Equipment = equipment, EquipmentId = equipment.EquipmentId, StartDate = DateTime.Parse("2024-10-01"), EndDate = DateTime.Parse("2024-10-03"), ReservedUserId = student.UserId, ReservedUser = student, CreatedAt = DateTime.Now, Status = "Pending", IsActive = true };
+            var equipment = new Equipment
+            {
+                EquipmentId = 1,
+                Name = "Projector",
+                Model = "BenQ",
+                LabId = 1,
+                Lab = new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "12322",
+                },
+                IsActive = true,
+            };
+            var item = new Item
+            {
+                ItemId = 1,
+                EquipmentId = 1,
+                Equipment = equipment,
+                Status = "Available",
+                SerialNumber = "RT234trhnefs",
+                IsActive = true,
+            };
+            var student = new User
+            {
+                UserId = 1,
+                Email = "User2@email.com",
+                FirstName = "Jane",
+                LastName = "Doe",
+                ContactNumber = "123452647",
+                Role = "Student",
+                IsActive = true,
+            };
+            var clerk = new User
+            {
+                UserId = 2,
+                Email = "User@email.com",
+                FirstName = "John",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Clerk",
+                IsActive = true,
+            };
+            var reservation = new ItemReservation
+            {
+                ItemReservationId = 1,
+                Equipment = equipment,
+                EquipmentId = equipment.EquipmentId,
+                StartDate = DateTime.Parse("2024-10-01"),
+                EndDate = DateTime.Parse("2024-10-03"),
+                ReservedUserId = student.UserId,
+                ReservedUser = student,
+                CreatedAt = DateTime.Now,
+                Status = "Pending",
+                IsActive = true,
+            };
 
             var respondDTO = new RespondReservationDTO { };
 
@@ -411,10 +808,53 @@ public class ReservationRepositoryTests
         using (var context = new DataBaseContext(options))
         {
             var repository = new ReservationRepository(context);
-            var equipment = new Equipment { EquipmentId = 1, Name = "Projector", Model = "BenQ", LabId = 1, Lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "12322" }, IsActive = true };
-            var student = new User { UserId = 1, Email = "User2@email.com", FirstName = "Jane", LastName = "Doe", ContactNumber = "123452647", Role = "Student", IsActive = true };
-            var clerk = new User { UserId = 2, Email = "User@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Clerk", IsActive = true };
-            var reservation = new ItemReservation { ItemReservationId = 1, Equipment = equipment, EquipmentId = equipment.EquipmentId, StartDate = DateTime.Parse("2024-10-01"), EndDate = DateTime.Parse("2024-10-03"), ReservedUserId = student.UserId, ReservedUser = student, CreatedAt = DateTime.Now, Status = "Pending", IsActive = true };
+            var equipment = new Equipment
+            {
+                EquipmentId = 1,
+                Name = "Projector",
+                Model = "BenQ",
+                LabId = 1,
+                Lab = new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "12322",
+                },
+                IsActive = true,
+            };
+            var student = new User
+            {
+                UserId = 1,
+                Email = "User2@email.com",
+                FirstName = "Jane",
+                LastName = "Doe",
+                ContactNumber = "123452647",
+                Role = "Student",
+                IsActive = true,
+            };
+            var clerk = new User
+            {
+                UserId = 2,
+                Email = "User@email.com",
+                FirstName = "John",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Clerk",
+                IsActive = true,
+            };
+            var reservation = new ItemReservation
+            {
+                ItemReservationId = 1,
+                Equipment = equipment,
+                EquipmentId = equipment.EquipmentId,
+                StartDate = DateTime.Parse("2024-10-01"),
+                EndDate = DateTime.Parse("2024-10-03"),
+                ReservedUserId = student.UserId,
+                ReservedUser = student,
+                CreatedAt = DateTime.Now,
+                Status = "Pending",
+                IsActive = true,
+            };
             var respondDTO = new RespondReservationDTO { rejectNote = "Not available" };
 
             context.equipments.Add(equipment);
@@ -444,11 +884,67 @@ public class ReservationRepositoryTests
         using (var context = new DataBaseContext(options))
         {
             var repository = new ReservationRepository(context);
-            var equipment = new Equipment { EquipmentId = 1, Name = "Projector", Model = "BenQ", LabId = 1, Lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "12322" }, IsActive = true };
-            var item = new Item { ItemId = 1, EquipmentId = 1, Equipment = equipment, Status = "Available", SerialNumber = "RT234trhnefs", IsActive = true };
-            var student = new User { UserId = 1, Email = "User2@email.com", FirstName = "Jane", LastName = "Doe", ContactNumber = "123452647", Role = "Student", IsActive = true };
-            var clerk = new User { UserId = 2, Email = "User@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Clerk", IsActive = true };
-            var reservation = new ItemReservation { ItemReservationId = 1, Equipment = equipment, EquipmentId = equipment.EquipmentId, Item = item, ItemId = item.ItemId, StartDate = DateTime.Parse("2024-10-01"), EndDate = DateTime.Parse("2024-10-03"), ReservedUserId = student.UserId, ReservedUser = student, RespondedClerk = clerk, RespondedClerkId = clerk.UserId, RespondedAt = DateTime.Now, CreatedAt = DateTime.Now, Status = "Reserved", IsActive = true };
+            var equipment = new Equipment
+            {
+                EquipmentId = 1,
+                Name = "Projector",
+                Model = "BenQ",
+                LabId = 1,
+                Lab = new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "12322",
+                },
+                IsActive = true,
+            };
+            var item = new Item
+            {
+                ItemId = 1,
+                EquipmentId = 1,
+                Equipment = equipment,
+                Status = "Available",
+                SerialNumber = "RT234trhnefs",
+                IsActive = true,
+            };
+            var student = new User
+            {
+                UserId = 1,
+                Email = "User2@email.com",
+                FirstName = "Jane",
+                LastName = "Doe",
+                ContactNumber = "123452647",
+                Role = "Student",
+                IsActive = true,
+            };
+            var clerk = new User
+            {
+                UserId = 2,
+                Email = "User@email.com",
+                FirstName = "John",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Clerk",
+                IsActive = true,
+            };
+            var reservation = new ItemReservation
+            {
+                ItemReservationId = 1,
+                Equipment = equipment,
+                EquipmentId = equipment.EquipmentId,
+                Item = item,
+                ItemId = item.ItemId,
+                StartDate = DateTime.Parse("2024-10-01"),
+                EndDate = DateTime.Parse("2024-10-03"),
+                ReservedUserId = student.UserId,
+                ReservedUser = student,
+                RespondedClerk = clerk,
+                RespondedClerkId = clerk.UserId,
+                RespondedAt = DateTime.Now,
+                CreatedAt = DateTime.Now,
+                Status = "Reserved",
+                IsActive = true,
+            };
 
             context.items.Add(item);
             context.users.Add(clerk);
@@ -476,11 +972,67 @@ public class ReservationRepositoryTests
         using (var context = new DataBaseContext(options))
         {
             var repository = new ReservationRepository(context);
-            var equipment = new Equipment { EquipmentId = 1, Name = "Projector", Model = "BenQ", LabId = 1, Lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "12322" }, IsActive = true };
-            var item = new Item { ItemId = 1, EquipmentId = 1, Equipment = equipment, Status = "Available", SerialNumber = "RT234trhnefs", IsActive = true };
-            var student = new User { UserId = 1, Email = "User2@email.com", FirstName = "Jane", LastName = "Doe", ContactNumber = "123452647", Role = "Student", IsActive = true };
-            var clerk = new User { UserId = 2, Email = "User@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Clerk", IsActive = true };
-            var reservation = new ItemReservation { ItemReservationId = 1, Equipment = equipment, EquipmentId = equipment.EquipmentId, Item = item, ItemId = item.ItemId, StartDate = DateTime.Parse("2024-10-01"), EndDate = DateTime.Parse("2024-10-03"), ReservedUserId = student.UserId, ReservedUser = student, RespondedClerk = clerk, RespondedClerkId = clerk.UserId, RespondedAt = DateTime.Now, CreatedAt = DateTime.Now, Status = "Reserved", IsActive = true };
+            var equipment = new Equipment
+            {
+                EquipmentId = 1,
+                Name = "Projector",
+                Model = "BenQ",
+                LabId = 1,
+                Lab = new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "12322",
+                },
+                IsActive = true,
+            };
+            var item = new Item
+            {
+                ItemId = 1,
+                EquipmentId = 1,
+                Equipment = equipment,
+                Status = "Available",
+                SerialNumber = "RT234trhnefs",
+                IsActive = true,
+            };
+            var student = new User
+            {
+                UserId = 1,
+                Email = "User2@email.com",
+                FirstName = "Jane",
+                LastName = "Doe",
+                ContactNumber = "123452647",
+                Role = "Student",
+                IsActive = true,
+            };
+            var clerk = new User
+            {
+                UserId = 2,
+                Email = "User@email.com",
+                FirstName = "John",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Clerk",
+                IsActive = true,
+            };
+            var reservation = new ItemReservation
+            {
+                ItemReservationId = 1,
+                Equipment = equipment,
+                EquipmentId = equipment.EquipmentId,
+                Item = item,
+                ItemId = item.ItemId,
+                StartDate = DateTime.Parse("2024-10-01"),
+                EndDate = DateTime.Parse("2024-10-03"),
+                ReservedUserId = student.UserId,
+                ReservedUser = student,
+                RespondedClerk = clerk,
+                RespondedClerkId = clerk.UserId,
+                RespondedAt = DateTime.Now,
+                CreatedAt = DateTime.Now,
+                Status = "Reserved",
+                IsActive = true,
+            };
 
             context.items.Add(item);
             context.itemReservations.Add(reservation);
@@ -498,7 +1050,6 @@ public class ReservationRepositoryTests
         }
     }
 
-
     // Test for ReturnBorrowedItem
     [Fact]
     public void ReturnBorrowedItem_UpdatesStatusToReturned()
@@ -508,11 +1059,70 @@ public class ReservationRepositoryTests
         using (var context = new DataBaseContext(options))
         {
             var repository = new ReservationRepository(context);
-            var equipment = new Equipment { EquipmentId = 1, Name = "Projector", Model = "BenQ", LabId = 1, Lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "12322" }, IsActive = true };
-            var item = new Item { ItemId = 1, EquipmentId = 1, Equipment = equipment, Status = "Borrowed", SerialNumber = "RT234trhnefs", IsActive = true };
-            var student = new User { UserId = 1, Email = "User2@email.com", FirstName = "Jane", LastName = "Doe", ContactNumber = "123452647", Role = "Student", IsActive = true };
-            var clerk = new User { UserId = 2, Email = "User@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Clerk", IsActive = true };
-            var reservation = new ItemReservation { ItemReservationId = 1, Equipment = equipment, EquipmentId = equipment.EquipmentId, Item = item, ItemId = item.ItemId, StartDate = DateTime.Parse("2024-10-01"), EndDate = DateTime.Parse("2024-10-03"), ReservedUserId = student.UserId, ReservedUser = student, RespondedClerk = clerk, RespondedClerkId = clerk.UserId, RespondedAt = DateTime.Now, LentClerk = clerk, LentClerkId = clerk.UserId, BorrowedAt = DateTime.Now, CreatedAt = DateTime.Now, Status = "Borrowed", IsActive = true };
+            var equipment = new Equipment
+            {
+                EquipmentId = 1,
+                Name = "Projector",
+                Model = "BenQ",
+                LabId = 1,
+                Lab = new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "12322",
+                },
+                IsActive = true,
+            };
+            var item = new Item
+            {
+                ItemId = 1,
+                EquipmentId = 1,
+                Equipment = equipment,
+                Status = "Borrowed",
+                SerialNumber = "RT234trhnefs",
+                IsActive = true,
+            };
+            var student = new User
+            {
+                UserId = 1,
+                Email = "User2@email.com",
+                FirstName = "Jane",
+                LastName = "Doe",
+                ContactNumber = "123452647",
+                Role = "Student",
+                IsActive = true,
+            };
+            var clerk = new User
+            {
+                UserId = 2,
+                Email = "User@email.com",
+                FirstName = "John",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Clerk",
+                IsActive = true,
+            };
+            var reservation = new ItemReservation
+            {
+                ItemReservationId = 1,
+                Equipment = equipment,
+                EquipmentId = equipment.EquipmentId,
+                Item = item,
+                ItemId = item.ItemId,
+                StartDate = DateTime.Parse("2024-10-01"),
+                EndDate = DateTime.Parse("2024-10-03"),
+                ReservedUserId = student.UserId,
+                ReservedUser = student,
+                RespondedClerk = clerk,
+                RespondedClerkId = clerk.UserId,
+                RespondedAt = DateTime.Now,
+                LentClerk = clerk,
+                LentClerkId = clerk.UserId,
+                BorrowedAt = DateTime.Now,
+                CreatedAt = DateTime.Now,
+                Status = "Borrowed",
+                IsActive = true,
+            };
 
             context.items.Add(item);
             context.itemReservations.Add(reservation);
@@ -532,7 +1142,6 @@ public class ReservationRepositoryTests
         }
     }
 
-
     // Test for CheckTimeSlotAvailability
     [Fact]
     public void CheckTimeSlotAvailability_ReturnsFalseWhenTimeSlotIsOccupied()
@@ -542,19 +1151,57 @@ public class ReservationRepositoryTests
         using (var context = new DataBaseContext(options))
         {
             var repository = new ReservationRepository(context);
-            var equipment = new Equipment { EquipmentId = 1, Name = "Equipment1", Model = "Model1", LabId = 1, Lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "12322" }, ImageURL = "image.jpg", IsActive = true };
-            var reservedUser = new User { UserId = 1, Email = "User@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Admin", IsActive = true };
-            context.itemReservations.Add(new ItemReservation { ItemReservationId = 1, ItemId = 1, Equipment = equipment, EquipmentId = equipment.EquipmentId, StartDate = DateTime.Parse("2024-10-01"), EndDate = DateTime.Parse("2024-10-03"), ReservedUserId = reservedUser.UserId, ReservedUser = reservedUser, CreatedAt = DateTime.Now, Status = "Reserved", IsActive = true });
+            var equipment = new Equipment
+            {
+                EquipmentId = 1,
+                Name = "Equipment1",
+                Model = "Model1",
+                LabId = 1,
+                Lab = new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "12322",
+                },
+                ImageURL = "image.jpg",
+                IsActive = true,
+            };
+            var reservedUser = new User
+            {
+                UserId = 1,
+                Email = "User@email.com",
+                FirstName = "John",
+                LastName = "Doe",
+                ContactNumber = "123453647",
+                Role = "Admin",
+                IsActive = true,
+            };
+            context.itemReservations.Add(
+                new ItemReservation
+                {
+                    ItemReservationId = 1,
+                    ItemId = 1,
+                    Equipment = equipment,
+                    EquipmentId = equipment.EquipmentId,
+                    StartDate = DateTime.Parse("2024-10-01"),
+                    EndDate = DateTime.Parse("2024-10-03"),
+                    ReservedUserId = reservedUser.UserId,
+                    ReservedUser = reservedUser,
+                    CreatedAt = DateTime.Now,
+                    Status = "Reserved",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
-            var isAvailable = repository.CheckTimeSlotAvailability(DateTime.Parse("2024-10-02"), DateTime.Parse("2024-10-04"));
+            var isAvailable = repository.CheckTimeSlotAvailability(
+                DateTime.Parse("2024-10-02"),
+                DateTime.Parse("2024-10-04")
+            );
 
             // Assert
             Assert.False(isAvailable);
         }
     }
-
-
-
 }

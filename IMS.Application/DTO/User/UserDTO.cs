@@ -10,7 +10,10 @@ namespace IMS.Application.DTO
         public string? lastName { get; set; }
         public string? contactNumber { get; set; }
 
-        [RegularExpression(@"^(Clerk|Technician|Student|AcademicStaff|SystemAdmin)$", ErrorMessage = "ADD ERROR MESSAGE")]
+        [RegularExpression(
+            @"^(Clerk|Technician|Student|AcademicStaff|SystemAdmin)$",
+            ErrorMessage = "ADD ERROR MESSAGE"
+        )]
         public string role { get; set; }
     }
 }

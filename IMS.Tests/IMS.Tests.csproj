@@ -28,4 +28,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <Target Name="FormatCode" AfterTargets="Build">
+    <Exec Command="dotnet-csharpier $(ProjectDir)" />
+  </Target>
+
 </Project>

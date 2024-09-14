@@ -9,10 +9,7 @@ namespace IMS.Tests.Utilities
         {
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["Authorization"] = authorizationHeader;
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = httpContext
-            };
+            controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
         }
     }
 }

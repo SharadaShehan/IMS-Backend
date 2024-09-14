@@ -1,15 +1,19 @@
-﻿using IMS.Infrastructure.Services;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics;
 using IMS.Infrastructure.ScheduledJobs;
 using IMS.Infrastructure.Services;
-using System.Diagnostics;
+using IMS.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace IMS.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
         // Database Server Service
         var connectionString = configuration.GetConnectionString("DBConnection");
@@ -20,7 +24,7 @@ public static class ServiceCollectionExtensions
         {
             Endpoint = configuration.GetSection("AuthenticationServer")["Endpoint"],
             ClientId = configuration.GetSection("AuthenticationServer")["ClientId"],
-            ClientSecret = configuration.GetSection("AuthenticationServer")["ClientSecret"]
+            ClientSecret = configuration.GetSection("AuthenticationServer")["ClientSecret"],
         };
         services.AddSingleton<AuthServerContext>(sp => new AuthServerContext(authServerOptions));
 
@@ -37,6 +41,5 @@ public static class ServiceCollectionExtensions
             var containerName = configuration.GetSection("AzureBlobStorage")["ContainerName"];
             return new BlobStorageClient(connectionString, containerName);
         });
-
     }
 }

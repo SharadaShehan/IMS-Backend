@@ -1,10 +1,11 @@
-﻿using Xunit;
-using Moq;
-using IMS.Core.Model;
+﻿using System.Collections.Generic;
 using IMS.Application.DTO;
 using IMS.Application.Interfaces;
 using IMS.Application.Services;
-using System.Collections.Generic;
+using IMS.Core.Model;
+using Moq;
+using Xunit;
+
 namespace IMS.Tests.UnitTests;
 
 public class EquipmentServiceTests
@@ -17,7 +18,10 @@ public class EquipmentServiceTests
     {
         _mockEquipmentRepository = new Mock<IEquipmentRepository>();
         _mockLabRepository = new Mock<ILabRepository>();
-        _equipmentService = new EquipmentService(_mockEquipmentRepository.Object, _mockLabRepository.Object);
+        _equipmentService = new EquipmentService(
+            _mockEquipmentRepository.Object,
+            _mockLabRepository.Object
+        );
     }
 
     [Fact]
@@ -25,8 +29,20 @@ public class EquipmentServiceTests
     {
         // Arrange
         var equipmentId = 1;
-        var equipment = new EquipmentDetailedDTO { equipmentId = equipmentId, name = "Router", model = "Cisco", labId = 1, labName = "Network Lab", totalCount = 3, availableCount = 2, reservedCount = 0 };
-        _mockEquipmentRepository.Setup(repo => repo.GetEquipmentDTOById(equipmentId)).Returns(equipment);
+        var equipment = new EquipmentDetailedDTO
+        {
+            equipmentId = equipmentId,
+            name = "Router",
+            model = "Cisco",
+            labId = 1,
+            labName = "Network Lab",
+            totalCount = 3,
+            availableCount = 2,
+            reservedCount = 0,
+        };
+        _mockEquipmentRepository
+            .Setup(repo => repo.GetEquipmentDTOById(equipmentId))
+            .Returns(equipment);
 
         // Act
         var result = _equipmentService.GetEquipmentById(equipmentId);
@@ -44,8 +60,22 @@ public class EquipmentServiceTests
         // Create a list of EquipmentDTOs
         var equipments = new List<EquipmentDTO>
         {
-            new EquipmentDTO { equipmentId = 1, name = "Router", model = "Cisco", labId = 1, labName = "Network Lab" },
-            new EquipmentDTO { equipmentId = 2, name = "Switch", model = "Cisco", labId = 1, labName = "Network Lab" }
+            new EquipmentDTO
+            {
+                equipmentId = 1,
+                name = "Router",
+                model = "Cisco",
+                labId = 1,
+                labName = "Network Lab",
+            },
+            new EquipmentDTO
+            {
+                equipmentId = 2,
+                name = "Switch",
+                model = "Cisco",
+                labId = 1,
+                labName = "Network Lab",
+            },
         };
         _mockEquipmentRepository.Setup(repo => repo.GetAllEquipmentDTOs(labId)).Returns(equipments);
 
@@ -61,8 +91,15 @@ public class EquipmentServiceTests
     public void CreateNewEquipment_LabNotFound_ReturnsErrorResponse()
     {
         // Arrange
-        var createEquipmentDTO = new CreateEquipmentDTO { labId = 1, name = "Test", model = "Model" };
-        _mockLabRepository.Setup(repo => repo.GetLabEntityById(createEquipmentDTO.labId)).Returns((Lab)null);
+        var createEquipmentDTO = new CreateEquipmentDTO
+        {
+            labId = 1,
+            name = "Test",
+            model = "Model",
+        };
+        _mockLabRepository
+            .Setup(repo => repo.GetLabEntityById(createEquipmentDTO.labId))
+            .Returns((Lab)null);
 
         // Act
         var result = _equipmentService.CreateNewEquipment(createEquipmentDTO);
@@ -77,9 +114,24 @@ public class EquipmentServiceTests
     public void CreateNewEquipment_EquipmentAlreadyExists_ReturnsErrorResponse()
     {
         // Arrange
-        var createEquipmentDTO = new CreateEquipmentDTO { labId = 1, name = "Test", model = "Model" };
-        _mockLabRepository.Setup(repo => repo.GetLabEntityById(createEquipmentDTO.labId)).Returns(new Lab());
-        _mockEquipmentRepository.Setup(repo => repo.CheckIfEquipmentExists(createEquipmentDTO.name, createEquipmentDTO.model, createEquipmentDTO.labId)).Returns(true);
+        var createEquipmentDTO = new CreateEquipmentDTO
+        {
+            labId = 1,
+            name = "Test",
+            model = "Model",
+        };
+        _mockLabRepository
+            .Setup(repo => repo.GetLabEntityById(createEquipmentDTO.labId))
+            .Returns(new Lab());
+        _mockEquipmentRepository
+            .Setup(repo =>
+                repo.CheckIfEquipmentExists(
+                    createEquipmentDTO.name,
+                    createEquipmentDTO.model,
+                    createEquipmentDTO.labId
+                )
+            )
+            .Returns(true);
 
         // Act
         var result = _equipmentService.CreateNewEquipment(createEquipmentDTO);
@@ -94,11 +146,20 @@ public class EquipmentServiceTests
     public void CreateNewEquipment_Success_ReturnsCreatedEquipment()
     {
         // Arrange
-        var createEquipmentDTO = new CreateEquipmentDTO { labId = 1, name = "Test", model = "Model" };
+        var createEquipmentDTO = new CreateEquipmentDTO
+        {
+            labId = 1,
+            name = "Test",
+            model = "Model",
+        };
         var lab = new Lab();
         var equipmentDTO = new EquipmentDetailedDTO();
-        _mockLabRepository.Setup(repo => repo.GetLabEntityById(createEquipmentDTO.labId)).Returns(lab);
-        _mockEquipmentRepository.Setup(repo => repo.CreateNewEquipment(createEquipmentDTO, lab)).Returns(equipmentDTO);
+        _mockLabRepository
+            .Setup(repo => repo.GetLabEntityById(createEquipmentDTO.labId))
+            .Returns(lab);
+        _mockEquipmentRepository
+            .Setup(repo => repo.CreateNewEquipment(createEquipmentDTO, lab))
+            .Returns(equipmentDTO);
 
         // Act
         var result = _equipmentService.CreateNewEquipment(createEquipmentDTO);
@@ -115,7 +176,9 @@ public class EquipmentServiceTests
         // Arrange
         var equipmentId = 1;
         var updateEquipmentDTO = new UpdateEquipmentDTO();
-        _mockEquipmentRepository.Setup(repo => repo.GetEquipmentEntityById(equipmentId)).Returns((Equipment)null);
+        _mockEquipmentRepository
+            .Setup(repo => repo.GetEquipmentEntityById(equipmentId))
+            .Returns((Equipment)null);
 
         // Act
         var result = _equipmentService.UpdateEquipment(equipmentId, updateEquipmentDTO);
@@ -131,12 +194,39 @@ public class EquipmentServiceTests
     {
         // Arrange
         var equipmentId = 1;
-        var lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "ICE356", ImageURL = "url", IsActive = true };
-        var equipment = new Equipment { EquipmentId = equipmentId, Name = "Router", Model = "Cisco", LabId = 1, Lab = lab, IsActive = true };
+        var lab = new Lab
+        {
+            LabId = 1,
+            LabName = "Lab1",
+            LabCode = "ICE356",
+            ImageURL = "url",
+            IsActive = true,
+        };
+        var equipment = new Equipment
+        {
+            EquipmentId = equipmentId,
+            Name = "Router",
+            Model = "Cisco",
+            LabId = 1,
+            Lab = lab,
+            IsActive = true,
+        };
         var updateEquipmentDTO = new UpdateEquipmentDTO { imageURL = "url" };
-        var updatedEquipmentDTO = new EquipmentDetailedDTO { equipmentId = equipmentId, name = "Router", model = "Cisco", imageUrl = "url", labId = 1, labName = "Lab1" };
-        _mockEquipmentRepository.Setup(repo => repo.GetEquipmentEntityById(equipmentId)).Returns(equipment);
-        _mockEquipmentRepository.Setup(repo => repo.UpdateEquipment(equipment, updateEquipmentDTO)).Returns(updatedEquipmentDTO);
+        var updatedEquipmentDTO = new EquipmentDetailedDTO
+        {
+            equipmentId = equipmentId,
+            name = "Router",
+            model = "Cisco",
+            imageUrl = "url",
+            labId = 1,
+            labName = "Lab1",
+        };
+        _mockEquipmentRepository
+            .Setup(repo => repo.GetEquipmentEntityById(equipmentId))
+            .Returns(equipment);
+        _mockEquipmentRepository
+            .Setup(repo => repo.UpdateEquipment(equipment, updateEquipmentDTO))
+            .Returns(updatedEquipmentDTO);
 
         // Act
         var result = _equipmentService.UpdateEquipment(equipmentId, updateEquipmentDTO);
@@ -152,7 +242,9 @@ public class EquipmentServiceTests
     {
         // Arrange
         var equipmentId = 1;
-        _mockEquipmentRepository.Setup(repo => repo.GetEquipmentDTOById(equipmentId)).Returns((EquipmentDetailedDTO)null);
+        _mockEquipmentRepository
+            .Setup(repo => repo.GetEquipmentDTOById(equipmentId))
+            .Returns((EquipmentDetailedDTO)null);
 
         // Act
         var result = _equipmentService.DeleteEquipment(equipmentId);
@@ -169,7 +261,9 @@ public class EquipmentServiceTests
         // Arrange
         var equipmentId = 1;
         var equipmentDTO = new EquipmentDetailedDTO();
-        _mockEquipmentRepository.Setup(repo => repo.GetEquipmentDTOById(equipmentId)).Returns(equipmentDTO);
+        _mockEquipmentRepository
+            .Setup(repo => repo.GetEquipmentDTOById(equipmentId))
+            .Returns(equipmentDTO);
         _mockEquipmentRepository.Setup(repo => repo.DeleteEquipment(equipmentId)).Returns(true);
 
         // Act

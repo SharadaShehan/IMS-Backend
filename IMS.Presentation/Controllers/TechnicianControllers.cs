@@ -1,20 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using IMS.Presentation.Filters;
-using IMS.Application.DTO;
-using IMS.Presentation.Services;
+﻿using IMS.Application.DTO;
 using IMS.Application.Services;
+using IMS.Presentation.Filters;
+using IMS.Presentation.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IMS.Presentation.Controllers
 {
-	[Route("api/technician")]
+    [Route("api/technician")]
     [ApiController]
-	public class TechnicianController : ControllerBase
+    public class TechnicianController : ControllerBase
     {
         private readonly ITokenParser _tokenParser;
         private readonly ILogger<TechnicianController> _logger;
         private readonly MaintenanceService _maintenanceService;
 
-		public TechnicianController(ITokenParser tokenParser, ILogger<TechnicianController> logger, MaintenanceService maintenanceService)
+        public TechnicianController(
+            ITokenParser tokenParser,
+            ILogger<TechnicianController> logger,
+            MaintenanceService maintenanceService
+        )
         {
             _tokenParser = tokenParser;
             _logger = logger;
@@ -23,15 +27,23 @@ namespace IMS.Presentation.Controllers
 
         [HttpGet("maintenance")]
         [AuthorizationFilter(["Technician"])]
-        public async Task<ActionResult<List<MaintenanceDTO>>> ViewMaintenances([FromQuery] bool completed)
+        public async Task<ActionResult<List<MaintenanceDTO>>> ViewMaintenances(
+            [FromQuery] bool completed
+        )
         {
             try
             {
                 // Get the User from auth token
-                UserDTO? technicianDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
-                if (technicianDto == null) throw new Exception("Invalid Token/Authorization Header");
+                UserDTO? technicianDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (technicianDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Get the Maintenances
-                return _maintenanceService.GetAllMaintenancesByTechnicianId(technicianDto.userId, completed);
+                return _maintenanceService.GetAllMaintenancesByTechnicianId(
+                    technicianDto.userId,
+                    completed
+                );
             }
             catch (Exception ex)
             {
@@ -46,11 +58,16 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Get the User from auth token
-                UserDTO? technicianDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
-                if (technicianDto == null) throw new Exception("Invalid Token/Authorization Header");
+                UserDTO? technicianDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (technicianDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Borrow the Item
-                ResponseDTO<MaintenanceDetailedDTO> responseDTO = _maintenanceService.BorrowItemForMaintenance(id, technicianDto.userId);
-                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                ResponseDTO<MaintenanceDetailedDTO> responseDTO =
+                    _maintenanceService.BorrowItemForMaintenance(id, technicianDto.userId);
+                if (!responseDTO.success)
+                    return BadRequest(responseDTO.message);
                 return Ok(responseDTO.result);
             }
             catch (Exception ex)
@@ -61,22 +78,37 @@ namespace IMS.Presentation.Controllers
 
         [HttpPatch("maintenance/{id}")]
         [AuthorizationFilter(["Technician"])]
-        public async Task<ActionResult<MaintenanceDetailedDTO>> SubmitMaintenanceUpdate(int id, SubmitMaintenanceDTO submitMaintenanceDTO)
+        public async Task<ActionResult<MaintenanceDetailedDTO>> SubmitMaintenanceUpdate(
+            int id,
+            SubmitMaintenanceDTO submitMaintenanceDTO
+        )
         {
-            try {
+            try
+            {
                 // Validate the DTO
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
                 // Get the User from auth token
-                UserDTO? technicianDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
-                if (technicianDto == null) throw new Exception("Invalid Token/Authorization Header");
+                UserDTO? technicianDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (technicianDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Submit the Maintenance Update
-                ResponseDTO<MaintenanceDetailedDTO> responseDTO = _maintenanceService.SubmitMaintenanceUpdate(id, technicianDto.userId, submitMaintenanceDTO);
-                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                ResponseDTO<MaintenanceDetailedDTO> responseDTO =
+                    _maintenanceService.SubmitMaintenanceUpdate(
+                        id,
+                        technicianDto.userId,
+                        submitMaintenanceDTO
+                    );
+                if (!responseDTO.success)
+                    return BadRequest(responseDTO.message);
                 return Ok(responseDTO.result);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
-		}
-
-	}
+        }
+    }
 }

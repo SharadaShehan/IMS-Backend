@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using IMS.Presentation.Filters;
+﻿using System.Diagnostics;
 using IMS.Application.DTO;
-using IMS.Presentation.Services;
 using IMS.Application.Services;
+using IMS.Presentation.Filters;
+using IMS.Presentation.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IMS.Presentation.Controllers
 {
@@ -19,7 +19,15 @@ namespace IMS.Presentation.Controllers
         private readonly MaintenanceService _maintenanceService;
         private readonly ReservationService _reservationService;
 
-        public ClerkController(ITokenParser tokenParser, IQRTokenProvider qRTokenProvider, ILogger<ClerkController> logger, EquipmentService equipmentService, ItemService itemService, MaintenanceService maintenanceService, ReservationService reservationService)
+        public ClerkController(
+            ITokenParser tokenParser,
+            IQRTokenProvider qRTokenProvider,
+            ILogger<ClerkController> logger,
+            EquipmentService equipmentService,
+            ItemService itemService,
+            MaintenanceService maintenanceService,
+            ReservationService reservationService
+        )
         {
             _tokenParser = tokenParser;
             _qRTokenProvider = qRTokenProvider;
@@ -32,15 +40,20 @@ namespace IMS.Presentation.Controllers
 
         [HttpPost("equipments")]
         [AuthorizationFilter(["Clerk"])]
-        public async Task<ActionResult<EquipmentDetailedDTO>> CreateEquipment(CreateEquipmentDTO createEquipmentDTO)
+        public async Task<ActionResult<EquipmentDetailedDTO>> CreateEquipment(
+            CreateEquipmentDTO createEquipmentDTO
+        )
         {
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
                 // Create the Equipment
-                ResponseDTO<EquipmentDetailedDTO> responseDTO = _equipmentService.CreateNewEquipment(createEquipmentDTO);
-                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                ResponseDTO<EquipmentDetailedDTO> responseDTO =
+                    _equipmentService.CreateNewEquipment(createEquipmentDTO);
+                if (!responseDTO.success)
+                    return BadRequest(responseDTO.message);
                 return StatusCode(201, responseDTO.result);
             }
             catch (Exception ex)
@@ -51,15 +64,23 @@ namespace IMS.Presentation.Controllers
 
         [HttpPatch("equipments/{id}")]
         [AuthorizationFilter(["Clerk"])]
-        public async Task<ActionResult<EquipmentDetailedDTO>> UpdateEquipment(int id, UpdateEquipmentDTO updateEquipmentDTO)
+        public async Task<ActionResult<EquipmentDetailedDTO>> UpdateEquipment(
+            int id,
+            UpdateEquipmentDTO updateEquipmentDTO
+        )
         {
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
                 // Update the Equipment
-                ResponseDTO<EquipmentDetailedDTO> responseDTO = _equipmentService.UpdateEquipment(id, updateEquipmentDTO);
-                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                ResponseDTO<EquipmentDetailedDTO> responseDTO = _equipmentService.UpdateEquipment(
+                    id,
+                    updateEquipmentDTO
+                );
+                if (!responseDTO.success)
+                    return BadRequest(responseDTO.message);
                 return Ok(responseDTO.result);
             }
             catch (Exception ex)
@@ -75,8 +96,11 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Delete the Equipment
-                ResponseDTO<EquipmentDetailedDTO> responseDTO = _equipmentService.DeleteEquipment(id);
-                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                ResponseDTO<EquipmentDetailedDTO> responseDTO = _equipmentService.DeleteEquipment(
+                    id
+                );
+                if (!responseDTO.success)
+                    return BadRequest(responseDTO.message);
                 return NoContent();
             }
             catch (Exception ex)
@@ -92,10 +116,14 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
                 // Create the Item
-                ResponseDTO<ItemDetailedDTO> responseDTO = _itemService.CreateNewItem(createItemDTO);
-                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                ResponseDTO<ItemDetailedDTO> responseDTO = _itemService.CreateNewItem(
+                    createItemDTO
+                );
+                if (!responseDTO.success)
+                    return BadRequest(responseDTO.message);
                 return StatusCode(201, responseDTO.result);
             }
             catch (Exception ex)
@@ -112,7 +140,8 @@ namespace IMS.Presentation.Controllers
             {
                 // Delete the Item
                 ResponseDTO<ItemDetailedDTO> responseDTO = _itemService.DeleteItem(id);
-                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                if (!responseDTO.success)
+                    return BadRequest(responseDTO.message);
                 return NoContent();
             }
             catch (Exception ex)
@@ -123,18 +152,26 @@ namespace IMS.Presentation.Controllers
 
         [HttpPost("maintenance")]
         [AuthorizationFilter(["Clerk"])]
-        public async Task<ActionResult<MaintenanceDetailedDTO>> CreateMaintenance(CreateMaintenanceDTO createMaintenanceDTO)
+        public async Task<ActionResult<MaintenanceDetailedDTO>> CreateMaintenance(
+            CreateMaintenanceDTO createMaintenanceDTO
+        )
         {
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
                 // Get the User from the token
-                UserDTO? clerkDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
-                if (clerkDto == null) throw new Exception("Invalid Token/Authorization Header");
+                UserDTO? clerkDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (clerkDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Create the maintenance
-                ResponseDTO<MaintenanceDetailedDTO> responseDTO = _maintenanceService.CreateNewMaintenance(clerkDto.userId, createMaintenanceDTO);
-                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                ResponseDTO<MaintenanceDetailedDTO> responseDTO =
+                    _maintenanceService.CreateNewMaintenance(clerkDto.userId, createMaintenanceDTO);
+                if (!responseDTO.success)
+                    return BadRequest(responseDTO.message);
                 return StatusCode(201, responseDTO.result);
             }
             catch (Exception ex)
@@ -145,18 +182,31 @@ namespace IMS.Presentation.Controllers
 
         [HttpPatch("maintenance/{id}")]
         [AuthorizationFilter(["Clerk"])]
-        public async Task<ActionResult<MaintenanceDetailedDTO>> ReviewMaintenance(int id, ReviewMaintenanceDTO reviewMaintenanceDTO)
+        public async Task<ActionResult<MaintenanceDetailedDTO>> ReviewMaintenance(
+            int id,
+            ReviewMaintenanceDTO reviewMaintenanceDTO
+        )
         {
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
                 // Get the User from the token
-                UserDTO? clerkDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
-                if (clerkDto == null) throw new Exception("Invalid Token/Authorization Header");
+                UserDTO? clerkDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (clerkDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Review the maintenance
-                ResponseDTO<MaintenanceDetailedDTO> responseDTO = _maintenanceService.ReviewMaintenance(id, clerkDto.userId, reviewMaintenanceDTO);
-                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                ResponseDTO<MaintenanceDetailedDTO> responseDTO =
+                    _maintenanceService.ReviewMaintenance(
+                        id,
+                        clerkDto.userId,
+                        reviewMaintenanceDTO
+                    );
+                if (!responseDTO.success)
+                    return BadRequest(responseDTO.message);
                 return Ok(responseDTO.result);
             }
             catch (Exception ex)
@@ -167,7 +217,9 @@ namespace IMS.Presentation.Controllers
 
         [HttpGet("maintenance")]
         [AuthorizationFilter(["Clerk"])]
-        public async Task<ActionResult<List<MaintenanceDTO>>> ViewMaintenances([FromQuery] bool completed)
+        public async Task<ActionResult<List<MaintenanceDTO>>> ViewMaintenances(
+            [FromQuery] bool completed
+        )
         {
             try
             {
@@ -195,7 +247,11 @@ namespace IMS.Presentation.Controllers
 
         [HttpGet("reservations")]
         [AuthorizationFilter(["Clerk"])]
-        public async Task<ActionResult<List<ItemReservationDTO>>> ViewReservations([FromQuery] bool requested, [FromQuery] bool reserved, [FromQuery] bool borrowed)
+        public async Task<ActionResult<List<ItemReservationDTO>>> ViewReservations(
+            [FromQuery] bool requested,
+            [FromQuery] bool reserved,
+            [FromQuery] bool borrowed
+        )
         {
             try
             {
@@ -209,18 +265,31 @@ namespace IMS.Presentation.Controllers
 
         [HttpPatch("reservations/{id}")]
         [AuthorizationFilter(["Clerk"])]
-        public async Task<ActionResult<ItemReservationDetailedDTO>> RespondReservation(int id, RespondReservationDTO respondReservationDTO)
+        public async Task<ActionResult<ItemReservationDetailedDTO>> RespondReservation(
+            int id,
+            RespondReservationDTO respondReservationDTO
+        )
         {
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid) return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
                 // Get the User from the token
-                UserDTO? clerkDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
-                if (clerkDto == null) throw new Exception("Invalid Token/Authorization Header");
+                UserDTO? clerkDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (clerkDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Respond to the reservation
-                ResponseDTO<ItemReservationDetailedDTO> responseDTO = _reservationService.RespondToReservationRequest(id, clerkDto.userId, respondReservationDTO);
-                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                ResponseDTO<ItemReservationDetailedDTO> responseDTO =
+                    _reservationService.RespondToReservationRequest(
+                        id,
+                        clerkDto.userId,
+                        respondReservationDTO
+                    );
+                if (!responseDTO.success)
+                    return BadRequest(responseDTO.message);
                 return Ok(responseDTO.result);
             }
             catch (Exception ex)
@@ -231,28 +300,44 @@ namespace IMS.Presentation.Controllers
 
         [HttpPatch("reservations/{id}/verify")]
         [AuthorizationFilter(["Clerk"])]
-        public async Task<ActionResult<QRTokenValidatedDTO>> VerifyItemBorrowing(int id, [FromQuery] string token)
+        public async Task<ActionResult<QRTokenValidatedDTO>> VerifyItemBorrowing(
+            int id,
+            [FromQuery] string token
+        )
         {
             try
             {
                 // Get the User from the token
-                UserDTO? clerkDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
-                if (clerkDto == null) throw new Exception("Invalid Token/Authorization Header");
+                UserDTO? clerkDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (clerkDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Verify the token
                 DecodedQRToken decodedQRToken = await _qRTokenProvider.validateQRToken(token);
-                if (!decodedQRToken.success) return BadRequest(decodedQRToken.message);
-                if (decodedQRToken.eventId == null) return BadRequest("Invalid Token");
-                if (decodedQRToken.isReservation != true) return BadRequest("Invalid Token");
+                if (!decodedQRToken.success)
+                    return BadRequest(decodedQRToken.message);
+                if (decodedQRToken.eventId == null)
+                    return BadRequest("Invalid Token");
+                if (decodedQRToken.isReservation != true)
+                    return BadRequest("Invalid Token");
                 // Get the reservationDTO if Available
-                ItemReservationDetailedDTO? itemReservationDTO = _reservationService.GetReservationById(id);
-                if (itemReservationDTO == null) return BadRequest("Item not Available for Borrowing");
-                if (itemReservationDTO.status != "Reserved") return BadRequest("Item not Available for Borrowing");
+                ItemReservationDetailedDTO? itemReservationDTO =
+                    _reservationService.GetReservationById(id);
+                if (itemReservationDTO == null)
+                    return BadRequest("Item not Available for Borrowing");
+                if (itemReservationDTO.status != "Reserved")
+                    return BadRequest("Item not Available for Borrowing");
                 // Verify the reservation
-                if (decodedQRToken.userId != itemReservationDTO.reservedUserId) return BadRequest("Invalid Token");
-                if (decodedQRToken.eventId != itemReservationDTO.reservationId) return BadRequest("Invalid Token");
+                if (decodedQRToken.userId != itemReservationDTO.reservedUserId)
+                    return BadRequest("Invalid Token");
+                if (decodedQRToken.eventId != itemReservationDTO.reservationId)
+                    return BadRequest("Invalid Token");
                 // Borrow the item
-                ResponseDTO<ItemReservationDetailedDTO> responseDTO = _reservationService.BorrowReservedItem(id, clerkDto.userId);
-                if (!responseDTO.success) return BadRequest(responseDTO.message);
+                ResponseDTO<ItemReservationDetailedDTO> responseDTO =
+                    _reservationService.BorrowReservedItem(id, clerkDto.userId);
+                if (!responseDTO.success)
+                    return BadRequest(responseDTO.message);
                 return Ok(new QRTokenValidatedDTO());
             }
             catch (Exception ex)
@@ -268,15 +353,26 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Get the User from the token
-                UserDTO? clerkDto = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
-                if (clerkDto == null) throw new Exception("Invalid Token/Authorization Header");
+                UserDTO? clerkDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (clerkDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Get the reservation if Available
-                ItemReservationDetailedDTO? itemReservationDTO = _reservationService.GetReservationById(id);
-                if (itemReservationDTO == null) return BadRequest("Item not Available for Returning");
-                if (itemReservationDTO.status != "Borrowed") return BadRequest("Item not Available for Returning");
+                ItemReservationDetailedDTO? itemReservationDTO =
+                    _reservationService.GetReservationById(id);
+                if (itemReservationDTO == null)
+                    return BadRequest("Item not Available for Returning");
+                if (itemReservationDTO.status != "Borrowed")
+                    return BadRequest("Item not Available for Returning");
                 // Get the token
-                string? token = await _qRTokenProvider.getQRToken(itemReservationDTO.reservationId, clerkDto.userId, true);
-                if (token == null) return BadRequest("Token Generation Failed");
+                string? token = await _qRTokenProvider.getQRToken(
+                    itemReservationDTO.reservationId,
+                    clerkDto.userId,
+                    true
+                );
+                if (token == null)
+                    return BadRequest("Token Generation Failed");
                 // Return the token
                 return Ok(new QRTokenGeneratedDTO(token));
             }
@@ -285,7 +381,5 @@ namespace IMS.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }
-

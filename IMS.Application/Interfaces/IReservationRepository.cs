@@ -14,9 +14,21 @@ namespace IMS.Application.Interfaces
         List<ItemReservationDTO> GetAllBorrowedReservationDTOs();
         List<ItemReservationDTO> GetAllBorrowedReservationDTOsByStudent(int studentId);
         List<ItemReservationDTO> GetAllNonBorrowedReservationDTOsByStudent(int studentId);
-        ItemReservationDetailedDTO? RequestEquipmentReservation(Equipment equipment, User student, RequestEquipmentDTO requestEquipmentDTO);
-        ItemReservationDetailedDTO? AcceptEquipmentReservation(ItemReservation reservation, Item item, User clerk);
-        ItemReservationDetailedDTO? RejectEquipmentReservation(ItemReservation reservation, User clerk, RespondReservationDTO respondReservationDTO);
+        ItemReservationDetailedDTO? RequestEquipmentReservation(
+            Equipment equipment,
+            User student,
+            RequestEquipmentDTO requestEquipmentDTO
+        );
+        ItemReservationDetailedDTO? AcceptEquipmentReservation(
+            ItemReservation reservation,
+            Item item,
+            User clerk
+        );
+        ItemReservationDetailedDTO? RejectEquipmentReservation(
+            ItemReservation reservation,
+            User clerk,
+            RespondReservationDTO respondReservationDTO
+        );
         ItemReservationDetailedDTO? BorrowReservedItem(ItemReservation reservation, User clerk);
         ItemReservationDetailedDTO? CancelReservation(ItemReservation reservation);
         ItemReservationDetailedDTO? ReturnBorrowedItem(ItemReservation reservation, User clerk);

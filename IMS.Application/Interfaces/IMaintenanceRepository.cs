@@ -14,9 +14,21 @@ namespace IMS.Application.Interfaces
         List<MaintenanceDTO> GetAllNonCompletedMaintenanceDTOsByTechnicianId(int technicianId);
         List<PendingMaintenanceDTO> GetAllPendingMaintenanceDTOs();
         bool CheckTimeSlotAvailability(DateTime startDate, DateTime endDate);
-        MaintenanceDetailedDTO? CreateNewMaintenance(Item item, User clerk, User technician, CreateMaintenanceDTO createMaintenanceDTO);
+        MaintenanceDetailedDTO? CreateNewMaintenance(
+            Item item,
+            User clerk,
+            User technician,
+            CreateMaintenanceDTO createMaintenanceDTO
+        );
         MaintenanceDetailedDTO? BorrowItemForMaintenance(Maintenance maintenance);
-        MaintenanceDetailedDTO? SubmitMaintenanceUpdate(Maintenance maintenance, SubmitMaintenanceDTO submitMaintenanceDTO);
-        MaintenanceDetailedDTO? ReviewMaintenance(Maintenance maintenance, User clerk, ReviewMaintenanceDTO reviewMaintenanceDTO);
+        MaintenanceDetailedDTO? SubmitMaintenanceUpdate(
+            Maintenance maintenance,
+            SubmitMaintenanceDTO submitMaintenanceDTO
+        );
+        MaintenanceDetailedDTO? ReviewMaintenance(
+            Maintenance maintenance,
+            User clerk,
+            ReviewMaintenanceDTO reviewMaintenanceDTO
+        );
     }
 }

@@ -1,19 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Any;
 
 namespace IMS.Presentation.Controllers
 {
     [Route("")]
-	[ApiController]
-	public class TestControllers : ControllerBase
+    [ApiController]
+    public class TestControllers : ControllerBase
     {
-
-		[HttpGet("")]
+        [HttpGet("")]
         public IActionResult RedirectToTestAPI()
         {
             return RedirectToAction(nameof(TestAPI));
         }
-
 
         [HttpGet("api/test")]
         public async Task<IActionResult> TestAPI()
@@ -24,12 +21,13 @@ namespace IMS.Presentation.Controllers
                 {
                     message = "Welcome to the Test API",
                     status = "success",
-                    system = new {
+                    system = new
+                    {
                         version = "1.0.0",
                         name = "Inventory Management System for Computer Labourataries",
                         description = "This is a test API for the Inventory Management System for Computer Labourataries",
-                        author = "Group 22"
-                    }
+                        author = "Group 22",
+                    },
                 };
                 return Ok(welcomeText);
             }
@@ -38,6 +36,5 @@ namespace IMS.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

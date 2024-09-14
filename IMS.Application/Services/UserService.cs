@@ -1,6 +1,6 @@
-﻿using IMS.Core.Model;
+﻿using IMS.Application.DTO;
 using IMS.Application.Interfaces;
-using IMS.Application.DTO;
+using IMS.Core.Model;
 
 namespace IMS.Application.Services
 {
@@ -26,9 +26,9 @@ namespace IMS.Application.Services
         public ResponseDTO<UserDTO> UpdateUserRole(int userId, string roleName)
         {
             UserDTO? userDTO = _userRepository.UpdateUserRole(userId, roleName);
-            if (userDTO == null) return new ResponseDTO<UserDTO>("User Not Found");
+            if (userDTO == null)
+                return new ResponseDTO<UserDTO>("User Not Found");
             return new ResponseDTO<UserDTO>(userDTO);
         }
-
     }
 }

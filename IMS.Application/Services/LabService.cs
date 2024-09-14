@@ -1,6 +1,6 @@
-﻿using IMS.Core.Model;
+﻿using IMS.Application.DTO;
 using IMS.Application.Interfaces;
-using IMS.Application.DTO;
+using IMS.Core.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace IMS.Application.Services
@@ -27,10 +27,12 @@ namespace IMS.Application.Services
         public ResponseDTO<LabDTO> CreateNewLab(CreateLabDTO createLabDTO)
         {
             // Prevent Duplicate Lab Creation
-            if (_labRepository.CheckIfLabExists(createLabDTO.labName, createLabDTO.labCode)) return new ResponseDTO<LabDTO>("Lab Already Exists");
+            if (_labRepository.CheckIfLabExists(createLabDTO.labName, createLabDTO.labCode))
+                return new ResponseDTO<LabDTO>("Lab Already Exists");
             // Create the Lab
             LabDTO? labDTO = _labRepository.CreateNewLab(createLabDTO);
-            if (labDTO == null) return new ResponseDTO<LabDTO>("Failed to Create Lab");
+            if (labDTO == null)
+                return new ResponseDTO<LabDTO>("Failed to Create Lab");
             return new ResponseDTO<LabDTO>(labDTO);
         }
 
@@ -38,10 +40,12 @@ namespace IMS.Application.Services
         {
             // Get the Lab to be Updated
             Lab? lab = _labRepository.GetLabEntityById(id);
-            if (lab == null) return new ResponseDTO<LabDTO>("Lab Not Found");
+            if (lab == null)
+                return new ResponseDTO<LabDTO>("Lab Not Found");
             // Update the Lab
             LabDTO? updatedLabDTO = _labRepository.UpdateLab(lab, updateLabDTO);
-            if (updatedLabDTO == null) return new ResponseDTO<LabDTO>("Failed to Update Lab");
+            if (updatedLabDTO == null)
+                return new ResponseDTO<LabDTO>("Failed to Update Lab");
             return new ResponseDTO<LabDTO>(updatedLabDTO);
         }
 
@@ -49,11 +53,12 @@ namespace IMS.Application.Services
         {
             // Get the Lab to be Deleted
             LabDTO? labDTO = _labRepository.GetLabDTOById(id);
-            if (labDTO == null) return new ResponseDTO<LabDTO>("Lab Not Found");
+            if (labDTO == null)
+                return new ResponseDTO<LabDTO>("Lab Not Found");
             // Delete the Lab
-            if (!_labRepository.DeleteLab(id)) return new ResponseDTO<LabDTO>("Failed to Delete Lab");
+            if (!_labRepository.DeleteLab(id))
+                return new ResponseDTO<LabDTO>("Failed to Delete Lab");
             return new ResponseDTO<LabDTO>(labDTO);
         }
-
     }
 }

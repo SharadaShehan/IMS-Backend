@@ -1,6 +1,6 @@
-﻿using IMS.Core.Model;
+﻿using IMS.Application.DTO;
 using IMS.Application.Interfaces;
-using IMS.Application.DTO;
+using IMS.Core.Model;
 
 namespace IMS.Application.Services
 {
@@ -28,13 +28,23 @@ namespace IMS.Application.Services
         public ResponseDTO<ItemDetailedDTO> CreateNewItem(CreateItemDTO createItemDTO)
         {
             // Check if Equipment Exists
-            Equipment? equipment = _equipmentRepository.GetEquipmentEntityById(createItemDTO.equipmentId);
-            if (equipment == null) return new ResponseDTO<ItemDetailedDTO>("Equipment Not Found");
+            Equipment? equipment = _equipmentRepository.GetEquipmentEntityById(
+                createItemDTO.equipmentId
+            );
+            if (equipment == null)
+                return new ResponseDTO<ItemDetailedDTO>("Equipment Not Found");
             // Prevent Duplicate Item Creation
-            if (_itemRepository.CheckIfItemExists(createItemDTO.equipmentId, createItemDTO.serialNumber)) return new ResponseDTO<ItemDetailedDTO>("Item Already Exists");
+            if (
+                _itemRepository.CheckIfItemExists(
+                    createItemDTO.equipmentId,
+                    createItemDTO.serialNumber
+                )
+            )
+                return new ResponseDTO<ItemDetailedDTO>("Item Already Exists");
             // Create the Item
             ItemDetailedDTO? itemDTO = _itemRepository.CreateNewItem(createItemDTO, equipment);
-            if (itemDTO == null) return new ResponseDTO<ItemDetailedDTO>("Failed to Create Item");
+            if (itemDTO == null)
+                return new ResponseDTO<ItemDetailedDTO>("Failed to Create Item");
             return new ResponseDTO<ItemDetailedDTO>(itemDTO);
         }
 
@@ -42,11 +52,12 @@ namespace IMS.Application.Services
         {
             // Get the Item to be Deleted
             ItemDetailedDTO? itemDTO = _itemRepository.GetItemDTOById(id);
-            if (itemDTO == null) return new ResponseDTO<ItemDetailedDTO>("Item Not Found");
+            if (itemDTO == null)
+                return new ResponseDTO<ItemDetailedDTO>("Item Not Found");
             // Delete the Item
-            if (!_itemRepository.DeleteItem(id)) return new ResponseDTO<ItemDetailedDTO>("Failed to Delete Item");
+            if (!_itemRepository.DeleteItem(id))
+                return new ResponseDTO<ItemDetailedDTO>("Failed to Delete Item");
             return new ResponseDTO<ItemDetailedDTO>(itemDTO);
         }
-
     }
 }

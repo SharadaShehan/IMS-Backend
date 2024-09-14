@@ -1,5 +1,4 @@
-﻿
-namespace IMS.Application.DTO
+﻿namespace IMS.Application.DTO
 {
     public class ResponseDTO<T>
     {
@@ -19,8 +18,4 @@ namespace IMS.Application.DTO
             this.message = message;
         }
     }
-
 }
-
-
-

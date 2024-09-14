@@ -1,10 +1,11 @@
-﻿using Xunit;
-using Moq;
-using IMS.Core.Model;
+﻿using System.Collections.Generic;
 using IMS.Application.DTO;
 using IMS.Application.Interfaces;
 using IMS.Application.Services;
-using System.Collections.Generic;
+using IMS.Core.Model;
+using Moq;
+using Xunit;
+
 namespace IMS.Tests.UnitTests;
 
 public class LabServiceTests
@@ -23,7 +24,13 @@ public class LabServiceTests
     {
         // Arrange
         var labId = 1;
-        var labDTO = new LabDTO { labId = 1, labName = "Lab1", labCode = "ICE356", imageUrl = "url" };
+        var labDTO = new LabDTO
+        {
+            labId = 1,
+            labName = "Lab1",
+            labCode = "ICE356",
+            imageUrl = "url",
+        };
         _mockLabRepository.Setup(repo => repo.GetLabDTOById(labId)).Returns(labDTO);
 
         // Act
@@ -40,11 +47,7 @@ public class LabServiceTests
     public void GetAllLabs_ReturnsAllLabs()
     {
         // Arrange
-        var labs = new List<LabDTO> 
-        {
-            new LabDTO(),
-            new LabDTO(),
-        };
+        var labs = new List<LabDTO> { new LabDTO(), new LabDTO() };
         _mockLabRepository.Setup(repo => repo.GetAllLabDTOs()).Returns(labs);
 
         // Act
@@ -60,7 +63,9 @@ public class LabServiceTests
     {
         // Arrange
         var createLabDTO = new CreateLabDTO { labName = "TestLab", labCode = "TL01" };
-        _mockLabRepository.Setup(repo => repo.CheckIfLabExists(createLabDTO.labName, createLabDTO.labCode)).Returns(true);
+        _mockLabRepository
+            .Setup(repo => repo.CheckIfLabExists(createLabDTO.labName, createLabDTO.labCode))
+            .Returns(true);
 
         // Act
         var result = _labService.CreateNewLab(createLabDTO);
@@ -77,7 +82,9 @@ public class LabServiceTests
         // Arrange
         var createLabDTO = new CreateLabDTO { labName = "TestLab", labCode = "TL01" };
         var labDTO = new LabDTO();
-        _mockLabRepository.Setup(repo => repo.CheckIfLabExists(createLabDTO.labName, createLabDTO.labCode)).Returns(false);
+        _mockLabRepository
+            .Setup(repo => repo.CheckIfLabExists(createLabDTO.labName, createLabDTO.labCode))
+            .Returns(false);
         _mockLabRepository.Setup(repo => repo.CreateNewLab(createLabDTO)).Returns(labDTO);
 
         // Act

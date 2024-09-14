@@ -1,5 +1,4 @@
-﻿
-namespace IMS.Application.DTO
+﻿namespace IMS.Application.DTO
 {
     public class UpdateEquipmentDTO
     {
@@ -8,6 +7,5 @@ namespace IMS.Application.DTO
         public string? imageURL { get; set; }
         public string? specification { get; set; }
         public int? maintenanceIntervalDays { get; set; }
-        
     }
 }

@@ -21,34 +21,43 @@ namespace IMS.Infrastructure.Repositories
 
         public UserDTO? GetUserDTOById(int id)
         {
-            return _dbContext.users.Where(u => u.UserId == id && u.IsActive).Select(u => new UserDTO
-            {
-                userId = u.UserId,
-                email = u.Email,
-                firstName = u.FirstName,
-                lastName = u.LastName,
-                contactNumber = u.ContactNumber,
-                role = u.Role,
-            }).FirstOrDefault();
+            return _dbContext
+                .users.Where(u => u.UserId == id && u.IsActive)
+                .Select(u => new UserDTO
+                {
+                    userId = u.UserId,
+                    email = u.Email,
+                    firstName = u.FirstName,
+                    lastName = u.LastName,
+                    contactNumber = u.ContactNumber,
+                    role = u.Role,
+                })
+                .FirstOrDefault();
         }
 
         public List<UserDTO> GetAllUserDTOs()
         {
-            return _dbContext.users.Where(u => u.IsActive).Select(u => new UserDTO
-            {
-                userId = u.UserId,
-                email = u.Email,
-                firstName = u.FirstName,
-                lastName = u.LastName,
-                contactNumber = u.ContactNumber,
-                role = u.Role,
-            }).ToList();
+            return _dbContext
+                .users.Where(u => u.IsActive)
+                .Select(u => new UserDTO
+                {
+                    userId = u.UserId,
+                    email = u.Email,
+                    firstName = u.FirstName,
+                    lastName = u.LastName,
+                    contactNumber = u.ContactNumber,
+                    role = u.Role,
+                })
+                .ToList();
         }
 
         public UserDTO? UpdateUserRole(int userId, string roleName)
         {
-            User? user = _dbContext.users.Where(u => u.UserId == userId && u.IsActive).FirstOrDefault();
-            if (user == null) return null;
+            User? user = _dbContext
+                .users.Where(u => u.UserId == userId && u.IsActive)
+                .FirstOrDefault();
+            if (user == null)
+                return null;
             user.Role = roleName;
             _dbContext.Update(user);
             _dbContext.SaveChanges();
@@ -62,7 +71,5 @@ namespace IMS.Infrastructure.Repositories
                 role = user.Role,
             };
         }
-
     }
 }
-

@@ -26,5 +26,9 @@
     <ProjectReference Include="..\IMS.Application\IMS.Application.csproj" />
     <ProjectReference Include="..\IMS.Infrastructure\IMS.Infrastructure.csproj" />
   </ItemGroup>
+	
+  <Target Name="FormatCode" AfterTargets="Build">
+    <Exec Command="dotnet-csharpier $(ProjectDir)" />
+  </Target>
 
 </Project>

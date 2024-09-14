@@ -1,8 +1,8 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Diagnostics;
-using Microsoft.IdentityModel.Tokens;
+﻿using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IMS.Presentation.Services
 {
@@ -12,7 +12,7 @@ namespace IMS.Presentation.Services
         public Task<DecodedQRToken> validateQRToken(string token);
     }
 
-    public class QRTokenProvider: IQRTokenProvider
+    public class QRTokenProvider : IQRTokenProvider
     {
         private readonly string qRTokenSecret;
 
@@ -28,24 +28,34 @@ namespace IMS.Presentation.Services
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(qRTokenSecret);
                 var claims = new[] { new Claim("UserId" as string, userId.ToString() as string) };
-                if (isReservation) {
-                    claims.Append(new Claim("ReservationId" as string, eventId.ToString() as string));
-                } else {
-                    claims.Append(new Claim("MaintenanceId" as string, eventId.ToString() as string));
+                if (isReservation)
+                {
+                    claims.Append(
+                        new Claim("ReservationId" as string, eventId.ToString() as string)
+                    );
+                }
+                else
+                {
+                    claims.Append(
+                        new Claim("MaintenanceId" as string, eventId.ToString() as string)
+                    );
                 }
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(claims),
                     Expires = DateTime.UtcNow.AddMinutes(2),
                     SigningCredentials = new SigningCredentials(
-                        new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                        new SymmetricSecurityKey(key),
+                        SecurityAlgorithms.HmacSha256Signature
+                    ),
                 };
                 // Create token
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 // Return the generated token
                 return tokenHandler.WriteToken(token);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Debug.WriteLine(ex);
                 return null;
             }
@@ -67,11 +77,17 @@ namespace IMS.Presentation.Services
                         ValidateIssuer = false,
                         ValidateAudience = false,
                         ValidateLifetime = true,
-                        ClockSkew = TimeSpan.Zero // Remove default clock skew of 5 mins
+                        ClockSkew =
+                            TimeSpan.Zero // Remove default clock skew of 5 mins
+                        ,
                     };
 
                     // Validate the token and extract the claims
-                    var principal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+                    var principal = tokenHandler.ValidateToken(
+                        token,
+                        validationParameters,
+                        out SecurityToken validatedToken
+                    );
                     var claims = principal.Claims;
 
                     // Get the userId from the claims
@@ -79,13 +95,19 @@ namespace IMS.Presentation.Services
                     // Get the eventId from the claims
                     var eventId = claims.FirstOrDefault(x => x.Type == "EventId")?.Value;
                     // Get the isReservation from the claims
-                    var isReservation = claims.FirstOrDefault(x => x.Type == "IsReservation")?.Value;
+                    var isReservation = claims
+                        .FirstOrDefault(x => x.Type == "IsReservation")
+                        ?.Value;
 
                     // Check if the claims are not null
                     if (userId != null && eventId != null && isReservation != null)
                     {
                         // Return the decoded token
-                        return new DecodedQRToken(int.Parse(eventId), int.Parse(userId), bool.Parse(isReservation));
+                        return new DecodedQRToken(
+                            int.Parse(eventId),
+                            int.Parse(userId),
+                            bool.Parse(isReservation)
+                        );
                     }
                     else
                     {
@@ -108,7 +130,6 @@ namespace IMS.Presentation.Services
                 return new DecodedQRToken(ex.Message);
             }
         }
-
     }
 
     public class DecodedQRToken
@@ -118,6 +139,7 @@ namespace IMS.Presentation.Services
         public int? eventId { get; set; }
         public bool? isReservation { get; set; }
         public string? message { get; set; }
+
         public DecodedQRToken(int eventId, int userId, bool isReservation)
         {
             this.success = true;
@@ -125,6 +147,7 @@ namespace IMS.Presentation.Services
             this.eventId = eventId;
             this.isReservation = isReservation;
         }
+
         public DecodedQRToken(string message)
         {
             this.success = false;
