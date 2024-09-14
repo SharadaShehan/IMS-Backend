@@ -11,10 +11,12 @@ namespace IMS.Presentation.Controllers
 	public class ImgUploadControllers : ControllerBase
     {
 		private readonly IBlobStorageClient _blobStorageClient;
+        private readonly ILogger<ImgUploadControllers> _logger;
 
-		public ImgUploadControllers(IBlobStorageClient blobStorageClient)
+        public ImgUploadControllers(IBlobStorageClient blobStorageClient, ILogger<ImgUploadControllers> logger)
         {
             _blobStorageClient = blobStorageClient;
+            _logger = logger;
         }
 
 		[HttpPost("lab")]

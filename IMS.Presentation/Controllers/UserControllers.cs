@@ -11,6 +11,7 @@ namespace IMS.Presentation.Controllers
 	public class UserController: ControllerBase
     {
         private readonly ITokenParser _tokenParser;
+        private readonly ILogger<UserController> _logger;
         private readonly UserService _userService;
         private readonly LabService _labService;
         private readonly EquipmentService _equipmentService;
@@ -18,9 +19,10 @@ namespace IMS.Presentation.Controllers
         private readonly MaintenanceService _maintenanceService;
         private readonly ReservationService _reservationService;
 
-		public UserController(ITokenParser tokenParser, UserService userService, LabService labService, EquipmentService equipmentService, ItemService itemService, MaintenanceService maintenanceService, ReservationService reservationService)
+		public UserController(ITokenParser tokenParser, ILogger<UserController> logger, UserService userService, LabService labService, EquipmentService equipmentService, ItemService itemService, MaintenanceService maintenanceService, ReservationService reservationService)
         {
             _tokenParser = tokenParser;
+            _logger = logger;
             _userService = userService;
             _labService = labService;
             _equipmentService = equipmentService;

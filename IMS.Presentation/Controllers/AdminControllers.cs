@@ -14,12 +14,14 @@ namespace IMS.Presentation.Controllers
     {
 		private readonly DataBaseContext _dbContext;
         private readonly ITokenParser _tokenParser;
+        private readonly ILogger<AdminController> _logger;
         private readonly UserService _userService;
         private readonly LabService _labService;
 
-		public AdminController(DataBaseContext dbContext, ITokenParser tokenParser, UserService userService, LabService labService)
+		public AdminController(DataBaseContext dbContext, ILogger<AdminController> logger, ITokenParser tokenParser, UserService userService, LabService labService)
         {
             _dbContext = dbContext;
+            _logger = logger;
             _tokenParser = tokenParser;
             _userService = userService;
             _labService = labService;
