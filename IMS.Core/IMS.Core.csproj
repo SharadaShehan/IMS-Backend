@@ -6,4 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+	<Target Name="FormatCode" AfterTargets="Build">
+		<Exec Command="dotnet-csharpier $(ProjectDir)" />
+	</Target>
 </Project>

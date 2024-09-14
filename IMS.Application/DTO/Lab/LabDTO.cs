@@ -6,8 +6,10 @@ namespace IMS.Application.DTO
     {
         [Required]
         public int labId { get; set; }
+
         [Required]
         public string labName { get; set; }
+
         [Required]
         public string labCode { get; set; }
         public string? imageUrl { get; set; }

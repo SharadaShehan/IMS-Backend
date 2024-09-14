@@ -1,21 +1,25 @@
-﻿using Microsoft.Extensions.Hosting;
-using IMS.Infrastructure.Services;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics;
 using IMS.Core.Model;
+using IMS.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace IMS.Infrastructure.ScheduledJobs
 {
-	public class AuthServerPollingService: BackgroundService
+    public class AuthServerPollingService : BackgroundService
     {
         private readonly ILogger<AuthServerPollingService> _logger;
         private readonly AuthServerContext _authServerContext;
         private readonly IServiceProvider _serviceProvider;
         private readonly TimeSpan _interval = TimeSpan.FromMinutes(30);
 
-        public AuthServerPollingService(ILogger<AuthServerPollingService> logger, AuthServerContext context, IServiceProvider serviceProvider)
+        public AuthServerPollingService(
+            ILogger<AuthServerPollingService> logger,
+            AuthServerContext context,
+            IServiceProvider serviceProvider
+        )
         {
             _logger = logger;
             _authServerContext = context;
@@ -42,18 +46,19 @@ namespace IMS.Infrastructure.ScheduledJobs
             _logger.LogInformation("Executing work at: {time}", DateTimeOffset.Now);
 
             List<AuthUserDTO>? authUserDTOs = await _authServerContext.PollUserData();
-            if (authUserDTOs == null || !authUserDTOs.Any()) return;
+            if (authUserDTOs == null || !authUserDTOs.Any())
+                return;
 
             using (var scope = _serviceProvider.CreateScope()) // this will use `IServiceScopeFactory` internally
             {
                 var _dbContext = scope.ServiceProvider.GetService<DataBaseContext>();
-                
 
                 foreach (var authUser in authUserDTOs)
                 {
-                    
-                    User dbUser = await _dbContext.users.AsNoTracking().FirstOrDefaultAsync(dbUser => dbUser.Email == authUser.email);
-                    
+                    User dbUser = await _dbContext
+                        .users.AsNoTracking()
+                        .FirstOrDefaultAsync(dbUser => dbUser.Email == authUser.email);
+
                     // If user is not found in the database, create a new user
                     if (dbUser == null)
                     {
@@ -69,14 +74,17 @@ namespace IMS.Infrastructure.ScheduledJobs
                         _dbContext.users.Add(tempUserDTO);
                     }
                     // If user is found in the database and user data have changed, update the user
-                    else if ((dbUser.FirstName != authUser.firstName) || (dbUser.LastName != authUser.lastName) || (dbUser.ContactNumber != authUser.contactNumber))
+                    else if (
+                        (dbUser.FirstName != authUser.firstName)
+                        || (dbUser.LastName != authUser.lastName)
+                        || (dbUser.ContactNumber != authUser.contactNumber)
+                    )
                     {
                         dbUser.FirstName = authUser.firstName;
                         dbUser.LastName = authUser.lastName;
                         dbUser.ContactNumber = authUser.contactNumber;
                         _dbContext.users.Update(dbUser);
                     }
-
                 }
 
                 List<User> dbUserEntries = await _dbContext.users.ToListAsync();
@@ -93,8 +101,6 @@ namespace IMS.Infrastructure.ScheduledJobs
                 // Save changes to the database
                 await _dbContext.SaveChangesAsync();
             }
-
         }
-
     }
 }

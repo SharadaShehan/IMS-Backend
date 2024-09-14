@@ -1,5 +1,4 @@
-﻿
-namespace IMS.Application.DTO
+﻿namespace IMS.Application.DTO
 {
     public class CreateLabDTO
     {

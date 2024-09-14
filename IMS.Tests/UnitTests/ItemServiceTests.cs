@@ -1,10 +1,11 @@
-﻿using Xunit;
-using Moq;
-using IMS.Core.Model;
+﻿using System.Collections.Generic;
 using IMS.Application.DTO;
 using IMS.Application.Interfaces;
 using IMS.Application.Services;
-using System.Collections.Generic;
+using IMS.Core.Model;
+using Moq;
+using Xunit;
+
 namespace IMS.Tests.UnitTests;
 
 public class ItemServiceTests
@@ -41,7 +42,11 @@ public class ItemServiceTests
     {
         // Arrange
         var equipmentId = 1;
-        var items = new List<ItemDTO> { new ItemDTO { itemId = 1 }, new ItemDTO { itemId = 2 } };
+        var items = new List<ItemDTO>
+        {
+            new ItemDTO { itemId = 1 },
+            new ItemDTO { itemId = 2 },
+        };
         _mockItemRepository.Setup(repo => repo.GetAllItemDTOs(equipmentId)).Returns(items);
 
         // Act
@@ -57,7 +62,9 @@ public class ItemServiceTests
     {
         // Arrange
         var createItemDTO = new CreateItemDTO { equipmentId = 1, serialNumber = "SN001" };
-        _mockEquipmentRepository.Setup(repo => repo.GetEquipmentEntityById(createItemDTO.equipmentId)).Returns((Equipment)null);
+        _mockEquipmentRepository
+            .Setup(repo => repo.GetEquipmentEntityById(createItemDTO.equipmentId))
+            .Returns((Equipment)null);
 
         // Act
         var result = _itemService.CreateNewItem(createItemDTO);
@@ -73,8 +80,14 @@ public class ItemServiceTests
         // Arrange
         var createItemDTO = new CreateItemDTO { equipmentId = 1, serialNumber = "SN001" };
         var equipment = new Equipment();
-        _mockEquipmentRepository.Setup(repo => repo.GetEquipmentEntityById(createItemDTO.equipmentId)).Returns(equipment);
-        _mockItemRepository.Setup(repo => repo.CheckIfItemExists(createItemDTO.equipmentId, createItemDTO.serialNumber)).Returns(true);
+        _mockEquipmentRepository
+            .Setup(repo => repo.GetEquipmentEntityById(createItemDTO.equipmentId))
+            .Returns(equipment);
+        _mockItemRepository
+            .Setup(repo =>
+                repo.CheckIfItemExists(createItemDTO.equipmentId, createItemDTO.serialNumber)
+            )
+            .Returns(true);
 
         // Act
         var result = _itemService.CreateNewItem(createItemDTO);
@@ -91,9 +104,17 @@ public class ItemServiceTests
         var createItemDTO = new CreateItemDTO { equipmentId = 1, serialNumber = "SN001" };
         var equipment = new Equipment();
         var itemDTO = new ItemDetailedDTO();
-        _mockEquipmentRepository.Setup(repo => repo.GetEquipmentEntityById(createItemDTO.equipmentId)).Returns(equipment);
-        _mockItemRepository.Setup(repo => repo.CheckIfItemExists(createItemDTO.equipmentId, createItemDTO.serialNumber)).Returns(false);
-        _mockItemRepository.Setup(repo => repo.CreateNewItem(createItemDTO, equipment)).Returns(itemDTO);
+        _mockEquipmentRepository
+            .Setup(repo => repo.GetEquipmentEntityById(createItemDTO.equipmentId))
+            .Returns(equipment);
+        _mockItemRepository
+            .Setup(repo =>
+                repo.CheckIfItemExists(createItemDTO.equipmentId, createItemDTO.serialNumber)
+            )
+            .Returns(false);
+        _mockItemRepository
+            .Setup(repo => repo.CreateNewItem(createItemDTO, equipment))
+            .Returns(itemDTO);
 
         // Act
         var result = _itemService.CreateNewItem(createItemDTO);
@@ -108,7 +129,9 @@ public class ItemServiceTests
     {
         // Arrange
         var itemId = 1;
-        _mockItemRepository.Setup(repo => repo.GetItemDTOById(itemId)).Returns((ItemDetailedDTO)null);
+        _mockItemRepository
+            .Setup(repo => repo.GetItemDTOById(itemId))
+            .Returns((ItemDetailedDTO)null);
 
         // Act
         var result = _itemService.DeleteItem(itemId);

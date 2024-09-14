@@ -1,6 +1,6 @@
-﻿using FluentValidation;
+﻿using System.Text.RegularExpressions;
+using FluentValidation;
 using IMS.Application.DTO;
-using System.Text.RegularExpressions;
 
 namespace IMS.Presentation.Validators
 {
@@ -13,23 +13,30 @@ namespace IMS.Presentation.Validators
         {
             // Validate name
             RuleFor(x => x.name)
-                .NotEmpty().WithMessage("Equipment Name is required.")
-                .Matches(textPattern).WithMessage("Invalid Equipment Name. Must be between 2 and 20 characters.");
+                .NotEmpty()
+                .WithMessage("Equipment Name is required.")
+                .Matches(textPattern)
+                .WithMessage("Invalid Equipment Name. Must be between 2 and 20 characters.");
 
             // Validate model
             RuleFor(x => x.model)
-                .NotEmpty().WithMessage("Equipment Model is required.")
-                .Matches(textPattern).WithMessage("Invalid Equipment Model. Must be between 2 and 20 characters.");
+                .NotEmpty()
+                .WithMessage("Equipment Model is required.")
+                .Matches(textPattern)
+                .WithMessage("Invalid Equipment Model. Must be between 2 and 20 characters.");
 
             // Validate labId
             RuleFor(x => x.labId)
-                .GreaterThan(0).WithMessage("Invalid Lab Id. Lab Id must be a positive integer.");
+                .GreaterThan(0)
+                .WithMessage("Invalid Lab Id. Lab Id must be a positive integer.");
 
             // Validate imageURL (optional)
             RuleFor(x => x.imageURL)
                 .Cascade(CascadeMode.Stop)
                 .Must(x => string.IsNullOrEmpty(x) || Regex.IsMatch(x, imageUrlPattern))
-                .WithMessage("Invalid Image URL. Must be a valid URL ending with png, jpg, jpeg, or webp.")
+                .WithMessage(
+                    "Invalid Image URL. Must be a valid URL ending with png, jpg, jpeg, or webp."
+                )
                 .When(x => !string.IsNullOrEmpty(x.imageURL));
 
             // Validate specification (optional)
@@ -40,7 +47,8 @@ namespace IMS.Presentation.Validators
 
             // Validate maintenanceIntervalDays (optional)
             RuleFor(x => x.maintenanceIntervalDays)
-                .GreaterThan(0).When(x => x.maintenanceIntervalDays.HasValue)
+                .GreaterThan(0)
+                .When(x => x.maintenanceIntervalDays.HasValue)
                 .WithMessage("Maintenance Interval Days must be a positive integer.")
                 .When(x => x.maintenanceIntervalDays.HasValue);
         }

@@ -1,9 +1,10 @@
-﻿using Xunit;
-using Moq;
+﻿using System.Collections.Generic;
 using IMS.Application.DTO;
 using IMS.Application.Interfaces;
 using IMS.Application.Services;
-using System.Collections.Generic;
+using Moq;
+using Xunit;
+
 namespace IMS.Tests.UnitTests;
 
 public class UserServiceTests
@@ -51,7 +52,11 @@ public class UserServiceTests
     public void GetAllUsers_ReturnsAllUsers()
     {
         // Arrange
-        var users = new List<UserDTO> { new UserDTO { userId = 1 }, new UserDTO { userId = 2 } };
+        var users = new List<UserDTO>
+        {
+            new UserDTO { userId = 1 },
+            new UserDTO { userId = 2 },
+        };
         _mockUserRepository.Setup(repo => repo.GetAllUserDTOs()).Returns(users);
 
         // Act
@@ -68,7 +73,9 @@ public class UserServiceTests
         // Arrange
         var userId = 1;
         var roleName = "Admin";
-        _mockUserRepository.Setup(repo => repo.UpdateUserRole(userId, roleName)).Returns((UserDTO)null);
+        _mockUserRepository
+            .Setup(repo => repo.UpdateUserRole(userId, roleName))
+            .Returns((UserDTO)null);
 
         // Act
         var result = _userService.UpdateUserRole(userId, roleName);

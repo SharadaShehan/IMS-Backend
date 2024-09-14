@@ -1,8 +1,9 @@
 ﻿using IMS.Application.DTO;
 using IMS.Core.Model;
 using IMS.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 using IMS.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+
 namespace IMS.Tests.IntegrationTests;
 
 public class UserRepositoryTests
@@ -24,7 +25,18 @@ public class UserRepositoryTests
         {
             var repository = new UserRepository(context);
 
-            context.users.Add(new User { UserId = 1, Email = "me@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Admin", IsActive = true });
+            context.users.Add(
+                new User
+                {
+                    UserId = 1,
+                    Email = "me@email.com",
+                    FirstName = "John",
+                    LastName = "Doe",
+                    ContactNumber = "123453647",
+                    Role = "Admin",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -34,7 +46,6 @@ public class UserRepositoryTests
             Assert.NotNull(user);
             Assert.Equal("me@email.com", user.Email);
             Assert.True(user.IsActive);
-
         }
     }
 
@@ -66,7 +77,18 @@ public class UserRepositoryTests
         {
             var repository = new UserRepository(context);
 
-            context.users.Add(new User { UserId = 1, Email = "me@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Admin", IsActive = true });
+            context.users.Add(
+                new User
+                {
+                    UserId = 1,
+                    Email = "me@email.com",
+                    FirstName = "John",
+                    LastName = "Doe",
+                    ContactNumber = "123453647",
+                    Role = "Admin",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -109,9 +131,36 @@ public class UserRepositoryTests
             var repository = new UserRepository(context);
 
             context.users.AddRange(
-                new User { UserId = 1, Email = "user1@email.com", FirstName = "User1", LastName = "Lname", ContactNumber = "123453647", Role = "Admin", IsActive = true },
-                new User { UserId = 2, Email = "user2@email.com", FirstName = "User2", LastName = "Lname", ContactNumber = "123453647", Role = "Student", IsActive = true },
-                new User { UserId = 3, Email = "user3@email.com", FirstName = "User3", LastName = "Lname", ContactNumber = "123453647", Role = "Student", IsActive = false }
+                new User
+                {
+                    UserId = 1,
+                    Email = "user1@email.com",
+                    FirstName = "User1",
+                    LastName = "Lname",
+                    ContactNumber = "123453647",
+                    Role = "Admin",
+                    IsActive = true,
+                },
+                new User
+                {
+                    UserId = 2,
+                    Email = "user2@email.com",
+                    FirstName = "User2",
+                    LastName = "Lname",
+                    ContactNumber = "123453647",
+                    Role = "Student",
+                    IsActive = true,
+                },
+                new User
+                {
+                    UserId = 3,
+                    Email = "user3@email.com",
+                    FirstName = "User3",
+                    LastName = "Lname",
+                    ContactNumber = "123453647",
+                    Role = "Student",
+                    IsActive = false,
+                }
             );
             context.SaveChanges();
 
@@ -135,7 +184,18 @@ public class UserRepositoryTests
         {
             var repository = new UserRepository(context);
 
-            context.users.Add(new User { UserId = 1, Email = "me@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Clerk", IsActive = true });
+            context.users.Add(
+                new User
+                {
+                    UserId = 1,
+                    Email = "me@email.com",
+                    FirstName = "John",
+                    LastName = "Doe",
+                    ContactNumber = "123453647",
+                    Role = "Clerk",
+                    IsActive = true,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -175,7 +235,18 @@ public class UserRepositoryTests
         {
             var repository = new UserRepository(context);
 
-            context.users.Add(new User { UserId = 1, Email = "me@email.com", FirstName = "John", LastName = "Doe", ContactNumber = "123453647", Role = "Clerk", IsActive = false });
+            context.users.Add(
+                new User
+                {
+                    UserId = 1,
+                    Email = "me@email.com",
+                    FirstName = "John",
+                    LastName = "Doe",
+                    ContactNumber = "123453647",
+                    Role = "Clerk",
+                    IsActive = false,
+                }
+            );
             context.SaveChanges();
 
             // Act
@@ -185,5 +256,4 @@ public class UserRepositoryTests
             Assert.Null(updatedUser);
         }
     }
-
 }

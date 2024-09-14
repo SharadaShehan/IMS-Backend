@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using IMS.Application.DTO;
+﻿using IMS.Application.DTO;
+using IMS.Application.Services;
 using IMS.Presentation.Filters;
 using IMS.Presentation.Services;
-using IMS.Application.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IMS.Presentation.Controllers
 {
     [Route("api/user")]
-	[ApiController]
-	public class UserController: ControllerBase
+    [ApiController]
+    public class UserController : ControllerBase
     {
         private readonly ITokenParser _tokenParser;
         private readonly ILogger<UserController> _logger;
@@ -19,7 +19,16 @@ namespace IMS.Presentation.Controllers
         private readonly MaintenanceService _maintenanceService;
         private readonly ReservationService _reservationService;
 
-		public UserController(ITokenParser tokenParser, ILogger<UserController> logger, UserService userService, LabService labService, EquipmentService equipmentService, ItemService itemService, MaintenanceService maintenanceService, ReservationService reservationService)
+        public UserController(
+            ITokenParser tokenParser,
+            ILogger<UserController> logger,
+            UserService userService,
+            LabService labService,
+            EquipmentService equipmentService,
+            ItemService itemService,
+            MaintenanceService maintenanceService,
+            ReservationService reservationService
+        )
         {
             _tokenParser = tokenParser;
             _logger = logger;
@@ -35,9 +44,12 @@ namespace IMS.Presentation.Controllers
         [AuthorizationFilter(["Clerk", "Technician", "Student", "AcademicStaff", "SystemAdmin"])]
         public async Task<ActionResult<List<LabDTO>>> GetLabsList()
         {
-            try {
+            try
+            {
                 return _labService.GetAllLabs();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -46,9 +58,12 @@ namespace IMS.Presentation.Controllers
         [AuthorizationFilter(["Clerk", "Technician", "Student", "AcademicStaff", "SystemAdmin"])]
         public async Task<ActionResult<List<EquipmentDTO>>> GetEquipmentsList([FromQuery] int labId)
         {
-            try {
+            try
+            {
                 return _equipmentService.GetAllEquipments(labId);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -57,11 +72,17 @@ namespace IMS.Presentation.Controllers
         [AuthorizationFilter(["Clerk", "Technician", "Student", "AcademicStaff", "SystemAdmin"])]
         public async Task<ActionResult<EquipmentDetailedDTO>> GetDetailedEquipment(int id)
         {
-            try {
+            try
+            {
                 EquipmentDetailedDTO? equipment = _equipmentService.GetEquipmentById(id);
-                if (equipment == null) { return NotFound("Equipment Not Found"); }
+                if (equipment == null)
+                {
+                    return NotFound("Equipment Not Found");
+                }
                 return Ok(equipment);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -70,9 +91,12 @@ namespace IMS.Presentation.Controllers
         [AuthorizationFilter(["Clerk", "Technician", "SystemAdmin"])]
         public async Task<ActionResult<List<ItemDTO>>> GetItemsList([FromQuery] int equipmentId)
         {
-            try {
+            try
+            {
                 return _itemService.GetAllItems(equipmentId);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -81,22 +105,33 @@ namespace IMS.Presentation.Controllers
         [AuthorizationFilter(["Clerk", "Technician", "SystemAdmin"])]
         public async Task<ActionResult<ItemDetailedDTO>> GetDetailedItem(int id)
         {
-            try {
+            try
+            {
                 ItemDetailedDTO? item = _itemService.GetItemById(id);
-                if (item == null) { return NotFound("Item Not Found"); }
+                if (item == null)
+                {
+                    return NotFound("Item Not Found");
+                }
                 return Ok(item);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpGet("maintenances")]
         [AuthorizationFilter(["Clerk", "Technician", "SystemAdmin"])]
-        public async Task<ActionResult<List<MaintenanceDTO>>> GetMaintenancesList([FromQuery] int itemId)
+        public async Task<ActionResult<List<MaintenanceDTO>>> GetMaintenancesList(
+            [FromQuery] int itemId
+        )
         {
-            try {
+            try
+            {
                 return _maintenanceService.GetAllMaintenances(itemId);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -105,22 +140,33 @@ namespace IMS.Presentation.Controllers
         [AuthorizationFilter(["Clerk", "Technician", "SystemAdmin"])]
         public async Task<ActionResult<MaintenanceDetailedDTO>> ViewDetailedMaintenance(int id)
         {
-            try {
+            try
+            {
                 MaintenanceDetailedDTO? maintenance = _maintenanceService.GetMaintenanceById(id);
-                if (maintenance == null) { return NotFound("Maintenance Not Found"); }
+                if (maintenance == null)
+                {
+                    return NotFound("Maintenance Not Found");
+                }
                 return Ok(maintenance);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpGet("reservations")]
         [AuthorizationFilter(["Clerk", "Technician", "SystemAdmin"])]
-        public async Task<ActionResult<List<ItemReservationDTO>>> GetReservationsList([FromQuery] int itemId)
+        public async Task<ActionResult<List<ItemReservationDTO>>> GetReservationsList(
+            [FromQuery] int itemId
+        )
         {
-            try {
+            try
+            {
                 return _reservationService.GetAllReservations(itemId);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -129,29 +175,41 @@ namespace IMS.Presentation.Controllers
         [AuthorizationFilter(["Clerk", "Technician", "SystemAdmin"])]
         public async Task<ActionResult<ItemReservationDetailedDTO>> ViewDetailedReservation(int id)
         {
-            try {
-                ItemReservationDetailedDTO? reservation = _reservationService.GetReservationById(id);
-                if (reservation == null) { return NotFound("Reservation Not Found"); }
+            try
+            {
+                ItemReservationDetailedDTO? reservation = _reservationService.GetReservationById(
+                    id
+                );
+                if (reservation == null)
+                {
+                    return NotFound("Reservation Not Found");
+                }
                 return Ok(reservation);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpGet("role")]
-		[AuthorizationFilter(["Clerk", "Technician", "Student", "AcademicStaff", "SystemAdmin"])]
+        [AuthorizationFilter(["Clerk", "Technician", "Student", "AcademicStaff", "SystemAdmin"])]
         public async Task<ActionResult<UserRoleDTO>> GetUserRole()
-		{
-            try {
+        {
+            try
+            {
                 // Get the User from the auth token
-                UserDTO? user = await _tokenParser.getUser(HttpContext.Request.Headers["Authorization"].FirstOrDefault());
-                if (user == null) throw new Exception("Invalid Token/Authorization Header");
+                UserDTO? user = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (user == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 return Ok(new UserRoleDTO(user.role));
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
-		}
-
-
-	}
+        }
+    }
 }

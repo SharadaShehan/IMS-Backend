@@ -1,5 +1,4 @@
-﻿
-namespace IMS.Application.DTO
+﻿namespace IMS.Application.DTO
 {
     public class CreateMaintenanceDTO
     {
@@ -8,6 +7,5 @@ namespace IMS.Application.DTO
         public DateTime endDate { get; set; }
         public int technicianId { get; set; }
         public string taskDescription { get; set; }
-        
     }
 }

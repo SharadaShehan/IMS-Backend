@@ -1,8 +1,9 @@
 ﻿using IMS.Application.DTO;
 using IMS.Core.Model;
 using IMS.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 using IMS.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+
 namespace IMS.Tests.IntegrationTests;
 
 public class EquipmentRepositoryTests
@@ -26,8 +27,20 @@ public class EquipmentRepositoryTests
 
             var equipmentList = new List<Equipment>
             {
-                new Equipment { EquipmentId = 1, Name = "Microscope", Model = "GS", IsActive = true },
-                new Equipment { EquipmentId = 2, Name = "Oscilloscope", Model = "GS", IsActive = true }
+                new Equipment
+                {
+                    EquipmentId = 1,
+                    Name = "Microscope",
+                    Model = "GS",
+                    IsActive = true,
+                },
+                new Equipment
+                {
+                    EquipmentId = 2,
+                    Name = "Oscilloscope",
+                    Model = "GS",
+                    IsActive = true,
+                },
             };
             await context.equipments.AddRangeAsync(equipmentList);
             await context.SaveChangesAsync();
@@ -52,15 +65,48 @@ public class EquipmentRepositoryTests
         {
             var equipmentRepository = new EquipmentRepository(context);
 
-            var lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "123", IsActive = true };
+            var lab = new Lab
+            {
+                LabId = 1,
+                LabName = "Lab1",
+                LabCode = "123",
+                IsActive = true,
+            };
             var equipmentList = new List<Equipment>
             {
-                new Equipment { EquipmentId = 1, Name = "Microscope", Model = "GS", Lab = lab, IsActive = true, LabId = 1, Specification = "Spec1", MaintenanceIntervalDays = 30 },
-                new Equipment { EquipmentId = 2, Name = "Oscilloscope", Model = "GS", Lab = lab, IsActive = true, LabId = 2, Specification = "Spec2", MaintenanceIntervalDays = 60 }
+                new Equipment
+                {
+                    EquipmentId = 1,
+                    Name = "Microscope",
+                    Model = "GS",
+                    Lab = lab,
+                    IsActive = true,
+                    LabId = 1,
+                    Specification = "Spec1",
+                    MaintenanceIntervalDays = 30,
+                },
+                new Equipment
+                {
+                    EquipmentId = 2,
+                    Name = "Oscilloscope",
+                    Model = "GS",
+                    Lab = lab,
+                    IsActive = true,
+                    LabId = 2,
+                    Specification = "Spec2",
+                    MaintenanceIntervalDays = 60,
+                },
             };
             var itemList = new List<Item>
             {
-                new Item { ItemId = 1, EquipmentId = 1, Status = "Available", SerialNumber = "RT234trhnefs", IsActive = true },
+                new Item
+                {
+                    ItemId = 1,
+                    EquipmentId = 1,
+                    Status = "Available",
+                    SerialNumber = "RT234trhnefs",
+                    IsActive = true,
+                },
                 // additional items
             };
             await context.labs.AddAsync(lab);
@@ -93,13 +139,45 @@ public class EquipmentRepositoryTests
 
             var labsList = new List<Lab>
             {
-                new Lab { LabId = 1, LabName = "Lab1", LabCode = "1234", IsActive = true },
-                new Lab { LabId = 2, LabName = "Lab2", LabCode = "1457", IsActive = true }
+                new Lab
+                {
+                    LabId = 1,
+                    LabName = "Lab1",
+                    LabCode = "1234",
+                    IsActive = true,
+                },
+                new Lab
+                {
+                    LabId = 2,
+                    LabName = "Lab2",
+                    LabCode = "1457",
+                    IsActive = true,
+                },
             };
             var equipmentList = new List<Equipment>
             {
-                new Equipment { EquipmentId = 1, Name = "Microscope", Model = "GS", Lab = labsList[0], IsActive = true, LabId = 1, Specification = "Spec1", MaintenanceIntervalDays = 30 },
-                new Equipment { EquipmentId = 3, Name = "Spectrometer", Model = "GS", Lab = labsList[1], IsActive = true, LabId = 2, Specification = "Spec3", MaintenanceIntervalDays = 90 }
+                new Equipment
+                {
+                    EquipmentId = 1,
+                    Name = "Microscope",
+                    Model = "GS",
+                    Lab = labsList[0],
+                    IsActive = true,
+                    LabId = 1,
+                    Specification = "Spec1",
+                    MaintenanceIntervalDays = 30,
+                },
+                new Equipment
+                {
+                    EquipmentId = 3,
+                    Name = "Spectrometer",
+                    Model = "GS",
+                    Lab = labsList[1],
+                    IsActive = true,
+                    LabId = 2,
+                    Specification = "Spec3",
+                    MaintenanceIntervalDays = 90,
+                },
             };
             await context.labs.AddRangeAsync(labsList);
             await context.equipments.AddRangeAsync(equipmentList);
@@ -129,8 +207,22 @@ public class EquipmentRepositoryTests
 
             var equipmentList = new List<Equipment>
             {
-                new Equipment { EquipmentId = 1, Name = "Microscope", Model = "GS", LabId = 1, IsActive = true },
-                new Equipment { EquipmentId = 2, Name = "Oscilloscope", Model = "GS", LabId = 2, IsActive = true }
+                new Equipment
+                {
+                    EquipmentId = 1,
+                    Name = "Microscope",
+                    Model = "GS",
+                    LabId = 1,
+                    IsActive = true,
+                },
+                new Equipment
+                {
+                    EquipmentId = 2,
+                    Name = "Oscilloscope",
+                    Model = "GS",
+                    LabId = 2,
+                    IsActive = true,
+                },
             };
             await context.equipments.AddRangeAsync(equipmentList);
             await context.SaveChangesAsync();
@@ -153,7 +245,13 @@ public class EquipmentRepositoryTests
         {
             var equipmentRepository = new EquipmentRepository(context);
 
-            var lab = new Lab { LabId = 1, LabName = "Lab1", LabCode = "123", IsActive = true };
+            var lab = new Lab
+            {
+                LabId = 1,
+                LabName = "Lab1",
+                LabCode = "123",
+                IsActive = true,
+            };
             await context.labs.AddAsync(lab);
             await context.SaveChangesAsync();
 
@@ -164,7 +262,7 @@ public class EquipmentRepositoryTests
                 labId = 1,
                 imageURL = "imageURL",
                 specification = "Spec1",
-                maintenanceIntervalDays = 30
+                maintenanceIntervalDays = 30,
             };
 
             // Act
@@ -192,7 +290,7 @@ public class EquipmentRepositoryTests
                 LabId = 1,
                 LabName = "Lab1",
                 LabCode = "123",
-                IsActive = true
+                IsActive = true,
             };
 
             var equipment = new Equipment
@@ -205,7 +303,7 @@ public class EquipmentRepositoryTests
                 ImageURL = "imageURL",
                 Specification = "Spec1",
                 MaintenanceIntervalDays = 30,
-                IsActive = true
+                IsActive = true,
             };
 
             await context.labs.AddAsync(lab);
@@ -216,7 +314,7 @@ public class EquipmentRepositoryTests
             {
                 name = "Microscope2",
                 model = "GS2",
-                imageURL = "imageURL2"
+                imageURL = "imageURL2",
             };
 
             var equipmentRepository = new EquipmentRepository(context);
@@ -236,5 +334,4 @@ public class EquipmentRepositoryTests
             Assert.Equal("Lab1", result.labName);
         }
     }
-
 }

@@ -31,7 +31,7 @@ namespace IMS.Infrastructure.Services
                 var data = new Dictionary<string, string>
                 {
                     { "client_id", ClientId },
-                    { "client_secret", ClientSecret }
+                    { "client_secret", ClientSecret },
                 };
                 var content = new FormUrlEncodedContent(data);
                 // send POST request to polling endpoint of auth server
@@ -41,17 +41,19 @@ namespace IMS.Infrastructure.Services
                 // if response is successful, deserialize the response to list of DBUserDTO
                 if (response.IsSuccessStatusCode)
                 {
-                    List<AuthUserDTO> userDTOs = JsonSerializer.Deserialize<List<AuthUserDTO>>(responseString) as List<AuthUserDTO>;
+                    List<AuthUserDTO> userDTOs =
+                        JsonSerializer.Deserialize<List<AuthUserDTO>>(responseString)
+                        as List<AuthUserDTO>;
                     return userDTOs;
                 }
                 // if response is not successful, return null
                 return null;
-            } 
-            catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Debug.WriteLine(ex.Message);
                 return null;
             }
-
         }
     }
 
@@ -68,7 +70,5 @@ namespace IMS.Infrastructure.Services
         public string firstName { get; set; }
         public string lastName { get; set; }
         public string contactNumber { get; set; }
-
     }
-
 }

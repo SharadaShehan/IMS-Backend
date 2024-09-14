@@ -13,13 +13,10 @@ namespace IMS.Presentation.Validators
             RuleFor(x => x.reviewNote)
                 .Matches(notePattern)
                 .WithMessage("Invalid Review Note. Must be between 1 and 100 characters.")
-                .When(x => !x.accepted);  // Only validate if accepted is false
+                .When(x => !x.accepted); // Only validate if accepted is false
 
             // Validate accepted
-            RuleFor(x => x.accepted)
-                .NotNull()
-                .WithMessage("Accepted must be true or false.");
-
+            RuleFor(x => x.accepted).NotNull().WithMessage("Accepted must be true or false.");
         }
     }
 }

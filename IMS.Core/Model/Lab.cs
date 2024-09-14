@@ -2,16 +2,19 @@
 
 namespace IMS.Core.Model
 {
-	public class Lab
-	{
+    public class Lab
+    {
         [Required]
         [Key]
-		public int LabId { get; set; }
+        public int LabId { get; set; }
+
         [Required]
         public string LabName { get; set; }
+
         [Required]
-		public string LabCode { get; set; }
-		public string? ImageURL { get; set; }
+        public string LabCode { get; set; }
+        public string? ImageURL { get; set; }
+
         [Required]
         public Boolean IsActive { get; set; }
 

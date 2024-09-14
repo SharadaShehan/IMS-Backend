@@ -18,21 +18,21 @@ namespace IMS.Infrastructure.Migrations
                 defaultValue: "",
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AddColumn<string>(
                 name: "ContactNumber",
                 table: "users",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: true
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "ContactNumber",
-                table: "users");
+            migrationBuilder.DropColumn(name: "ContactNumber", table: "users");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
@@ -40,7 +40,8 @@ namespace IMS.Infrastructure.Migrations
                 type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
+                oldType: "nvarchar(max)"
+            );
         }
     }
 }

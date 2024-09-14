@@ -13,62 +13,66 @@ namespace IMS.Infrastructure.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Maintenances_users_AssignedBy",
-                table: "Maintenances");
+                table: "Maintenances"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Maintenances_users_AssignedTechnician",
-                table: "Maintenances");
+                table: "Maintenances"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Maintenances_users_ReviwedBy",
-                table: "Maintenances");
+                table: "Maintenances"
+            );
 
-            migrationBuilder.DropIndex(
-                name: "IX_Maintenances_AssignedBy",
-                table: "Maintenances");
+            migrationBuilder.DropIndex(name: "IX_Maintenances_AssignedBy", table: "Maintenances");
 
-            migrationBuilder.DropColumn(
-                name: "AssignedBy",
-                table: "Maintenances");
+            migrationBuilder.DropColumn(name: "AssignedBy", table: "Maintenances");
 
-            migrationBuilder.DropColumn(
-                name: "CeatedAt",
-                table: "Maintenances");
+            migrationBuilder.DropColumn(name: "CeatedAt", table: "Maintenances");
 
             migrationBuilder.RenameColumn(
                 name: "ReviewedAT",
                 table: "Maintenances",
-                newName: "ReviewedAt");
+                newName: "ReviewedAt"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "ReviwedBy",
                 table: "Maintenances",
-                newName: "TechnicianId");
+                newName: "TechnicianId"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "ReviewedBy",
                 table: "Maintenances",
-                newName: "ReviewedClerkId");
+                newName: "ReviewedClerkId"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "RepairedAt",
                 table: "Maintenances",
-                newName: "CreatedAt");
+                newName: "CreatedAt"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "AssignedTechnician",
                 table: "Maintenances",
-                newName: "CreatedClerkId");
+                newName: "CreatedClerkId"
+            );
 
             migrationBuilder.RenameIndex(
                 name: "IX_Maintenances_ReviwedBy",
                 table: "Maintenances",
-                newName: "IX_Maintenances_TechnicianId");
+                newName: "IX_Maintenances_TechnicianId"
+            );
 
             migrationBuilder.RenameIndex(
                 name: "IX_Maintenances_AssignedTechnician",
                 table: "Maintenances",
-                newName: "IX_Maintenances_CreatedClerkId");
+                newName: "IX_Maintenances_CreatedClerkId"
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "TaskDescription",
@@ -78,7 +82,8 @@ namespace IMS.Infrastructure.Migrations
                 defaultValue: "",
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "Status",
@@ -88,7 +93,8 @@ namespace IMS.Infrastructure.Migrations
                 defaultValue: "",
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ReviewedAt",
@@ -96,7 +102,8 @@ namespace IMS.Infrastructure.Migrations
                 type: "datetime2",
                 nullable: true,
                 oldClrType: typeof(DateTime),
-                oldType: "datetime2");
+                oldType: "datetime2"
+            );
 
             migrationBuilder.AlterColumn<int>(
                 name: "Cost",
@@ -104,18 +111,21 @@ namespace IMS.Infrastructure.Migrations
                 type: "int",
                 nullable: true,
                 oldClrType: typeof(int),
-                oldType: "int");
+                oldType: "int"
+            );
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "SubmittedAt",
                 table: "Maintenances",
                 type: "datetime2",
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Maintenances_ReviewedClerkId",
                 table: "Maintenances",
-                column: "ReviewedClerkId");
+                column: "ReviewedClerkId"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Maintenances_users_CreatedClerkId",
@@ -123,7 +133,8 @@ namespace IMS.Infrastructure.Migrations
                 column: "CreatedClerkId",
                 principalTable: "users",
                 principalColumn: "UserId",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Restrict
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Maintenances_users_ReviewedClerkId",
@@ -131,7 +142,8 @@ namespace IMS.Infrastructure.Migrations
                 column: "ReviewedClerkId",
                 principalTable: "users",
                 principalColumn: "UserId",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Restrict
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Maintenances_users_TechnicianId",
@@ -139,7 +151,8 @@ namespace IMS.Infrastructure.Migrations
                 column: "TechnicianId",
                 principalTable: "users",
                 principalColumn: "UserId",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Restrict
+            );
         }
 
         /// <inheritdoc />
@@ -147,58 +160,67 @@ namespace IMS.Infrastructure.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Maintenances_users_CreatedClerkId",
-                table: "Maintenances");
+                table: "Maintenances"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Maintenances_users_ReviewedClerkId",
-                table: "Maintenances");
+                table: "Maintenances"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Maintenances_users_TechnicianId",
-                table: "Maintenances");
+                table: "Maintenances"
+            );
 
             migrationBuilder.DropIndex(
                 name: "IX_Maintenances_ReviewedClerkId",
-                table: "Maintenances");
+                table: "Maintenances"
+            );
 
-            migrationBuilder.DropColumn(
-                name: "SubmittedAt",
-                table: "Maintenances");
+            migrationBuilder.DropColumn(name: "SubmittedAt", table: "Maintenances");
 
             migrationBuilder.RenameColumn(
                 name: "ReviewedAt",
                 table: "Maintenances",
-                newName: "ReviewedAT");
+                newName: "ReviewedAT"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "TechnicianId",
                 table: "Maintenances",
-                newName: "ReviwedBy");
+                newName: "ReviwedBy"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "ReviewedClerkId",
                 table: "Maintenances",
-                newName: "ReviewedBy");
+                newName: "ReviewedBy"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "CreatedClerkId",
                 table: "Maintenances",
-                newName: "AssignedTechnician");
+                newName: "AssignedTechnician"
+            );
 
             migrationBuilder.RenameColumn(
                 name: "CreatedAt",
                 table: "Maintenances",
-                newName: "RepairedAt");
+                newName: "RepairedAt"
+            );
 
             migrationBuilder.RenameIndex(
                 name: "IX_Maintenances_TechnicianId",
                 table: "Maintenances",
-                newName: "IX_Maintenances_ReviwedBy");
+                newName: "IX_Maintenances_ReviwedBy"
+            );
 
             migrationBuilder.RenameIndex(
                 name: "IX_Maintenances_CreatedClerkId",
                 table: "Maintenances",
-                newName: "IX_Maintenances_AssignedTechnician");
+                newName: "IX_Maintenances_AssignedTechnician"
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "TaskDescription",
@@ -206,7 +228,8 @@ namespace IMS.Infrastructure.Migrations
                 type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
+                oldType: "nvarchar(max)"
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "Status",
@@ -214,7 +237,8 @@ namespace IMS.Infrastructure.Migrations
                 type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
+                oldType: "nvarchar(max)"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "ReviewedAT",
@@ -224,7 +248,8 @@ namespace IMS.Infrastructure.Migrations
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AlterColumn<int>(
                 name: "Cost",
@@ -234,26 +259,30 @@ namespace IMS.Infrastructure.Migrations
                 defaultValue: 0,
                 oldClrType: typeof(int),
                 oldType: "int",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AddColumn<int>(
                 name: "AssignedBy",
                 table: "Maintenances",
                 type: "int",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: 0
+            );
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "CeatedAt",
                 table: "Maintenances",
                 type: "datetime2",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Maintenances_AssignedBy",
                 table: "Maintenances",
-                column: "AssignedBy");
+                column: "AssignedBy"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Maintenances_users_AssignedBy",
@@ -261,7 +290,8 @@ namespace IMS.Infrastructure.Migrations
                 column: "AssignedBy",
                 principalTable: "users",
                 principalColumn: "UserId",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Restrict
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Maintenances_users_AssignedTechnician",
@@ -269,7 +299,8 @@ namespace IMS.Infrastructure.Migrations
                 column: "AssignedTechnician",
                 principalTable: "users",
                 principalColumn: "UserId",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Restrict
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Maintenances_users_ReviwedBy",
@@ -277,7 +308,8 @@ namespace IMS.Infrastructure.Migrations
                 column: "ReviwedBy",
                 principalTable: "users",
                 principalColumn: "UserId",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Restrict
+            );
         }
     }
 }

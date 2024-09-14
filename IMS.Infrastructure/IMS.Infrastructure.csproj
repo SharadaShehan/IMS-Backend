@@ -29,4 +29,8 @@
     <ProjectReference Include="..\IMS.Core\IMS.Core.csproj" />
   </ItemGroup>
 
+	<Target Name="FormatCode" AfterTargets="Build">
+		<Exec Command="dotnet-csharpier $(ProjectDir)" />
+	</Target>
+
 </Project>

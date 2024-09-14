@@ -13,7 +13,8 @@ namespace IMS.Infrastructure.Migrations
             migrationBuilder.RenameColumn(
                 name: "ResponedAtAt",
                 table: "itemReservations",
-                newName: "RespondedAt");
+                newName: "RespondedAt"
+            );
         }
 
         /// <inheritdoc />
@@ -22,7 +23,8 @@ namespace IMS.Infrastructure.Migrations
             migrationBuilder.RenameColumn(
                 name: "RespondedAt",
                 table: "itemReservations",
-                newName: "ResponedAtAt");
+                newName: "ResponedAtAt"
+            );
         }
     }
 }

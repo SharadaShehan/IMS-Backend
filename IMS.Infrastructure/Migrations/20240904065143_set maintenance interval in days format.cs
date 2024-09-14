@@ -11,29 +11,27 @@ namespace IMS.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "MaintenanceInterval",
-                table: "equipments");
+            migrationBuilder.DropColumn(name: "MaintenanceInterval", table: "equipments");
 
             migrationBuilder.AddColumn<int>(
                 name: "MaintenanceIntervalDays",
                 table: "equipments",
                 type: "int",
-                nullable: true);
+                nullable: true
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "MaintenanceIntervalDays",
-                table: "equipments");
+            migrationBuilder.DropColumn(name: "MaintenanceIntervalDays", table: "equipments");
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "MaintenanceInterval",
                 table: "equipments",
                 type: "datetime2",
-                nullable: true);
+                nullable: true
+            );
         }
     }
 }
