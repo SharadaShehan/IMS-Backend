@@ -253,7 +253,7 @@ namespace IMS.Infrastructure.Repositories
             return GetReservationDTOById(reservation.ItemReservationId);
         }
 
-        public ItemReservationDetailedDTO? AcceptEquipmentReservation(ItemReservation reservation, Item item, User clerk, RespondReservationDTO respondReservationDTO)
+        public ItemReservationDetailedDTO? AcceptEquipmentReservation(ItemReservation reservation, Item item, User clerk)
         {
             reservation.ItemId = item.ItemId;
             reservation.Item = item;
@@ -299,7 +299,35 @@ namespace IMS.Infrastructure.Repositories
             reservation.IsActive = false;
             _dbContext.Update(reservation);
             _dbContext.SaveChanges();
-            return GetReservationDTOById(reservation.ItemReservationId);
+            return _dbContext.itemReservations.Where(rsv => rsv.ItemReservationId == reservation.ItemReservationId).Select(rsv => new ItemReservationDetailedDTO
+            {
+                reservationId = rsv.ItemReservationId,
+                equipmentId = rsv.EquipmentId,
+                itemName = rsv.Equipment.Name,
+                itemModel = rsv.Equipment.Model,
+                imageUrl = rsv.Equipment.ImageURL,
+                itemId = rsv.ItemId,
+                itemSerialNumber = rsv.Item != null ? rsv.Item.SerialNumber : null,
+                labId = rsv.Equipment.LabId,
+                labName = rsv.Equipment.Lab.LabName,
+                startDate = rsv.StartDate,
+                endDate = rsv.EndDate,
+                reservedUserId = rsv.ReservedUserId,
+                reservedUserName = rsv.ReservedUser.FirstName + " " + rsv.ReservedUser.LastName,
+                createdAt = rsv.CreatedAt,
+                respondedClerkId = rsv.RespondedClerkId,
+                respondedClerkName = rsv.RespondedClerk != null ? rsv.RespondedClerk.FirstName + " " + rsv.RespondedClerk.LastName : null,
+                responseNote = rsv.ResponseNote,
+                respondedAt = rsv.RespondedAt,
+                lentClerkId = rsv.LentClerkId,
+                lentClerkName = rsv.LentClerk != null ? rsv.LentClerk.FirstName + " " + rsv.LentClerk.LastName : null,
+                borrowedAt = rsv.BorrowedAt,
+                returnAcceptedClerkId = rsv.ReturnAcceptedClerkId,
+                returnAcceptedClerkName = rsv.ReturnAcceptedClerk != null ? rsv.ReturnAcceptedClerk.FirstName + " " + rsv.ReturnAcceptedClerk.LastName : null,
+                returnedAt = rsv.ReturnedAt,
+                cancelledAt = rsv.CancelledAt,
+                status = rsv.Status
+            }).FirstOrDefault();
         }
 
         public ItemReservationDetailedDTO? ReturnBorrowedItem(ItemReservation reservation, User clerk)

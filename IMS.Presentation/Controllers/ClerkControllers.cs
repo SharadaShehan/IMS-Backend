@@ -13,15 +13,17 @@ namespace IMS.Presentation.Controllers
     {
         private readonly ITokenParser _tokenParser;
         private readonly IQRTokenProvider _qRTokenProvider;
+        private readonly ILogger<ClerkController> _logger;
         private readonly EquipmentService _equipmentService;
         private readonly ItemService _itemService;
         private readonly MaintenanceService _maintenanceService;
         private readonly ReservationService _reservationService;
 
-        public ClerkController(ITokenParser tokenParser, IQRTokenProvider qRTokenProvider, EquipmentService equipmentService, ItemService itemService, MaintenanceService maintenanceService, ReservationService reservationService)
+        public ClerkController(ITokenParser tokenParser, IQRTokenProvider qRTokenProvider, ILogger<ClerkController> logger, EquipmentService equipmentService, ItemService itemService, MaintenanceService maintenanceService, ReservationService reservationService)
         {
             _tokenParser = tokenParser;
             _qRTokenProvider = qRTokenProvider;
+            _logger = logger;
             _equipmentService = equipmentService;
             _itemService = itemService;
             _maintenanceService = maintenanceService;

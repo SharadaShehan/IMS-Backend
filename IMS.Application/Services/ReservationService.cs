@@ -103,7 +103,7 @@ namespace IMS.Application.Services
                 if (!_reservationRepository.CheckTimeSlotAvailability(reservation.StartDate, reservation.EndDate)) return new ResponseDTO<ItemReservationDetailedDTO>("Time Slot is Unavailable");
                 if (!_maintenanceRepository.CheckTimeSlotAvailability(reservation.StartDate, reservation.EndDate)) return new ResponseDTO<ItemReservationDetailedDTO>("Time Slot is Unavailable");
                 // Accept Reservation
-                ItemReservationDetailedDTO? acceptedReservation = _reservationRepository.AcceptEquipmentReservation(reservation, item, clerk, respondReservationDTO);
+                ItemReservationDetailedDTO? acceptedReservation = _reservationRepository.AcceptEquipmentReservation(reservation, item, clerk);
                 if (acceptedReservation == null) return new ResponseDTO<ItemReservationDetailedDTO>("Failed to Accept Reservation");
                 return new ResponseDTO<ItemReservationDetailedDTO>(acceptedReservation);
             }
