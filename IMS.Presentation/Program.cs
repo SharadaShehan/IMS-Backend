@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Text;
 using FluentValidation.AspNetCore;
 using IMS.Application.Interfaces;
@@ -13,6 +12,20 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowAll",
+        builder =>
+        {
+            builder
+                .AllowAnyOrigin() // Allow all origins (or specify specific origins)
+                .AllowAnyHeader() // Allow all headers
+                .AllowAnyMethod(); // Allow all HTTP methods (GET, POST, etc.)
+        }
+    );
+});
 
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation();
@@ -102,6 +115,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseRouting();
