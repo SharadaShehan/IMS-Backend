@@ -1,10 +1,12 @@
 using System.Text;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using IMS.Application.Interfaces;
 using IMS.Application.Services;
 using IMS.Infrastructure.Extensions;
 using IMS.Infrastructure.Repositories;
 using IMS.Presentation.Services;
+using IMS.Presentation.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -28,7 +30,12 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
-builder.Services.AddFluentValidationAutoValidation();
+
+//builder.Services.AddFluentValidationAutoValidation();
+builder
+    .Services.AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters()
+    .AddValidatorsFromAssemblyContaining<CreateItemValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
 {
