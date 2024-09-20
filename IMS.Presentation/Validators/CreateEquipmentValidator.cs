@@ -32,25 +32,23 @@ namespace IMS.Presentation.Validators
 
             // Validate imageURL (optional)
             RuleFor(x => x.imageURL)
-                .Cascade(CascadeMode.Stop)
-                .Must(x => string.IsNullOrEmpty(x) || Regex.IsMatch(x, imageUrlPattern))
+                .Must(x => x == null || Regex.IsMatch(x, imageUrlPattern))
                 .WithMessage(
                     "Invalid Image URL. Must be a valid URL ending with png, jpg, jpeg, or webp."
                 )
-                .When(x => !string.IsNullOrEmpty(x.imageURL));
+                .When(x => x != null);
 
             // Validate specification (optional)
             RuleFor(x => x.specification)
                 .Must(x => x == null || x.GetType() == typeof(string))
                 .WithMessage("Invalid Specification. Must be a string.")
-                .When(x => x.specification != null);
+                .When(x => x != null);
 
             // Validate maintenanceIntervalDays (optional)
             RuleFor(x => x.maintenanceIntervalDays)
                 .GreaterThan(0)
-                .When(x => x.maintenanceIntervalDays.HasValue)
                 .WithMessage("Maintenance Interval Days must be a positive integer.")
-                .When(x => x.maintenanceIntervalDays.HasValue);
+                .When(x => x != null);
         }
     }
 }
