@@ -32,4 +32,5 @@ ENV ASPNETCORE_HTTP_PORTS=5001
 EXPOSE 5001
 WORKDIR /app
 COPY --from=publish /app .
+COPY ["web.config", "."]
 ENTRYPOINT ["dotnet", "IMS.Presentation.dll"]
