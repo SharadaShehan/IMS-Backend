@@ -1,4 +1,5 @@
-﻿using IMS.Application.DTO;
+﻿using FluentValidation;
+using IMS.Application.DTO;
 using IMS.Application.Services;
 using IMS.Presentation.Filters;
 using IMS.Presentation.Services;
@@ -12,16 +13,19 @@ namespace IMS.Presentation.Controllers
     {
         private readonly ITokenParser _tokenParser;
         private readonly ILogger<TechnicianController> _logger;
+        private readonly IValidator<SubmitMaintenanceDTO> _submitMaintenanceValidator;
         private readonly MaintenanceService _maintenanceService;
 
         public TechnicianController(
             ITokenParser tokenParser,
             ILogger<TechnicianController> logger,
+            IValidator<SubmitMaintenanceDTO> submitMaintenanceValidator,
             MaintenanceService maintenanceService
         )
         {
             _tokenParser = tokenParser;
             _logger = logger;
+            _submitMaintenanceValidator = submitMaintenanceValidator;
             _maintenanceService = maintenanceService;
         }
 
@@ -86,8 +90,9 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+                var result = await _submitMaintenanceValidator.ValidateAsync(submitMaintenanceDTO);
+                if (!result.IsValid)
+                    return BadRequest(result.Errors);
                 // Get the User from auth token
                 UserDTO? technicianDto = await _tokenParser.getUser(
                     HttpContext.Request.Headers["Authorization"].FirstOrDefault()

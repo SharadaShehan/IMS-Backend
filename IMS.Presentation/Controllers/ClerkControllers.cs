@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using FluentValidation;
 using IMS.Application.DTO;
 using IMS.Application.Services;
 using IMS.Presentation.Filters;
@@ -14,6 +14,12 @@ namespace IMS.Presentation.Controllers
         private readonly ITokenParser _tokenParser;
         private readonly IQRTokenProvider _qRTokenProvider;
         private readonly ILogger<ClerkController> _logger;
+        private readonly IValidator<CreateEquipmentDTO> _createEquipmentValidator;
+        private readonly IValidator<UpdateEquipmentDTO> _updateEquipmentValidator;
+        private readonly IValidator<CreateItemDTO> _createItemValidator;
+        private readonly IValidator<CreateMaintenanceDTO> _createMaintenanceValidator;
+        private readonly IValidator<ReviewMaintenanceDTO> _reviewMaintenanceValidator;
+        private readonly IValidator<RespondReservationDTO> _respondReservationValidator;
         private readonly EquipmentService _equipmentService;
         private readonly ItemService _itemService;
         private readonly MaintenanceService _maintenanceService;
@@ -23,6 +29,12 @@ namespace IMS.Presentation.Controllers
             ITokenParser tokenParser,
             IQRTokenProvider qRTokenProvider,
             ILogger<ClerkController> logger,
+            IValidator<CreateEquipmentDTO> createEquipmentValidator,
+            IValidator<UpdateEquipmentDTO> updateEquipmentValidator,
+            IValidator<CreateItemDTO> createItemValidator,
+            IValidator<CreateMaintenanceDTO> createMaintenanceValidator,
+            IValidator<ReviewMaintenanceDTO> reviewMaintenanceValidator,
+            IValidator<RespondReservationDTO> respondReservationValidator,
             EquipmentService equipmentService,
             ItemService itemService,
             MaintenanceService maintenanceService,
@@ -32,6 +44,12 @@ namespace IMS.Presentation.Controllers
             _tokenParser = tokenParser;
             _qRTokenProvider = qRTokenProvider;
             _logger = logger;
+            _createEquipmentValidator = createEquipmentValidator;
+            _updateEquipmentValidator = updateEquipmentValidator;
+            _createItemValidator = createItemValidator;
+            _createMaintenanceValidator = createMaintenanceValidator;
+            _reviewMaintenanceValidator = reviewMaintenanceValidator;
+            _respondReservationValidator = respondReservationValidator;
             _equipmentService = equipmentService;
             _itemService = itemService;
             _maintenanceService = maintenanceService;
@@ -47,8 +65,9 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+                var result = await _createEquipmentValidator.ValidateAsync(createEquipmentDTO);
+                if (!result.IsValid)
+                    return BadRequest(result.Errors);
                 // Create the Equipment
                 ResponseDTO<EquipmentDetailedDTO> responseDTO =
                     _equipmentService.CreateNewEquipment(createEquipmentDTO);
@@ -72,8 +91,9 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+                var result = await _updateEquipmentValidator.ValidateAsync(updateEquipmentDTO);
+                if (!result.IsValid)
+                    return BadRequest(result.Errors);
                 // Update the Equipment
                 ResponseDTO<EquipmentDetailedDTO> responseDTO = _equipmentService.UpdateEquipment(
                     id,
@@ -116,8 +136,9 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+                var result = await _createItemValidator.ValidateAsync(createItemDTO);
+                if (!result.IsValid)
+                    return BadRequest(result.Errors);
                 // Create the Item
                 ResponseDTO<ItemDetailedDTO> responseDTO = _itemService.CreateNewItem(
                     createItemDTO
@@ -159,8 +180,9 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+                var result = await _createMaintenanceValidator.ValidateAsync(createMaintenanceDTO);
+                if (!result.IsValid)
+                    return BadRequest(result.Errors);
                 // Get the User from the token
                 UserDTO? clerkDto = await _tokenParser.getUser(
                     HttpContext.Request.Headers["Authorization"].FirstOrDefault()
@@ -190,8 +212,9 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+                var result = await _reviewMaintenanceValidator.ValidateAsync(reviewMaintenanceDTO);
+                if (!result.IsValid)
+                    return BadRequest(result.Errors);
                 // Get the User from the token
                 UserDTO? clerkDto = await _tokenParser.getUser(
                     HttpContext.Request.Headers["Authorization"].FirstOrDefault()
@@ -273,8 +296,11 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+                var result = await _respondReservationValidator.ValidateAsync(
+                    respondReservationDTO
+                );
+                if (!result.IsValid)
+                    return BadRequest(result.Errors);
                 // Get the User from the token
                 UserDTO? clerkDto = await _tokenParser.getUser(
                     HttpContext.Request.Headers["Authorization"].FirstOrDefault()

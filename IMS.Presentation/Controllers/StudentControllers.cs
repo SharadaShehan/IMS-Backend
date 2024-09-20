@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using FluentValidation;
 using IMS.Application.DTO;
 using IMS.Application.Services;
 using IMS.Presentation.Filters;
@@ -14,6 +14,7 @@ namespace IMS.Presentation.Controllers
         private readonly ITokenParser _tokenParser;
         private readonly IQRTokenProvider _qRTokenProvider;
         private readonly ILogger<StudentController> _logger;
+        private readonly IValidator<RequestEquipmentDTO> _requestEquipmentValidator;
         private readonly ReservationService _reservationService;
         private readonly UserService _userService;
 
@@ -21,6 +22,7 @@ namespace IMS.Presentation.Controllers
             ITokenParser tokenParser,
             IQRTokenProvider qRTokenProvider,
             ILogger<StudentController> logger,
+            IValidator<RequestEquipmentDTO> requestEquipmentValidator,
             ReservationService reservationService,
             UserService userService
         )
@@ -28,6 +30,7 @@ namespace IMS.Presentation.Controllers
             _tokenParser = tokenParser;
             _qRTokenProvider = qRTokenProvider;
             _logger = logger;
+            _requestEquipmentValidator = requestEquipmentValidator;
             _reservationService = reservationService;
             _userService = userService;
         }
@@ -41,8 +44,9 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+                var result = await _requestEquipmentValidator.ValidateAsync(requestEquipmentDTO);
+                if (!result.IsValid)
+                    return BadRequest(result.Errors);
                 // Get the User from auth token
                 UserDTO? studentDto = await _tokenParser.getUser(
                     HttpContext.Request.Headers["Authorization"].FirstOrDefault()
