@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using FluentValidation;
 using IMS.Application.DTO;
 using IMS.Application.Services;
 using IMS.Infrastructure.Services;
@@ -15,12 +16,14 @@ namespace IMS.Presentation.Controllers
         private readonly DataBaseContext _dbContext;
         private readonly ITokenParser _tokenParser;
         private readonly ILogger<AdminController> _logger;
+        private readonly IValidator<UpdateLabDTO> _updateLabDTOValidator;
         private readonly UserService _userService;
         private readonly LabService _labService;
 
         public AdminController(
             DataBaseContext dbContext,
             ILogger<AdminController> logger,
+            IValidator<UpdateLabDTO> updateLabDTOValidator,
             ITokenParser tokenParser,
             UserService userService,
             LabService labService
@@ -28,6 +31,7 @@ namespace IMS.Presentation.Controllers
         {
             _dbContext = dbContext;
             _logger = logger;
+            _updateLabDTOValidator = updateLabDTOValidator;
             _tokenParser = tokenParser;
             _userService = userService;
             _labService = labService;
@@ -95,8 +99,9 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid)
-                    BadRequest(ModelState);
+                var result = await _updateLabDTOValidator.ValidateAsync(updateLabDTO);
+                if (!result.IsValid)
+                    return BadRequest(result.Errors);
                 // Update the Lab
                 ResponseDTO<LabDTO> responseDTO = _labService.UpdateLab(id, updateLabDTO);
                 if (!responseDTO.success)
