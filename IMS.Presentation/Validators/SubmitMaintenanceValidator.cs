@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using IMS.Application.DTO;
+using System.Text.RegularExpressions;
 
 namespace IMS.Presentation.Validators
 {
@@ -11,16 +12,15 @@ namespace IMS.Presentation.Validators
         {
             // Validate submitNote (optional)
             RuleFor(x => x.submitNote)
-                .Cascade(CascadeMode.Stop)
-                .Matches(notePattern)
+                .Must(x => x == null || Regex.IsMatch(x, notePattern))
                 .WithMessage("Invalid Submit Note. Must be between 1 and 100 characters.")
-                .When(x => !string.IsNullOrEmpty(x.submitNote));
+                .When(x => x != null);
 
             // Validate cost (optional)
             RuleFor(x => x.cost)
                 .GreaterThan(0)
                 .WithMessage("Invalid Cost Value. Cost must be a positive integer.")
-                .When(x => x.cost.HasValue);
+                .When(x => x != null);
         }
     }
 }

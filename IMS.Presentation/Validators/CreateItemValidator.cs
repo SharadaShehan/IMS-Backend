@@ -6,7 +6,6 @@ namespace IMS.Presentation.Validators
     public class CreateItemValidator : AbstractValidator<CreateItemDTO>
     {
         private readonly string textPattern = @"^.{2,20}$";
-        private readonly string imageUrlPattern = @"^https?:\/\/.*\.(?:png|jpg|jpeg|webp)$";
 
         public CreateItemValidator()
         {

@@ -17,6 +17,7 @@ namespace IMS.Presentation.Controllers
         private readonly ITokenParser _tokenParser;
         private readonly ILogger<AdminController> _logger;
         private readonly IValidator<UpdateLabDTO> _updateLabDTOValidator;
+        private readonly IValidator<CreateLabDTO> _createLabDTOValidator;
         private readonly UserService _userService;
         private readonly LabService _labService;
 
@@ -24,6 +25,7 @@ namespace IMS.Presentation.Controllers
             DataBaseContext dbContext,
             ILogger<AdminController> logger,
             IValidator<UpdateLabDTO> updateLabDTOValidator,
+            IValidator<CreateLabDTO> createLabDTOValidator,
             ITokenParser tokenParser,
             UserService userService,
             LabService labService
@@ -32,6 +34,7 @@ namespace IMS.Presentation.Controllers
             _dbContext = dbContext;
             _logger = logger;
             _updateLabDTOValidator = updateLabDTOValidator;
+            _createLabDTOValidator = createLabDTOValidator;
             _tokenParser = tokenParser;
             _userService = userService;
             _labService = labService;
@@ -78,8 +81,9 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid)
-                    BadRequest(ModelState);
+                var result = await _createLabDTOValidator.ValidateAsync(createLabDTO);
+                if (!result.IsValid)
+                    return BadRequest(result.Errors);
                 // Create the Lab
                 ResponseDTO<LabDTO> responseDTO = _labService.CreateNewLab(createLabDTO);
                 if (!responseDTO.success)

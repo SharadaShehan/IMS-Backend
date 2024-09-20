@@ -1,5 +1,4 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using IMS.Application.DTO;
 using IMS.Application.Interfaces;
 using IMS.Application.Services;
@@ -32,9 +31,16 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddFluentValidationClientsideAdapters();
-builder.Services.AddValidatorsFromAssemblyContaining<UpdateLabValidator>();
+builder.Services.AddScoped<IValidator<CreateEquipmentDTO>, CreateEquipmentValidator>();
+builder.Services.AddScoped<IValidator<CreateItemDTO>, CreateItemValidator>();
+builder.Services.AddScoped<IValidator<CreateLabDTO>, CreateLabValidator>();
+builder.Services.AddScoped<IValidator<CreateMaintenanceDTO>, CreateMaintenanceValidator>();
+builder.Services.AddScoped<IValidator<PresignedUrlRequestDTO>, PreSignedUrlGenValidator>();
+builder.Services.AddScoped<IValidator<RequestEquipmentDTO>, RequestEquipmentValidator>();
+builder.Services.AddScoped<IValidator<RespondReservationDTO>, RespondReservationValidator>();
+builder.Services.AddScoped<IValidator<ReviewMaintenanceDTO>, ReviewMaintenanceValidator>();
+builder.Services.AddScoped<IValidator<SubmitMaintenanceDTO>, SubmitMaintenanceValidator>();
+builder.Services.AddScoped<IValidator<UpdateEquipmentDTO>, UpdateEquipmentValidator>();
 builder.Services.AddScoped<IValidator<UpdateLabDTO>, UpdateLabValidator>();
 
 builder.Services.AddEndpointsApiExplorer();

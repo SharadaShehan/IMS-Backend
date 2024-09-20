@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+﻿using FluentValidation;
 using IMS.Application.DTO;
 using IMS.Infrastructure.Services;
 using IMS.Presentation.Filters;
@@ -12,14 +12,17 @@ namespace IMS.Presentation.Controllers
     {
         private readonly IBlobStorageClient _blobStorageClient;
         private readonly ILogger<ImgUploadControllers> _logger;
+        private readonly IValidator<PresignedUrlRequestDTO> _presignedUrlRequestValidator;
 
         public ImgUploadControllers(
             IBlobStorageClient blobStorageClient,
-            ILogger<ImgUploadControllers> logger
+            ILogger<ImgUploadControllers> logger,
+            IValidator<PresignedUrlRequestDTO> presignedUrlRequestValidator
         )
         {
             _blobStorageClient = blobStorageClient;
             _logger = logger;
+            _presignedUrlRequestValidator = presignedUrlRequestValidator;
         }
 
         [HttpPost("lab")]
@@ -31,8 +34,11 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+                var result = await _presignedUrlRequestValidator.ValidateAsync(
+                    presignedUrlRequestDTO
+                );
+                if (!result.IsValid)
+                    return BadRequest(result.Errors);
                 // Generate the presigned URL
                 string blobName =
                     "labs/"
@@ -61,8 +67,11 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+                var result = await _presignedUrlRequestValidator.ValidateAsync(
+                    presignedUrlRequestDTO
+                );
+                if (!result.IsValid)
+                    return BadRequest(result.Errors);
                 // Generate the presigned URL
                 string blobName =
                     "equipments/"
