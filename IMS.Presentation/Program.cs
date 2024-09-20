@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using IMS.Application.DTO;
 using IMS.Application.Interfaces;
 using IMS.Application.Services;
 using IMS.Infrastructure.Extensions;
@@ -31,11 +32,11 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 
-//builder.Services.AddFluentValidationAutoValidation();
-builder
-    .Services.AddFluentValidationAutoValidation()
-    .AddFluentValidationClientsideAdapters()
-    .AddValidatorsFromAssemblyContaining<UpdateLabValidator>();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateLabValidator>();
+builder.Services.AddScoped<IValidator<UpdateLabDTO>, UpdateLabValidator>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
 {
