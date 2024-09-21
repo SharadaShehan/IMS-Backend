@@ -13,26 +13,23 @@ namespace IMS.Presentation.Validators
         {
             // Validate labName
             RuleFor(x => x.labName)
-                .NotEmpty()
-                .WithMessage("Lab Name is required.")
-                .Matches(textPattern)
-                .WithMessage("Invalid Lab Name. Must be between 2 and 20 characters.");
+                .Must(x => x == null || Regex.IsMatch(x, textPattern))
+                .WithMessage("Invalid Lab Name. Must be between 2 and 20 characters.")
+                .When(x => x != null);
 
             // Validate labCode
             RuleFor(x => x.labCode)
-                .NotEmpty()
-                .WithMessage("Lab Code is required.")
-                .Matches(textPattern)
-                .WithMessage("Invalid Lab Code. Must be between 2 and 20 characters.");
+                .Must(x => x == null || Regex.IsMatch(x, textPattern))
+                .WithMessage("Invalid Lab Code. Must be between 2 and 20 characters.")
+                .When(x => x != null);
 
             // Validate imageURL (optional)
             RuleFor(x => x.imageURL)
-                .Cascade(CascadeMode.Stop)
-                .Must(x => string.IsNullOrEmpty(x) || Regex.IsMatch(x, imageUrlPattern))
+                .Must(x => x == null || Regex.IsMatch(x, imageUrlPattern))
                 .WithMessage(
                     "Invalid Image URL. Must be a valid URL ending with png, jpg, jpeg, or webp."
                 )
-                .When(x => !string.IsNullOrEmpty(x.imageURL));
+                .When(x => x != null);
         }
     }
 }

@@ -27,12 +27,11 @@ namespace IMS.Presentation.Validators
 
             // Validate imageURL (optional)
             RuleFor(x => x.imageURL)
-                .Cascade(CascadeMode.Stop)
-                .Must(x => string.IsNullOrEmpty(x) || Regex.IsMatch(x, imageUrlPattern))
+                .Must(x => (x == null) || Regex.IsMatch(x, imageUrlPattern))
                 .WithMessage(
                     "Invalid Image URL. Must be a valid URL ending with png, jpg, jpeg, or webp."
                 )
-                .When(x => !string.IsNullOrEmpty(x.imageURL));
+                .When(x => x != null);
         }
     }
 }

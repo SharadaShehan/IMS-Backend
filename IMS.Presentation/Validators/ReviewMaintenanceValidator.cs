@@ -9,11 +9,18 @@ namespace IMS.Presentation.Validators
 
         public ReviewMaintenanceValidator()
         {
-            // Validate reviewNote only when 'accepted' is false
-            RuleFor(x => x.reviewNote)
-                .Matches(notePattern)
-                .WithMessage("Invalid Review Note. Must be between 1 and 100 characters.")
-                .When(x => !x.accepted); // Only validate if accepted is false
+            When(
+                x => !(x.accepted),
+                () =>
+                {
+                    // Validate reviewNote only when 'accepted' is false
+                    RuleFor(x => x.reviewNote)
+                        .NotEmpty()
+                        .WithMessage("Review Note is required when maintenance is rejected.")
+                        .Matches(notePattern)
+                        .WithMessage("Invalid Review Note. Must be between 1 and 100 characters.");
+                }
+            );
 
             // Validate accepted
             RuleFor(x => x.accepted).NotNull().WithMessage("Accepted must be true or false.");

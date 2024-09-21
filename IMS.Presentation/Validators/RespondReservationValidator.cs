@@ -10,7 +10,7 @@ namespace IMS.Presentation.Validators
             RuleFor(x => x.accepted).NotNull().WithMessage("Accepted status is required.");
 
             When(
-                x => !x.accepted,
+                x => !(x.accepted),
                 () =>
                 {
                     RuleFor(x => x.rejectNote)

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using FluentValidation;
 using IMS.Application.DTO;
 using IMS.Application.Services;
 using IMS.Presentation.Filters;
@@ -14,6 +14,7 @@ namespace IMS.Presentation.Controllers
         private readonly ITokenParser _tokenParser;
         private readonly IQRTokenProvider _qRTokenProvider;
         private readonly ILogger<StudentController> _logger;
+        private readonly IValidator<RequestEquipmentDTO> _requestEquipmentValidator;
         private readonly ReservationService _reservationService;
         private readonly UserService _userService;
 
@@ -21,6 +22,7 @@ namespace IMS.Presentation.Controllers
             ITokenParser tokenParser,
             IQRTokenProvider qRTokenProvider,
             ILogger<StudentController> logger,
+            IValidator<RequestEquipmentDTO> requestEquipmentValidator,
             ReservationService reservationService,
             UserService userService
         )
@@ -28,6 +30,7 @@ namespace IMS.Presentation.Controllers
             _tokenParser = tokenParser;
             _qRTokenProvider = qRTokenProvider;
             _logger = logger;
+            _requestEquipmentValidator = requestEquipmentValidator;
             _reservationService = reservationService;
             _userService = userService;
         }
@@ -41,8 +44,9 @@ namespace IMS.Presentation.Controllers
             try
             {
                 // Validate the DTO
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+                var result = await _requestEquipmentValidator.ValidateAsync(requestEquipmentDTO);
+                if (!result.IsValid)
+                    return BadRequest(result.Errors);
                 // Get the User from auth token
                 UserDTO? studentDto = await _tokenParser.getUser(
                     HttpContext.Request.Headers["Authorization"].FirstOrDefault()
@@ -57,7 +61,7 @@ namespace IMS.Presentation.Controllers
                     );
                 if (!responseDTO.success)
                     return BadRequest(responseDTO.message);
-                return Ok(responseDTO.result);
+                return StatusCode(201, responseDTO.result);
             }
             catch (Exception ex)
             {
@@ -133,8 +137,7 @@ namespace IMS.Presentation.Controllers
                 // Get the QR token
                 string? token = await _qRTokenProvider.getQRToken(
                     itemReservationDTO.reservationId,
-                    studentDto.userId,
-                    true
+                    studentDto.userId
                 );
                 if (token == null)
                     return BadRequest("Token Generation Failed");
@@ -166,20 +169,20 @@ namespace IMS.Presentation.Controllers
                 DecodedQRToken decodedQRToken = await _qRTokenProvider.validateQRToken(token);
                 if (!decodedQRToken.success)
                     return BadRequest(decodedQRToken.message);
-                if (decodedQRToken.eventId == null || decodedQRToken.isReservation != true)
+                if (decodedQRToken.reservationId == null)
                     return BadRequest("Invalid Token");
                 // Get the reservationDTO if Available
                 ItemReservationDetailedDTO? itemReservationDTO =
                     _reservationService.GetReservationById(id);
                 if (itemReservationDTO == null || itemReservationDTO.status != "Borrowed")
-                    return BadRequest("Item not Available for Returning");
+                    return BadRequest("Reservation not Available for Borrowing");
                 // Verify the reservation
                 if (itemReservationDTO.reservedUserId != studentDto.userId)
                     return BadRequest("Only Borrowed User Can Return Item");
                 UserDTO? clerk = _userService.GetUserById(decodedQRToken.userId.Value);
                 if (clerk == null || clerk.role != "Clerk")
                     return BadRequest("Invalid Clerk User");
-                if (decodedQRToken.eventId != itemReservationDTO.reservationId)
+                if (decodedQRToken.reservationId != itemReservationDTO.reservationId)
                     return BadRequest("Invalid Token");
                 // Borrow the item
                 ResponseDTO<ItemReservationDetailedDTO> responseDTO =

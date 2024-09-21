@@ -129,9 +129,15 @@ namespace IMS.Application.Services
                 return new ResponseDTO<MaintenanceDetailedDTO>(
                     "Only Assigned Technician can Borrow Item"
                 );
+            // Check if Item is available
+            if (maintenance.ItemId == null)
+                return new ResponseDTO<MaintenanceDetailedDTO>("Item is Not Found");
+            Item? item = _itemRepository.GetItemEntityById(maintenance.ItemId);
+            if (item == null)
+                return new ResponseDTO<MaintenanceDetailedDTO>("Item is Not Found");
             // Borrow Item for Maintenance
             MaintenanceDetailedDTO? borrowedMaintenance =
-                _maintenanceRepository.BorrowItemForMaintenance(maintenance);
+                _maintenanceRepository.BorrowItemForMaintenance(maintenance, item);
             if (borrowedMaintenance == null)
                 return new ResponseDTO<MaintenanceDetailedDTO>(
                     "Failed to Borrow Item for Maintenance"
@@ -188,9 +194,16 @@ namespace IMS.Application.Services
             // Check if Maintenance is Under Review
             if (maintenance.Status != "UnderReview")
                 return new ResponseDTO<MaintenanceDetailedDTO>("Maintenance is Not Under Review");
+            // Check if Item is available
+            if (maintenance.ItemId == null)
+                return new ResponseDTO<MaintenanceDetailedDTO>("Item is Not Found");
+            Item? item = _itemRepository.GetItemEntityById(maintenance.ItemId);
+            if (item == null)
+                return new ResponseDTO<MaintenanceDetailedDTO>("Item is Not Found");
             // Review Maintenance
             MaintenanceDetailedDTO? reviewedMaintenance = _maintenanceRepository.ReviewMaintenance(
                 maintenance,
+                item,
                 clerk,
                 reviewMaintenanceDTO
             );

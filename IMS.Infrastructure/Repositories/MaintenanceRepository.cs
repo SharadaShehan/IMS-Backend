@@ -205,31 +205,36 @@ namespace IMS.Infrastructure.Repositories
         public List<PendingMaintenanceDTO> GetAllPendingMaintenanceDTOs()
         {
             // Get last maintenances and filter the pending ones
-            return _dbContext
+            List<PendingMaintenanceDTO?> maintenances = _dbContext
                 .maintenances.GroupBy(mnt => mnt.ItemId)
-                .Select(grp => grp.OrderByDescending(mnt => mnt.EndDate).FirstOrDefault())
-                .Where(mnt =>
-                    mnt != null
-                    && mnt.IsActive
-                    && (
-                        mnt.EndDate.AddDays(mnt.Item.Equipment.MaintenanceIntervalDays ?? 10000)
-                        < DateTime.Now
-                    )
+                .Select(grp =>
+                    grp.Where(mnt =>
+                            mnt != null
+                            && mnt.IsActive
+                            && mnt.EndDate.AddDays(
+                                    mnt.Item.Equipment.MaintenanceIntervalDays ?? 10000
+                                )
+                                .CompareTo(DateTime.Now) <= 0
+                        )
+                        .OrderByDescending(mnt => mnt.EndDate)
+                        .Select(mnt => new PendingMaintenanceDTO
+                        {
+                            itemId = mnt.ItemId,
+                            itemName = mnt.Item.Equipment.Name,
+                            itemModel = mnt.Item.Equipment.Model,
+                            itemSerialNumber = mnt.Item.SerialNumber,
+                            imageUrl = mnt.Item.Equipment.ImageURL,
+                            labId = mnt.Item.Equipment.LabId,
+                            labName = mnt.Item.Equipment.Lab.LabName,
+                            lastMaintenanceId = mnt.MaintenanceId,
+                            lastMaintenanceStartDate = mnt.StartDate,
+                            lastMaintenanceEndDate = mnt.EndDate,
+                        })
+                        .FirstOrDefault()
                 )
-                .Select(mnt => new PendingMaintenanceDTO
-                {
-                    itemId = mnt.ItemId,
-                    itemName = mnt.Item.Equipment.Name,
-                    itemModel = mnt.Item.Equipment.Model,
-                    itemSerialNumber = mnt.Item.SerialNumber,
-                    imageUrl = mnt.Item.Equipment.ImageURL,
-                    LabId = mnt.Item.Equipment.LabId,
-                    LabName = mnt.Item.Equipment.Lab.LabName,
-                    lastMaintenanceId = mnt.MaintenanceId,
-                    lastMaintenanceStartDate = mnt.StartDate,
-                    lastMaintenanceEndDate = mnt.EndDate,
-                })
                 .ToList();
+
+            return maintenances.Where(item => item != null).ToList();
         }
 
         public bool CheckTimeSlotAvailability(DateTime startDate, DateTime endDate)
@@ -269,14 +274,12 @@ namespace IMS.Infrastructure.Repositories
             return GetMaintenanceDTOById(maintenance.MaintenanceId);
         }
 
-        public MaintenanceDetailedDTO? BorrowItemForMaintenance(Maintenance maintenance)
+        public MaintenanceDetailedDTO? BorrowItemForMaintenance(Maintenance maintenance, Item item)
         {
-            if (maintenance == null)
-                return null;
             maintenance.Status = "Ongoing";
-            maintenance.Item.Status = "UnderRepair";
+            item.Status = "UnderRepair";
             _dbContext.Update(maintenance);
-            _dbContext.Update(maintenance.Item);
+            _dbContext.Update(item);
             _dbContext.SaveChanges();
             return GetMaintenanceDTOById(maintenance.MaintenanceId);
         }
@@ -286,8 +289,6 @@ namespace IMS.Infrastructure.Repositories
             SubmitMaintenanceDTO submitMaintenanceDTO
         )
         {
-            if (maintenance == null)
-                return null;
             maintenance.SubmitNote = submitMaintenanceDTO.submitNote;
             maintenance.Cost = submitMaintenanceDTO.cost;
             maintenance.Status = "UnderReview";
@@ -299,20 +300,19 @@ namespace IMS.Infrastructure.Repositories
 
         public MaintenanceDetailedDTO? ReviewMaintenance(
             Maintenance maintenance,
+            Item item,
             User clerk,
             ReviewMaintenanceDTO reviewMaintenanceDTO
         )
         {
-            if (maintenance == null)
-                return null;
             maintenance.Status = reviewMaintenanceDTO.accepted ? "Completed" : "Ongoing";
             maintenance.ReviewedClerkId = clerk.UserId;
             maintenance.ReviewedClerk = clerk;
             maintenance.ReviewNote = reviewMaintenanceDTO.reviewNote;
             maintenance.ReviewedAt = DateTime.Now;
-            maintenance.Item.Status = reviewMaintenanceDTO.accepted ? "Available" : "UnderRepair";
+            item.Status = reviewMaintenanceDTO.accepted ? "Available" : "UnderRepair";
             _dbContext.Update(maintenance);
-            _dbContext.Update(maintenance.Item);
+            _dbContext.Update(item);
             _dbContext.SaveChanges();
             return GetMaintenanceDTOById(maintenance.MaintenanceId);
         }
