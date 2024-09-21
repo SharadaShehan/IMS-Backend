@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using IMS.Application.DTO;
+﻿using IMS.Application.DTO;
 using IMS.Application.Interfaces;
 using IMS.Application.Services;
 using IMS.Core.Model;
 using Moq;
-using Xunit;
 
 namespace IMS.Tests.UnitTests;
 
@@ -164,10 +162,13 @@ public class MaintenanceServiceTests
         // Arrange
         int maintenanceId = 1;
         int technicianId = 2;
+        int itemId = 1;
+        var item = new Item { ItemId = itemId, Status = "Available" };
         var technician = new User { UserId = technicianId, Role = "Technician" };
         var maintenance = new Maintenance
         {
             MaintenanceId = maintenanceId,
+            ItemId = itemId,
             Status = "Scheduled",
             TechnicianId = technicianId,
         };
@@ -177,8 +178,9 @@ public class MaintenanceServiceTests
         _mockMaintenanceRepository
             .Setup(repo => repo.GetMaintenanceEntityById(maintenanceId))
             .Returns(maintenance);
+        _mockItemRepository.Setup(repo => repo.GetItemEntityById(itemId)).Returns(item);
         _mockMaintenanceRepository
-            .Setup(repo => repo.BorrowItemForMaintenance(maintenance))
+            .Setup(repo => repo.BorrowItemForMaintenance(maintenance, item))
             .Returns(maintenanceDetailedDTO);
 
         // Act
@@ -282,8 +284,15 @@ public class MaintenanceServiceTests
         // Arrange
         int maintenanceId = 1;
         int clerkId = 2;
+        int itemId = 1;
         var clerk = new User { UserId = clerkId, Role = "Clerk" };
-        var maintenance = new Maintenance { MaintenanceId = maintenanceId, Status = "UnderReview" };
+        var item = new Item { ItemId = itemId, Status = "Borrowed" };
+        var maintenance = new Maintenance
+        {
+            MaintenanceId = maintenanceId,
+            Status = "UnderReview",
+            ItemId = itemId,
+        };
         var reviewMaintenanceDTO = new ReviewMaintenanceDTO();
         var reviewedMaintenanceDTO = new MaintenanceDetailedDTO();
 
@@ -291,8 +300,9 @@ public class MaintenanceServiceTests
         _mockMaintenanceRepository
             .Setup(repo => repo.GetMaintenanceEntityById(maintenanceId))
             .Returns(maintenance);
+        _mockItemRepository.Setup(repo => repo.GetItemEntityById(itemId)).Returns(item);
         _mockMaintenanceRepository
-            .Setup(repo => repo.ReviewMaintenance(maintenance, clerk, reviewMaintenanceDTO))
+            .Setup(repo => repo.ReviewMaintenance(maintenance, item, clerk, reviewMaintenanceDTO))
             .Returns(reviewedMaintenanceDTO);
 
         // Act

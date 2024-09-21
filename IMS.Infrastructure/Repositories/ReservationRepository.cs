@@ -353,18 +353,17 @@ namespace IMS.Infrastructure.Repositories
 
         public ItemReservationDetailedDTO? BorrowReservedItem(
             ItemReservation reservation,
+            Item item,
             User clerk
         )
         {
-            if (reservation.Item == null)
-                return null;
             reservation.LentClerkId = clerk.UserId;
             reservation.LentClerk = clerk;
             reservation.Status = "Borrowed";
             reservation.BorrowedAt = DateTime.Now;
-            reservation.Item.Status = "Borrowed";
+            item.Status = "Borrowed";
             _dbContext.Update(reservation);
-            _dbContext.Update(reservation.Item);
+            _dbContext.Update(item);
             _dbContext.SaveChanges();
             return GetReservationDTOById(reservation.ItemReservationId);
         }
@@ -425,18 +424,17 @@ namespace IMS.Infrastructure.Repositories
 
         public ItemReservationDetailedDTO? ReturnBorrowedItem(
             ItemReservation reservation,
+            Item item,
             User clerk
         )
         {
-            if (reservation.Item == null)
-                return null;
             reservation.ReturnAcceptedClerkId = clerk.UserId;
             reservation.ReturnAcceptedClerk = clerk;
             reservation.Status = "Returned";
             reservation.ReturnedAt = DateTime.Now;
-            reservation.Item.Status = "Available";
+            item.Status = "Available";
             _dbContext.Update(reservation);
-            _dbContext.Update(reservation.Item);
+            _dbContext.Update(item);
             _dbContext.SaveChanges();
             return GetReservationDTOById(reservation.ItemReservationId);
         }

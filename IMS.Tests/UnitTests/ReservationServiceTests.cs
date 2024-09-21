@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using IMS.Application.DTO;
+﻿using IMS.Application.DTO;
 using IMS.Application.Interfaces;
 using IMS.Application.Services;
 using IMS.Core.Model;
 using Moq;
-using Xunit;
 
 namespace IMS.Tests.UnitTests;
 
@@ -298,15 +296,21 @@ public class ReservationServiceTests
     {
         // Arrange
         var clerk = new User { UserId = 1, Role = "Clerk" };
-        var reservation = new ItemReservation { ItemReservationId = 1, Status = "Borrowed" };
+        var reservation = new ItemReservation
+        {
+            ItemReservationId = 1,
+            Status = "Borrowed",
+            ItemId = 1,
+        };
         var returnedReservation = new ItemReservationDetailedDTO();
-
-        _mockUserRepository.Setup(x => x.GetUserEntityById(It.IsAny<int>())).Returns(clerk);
+        var item = new Item { ItemId = 1, Status = "Borrowed" };
+        _mockUserRepository.Setup(x => x.GetUserEntityById(clerk.UserId)).Returns(clerk);
         _mockReservationRepository
-            .Setup(x => x.GetReservationEntityById(It.IsAny<int>()))
+            .Setup(x => x.GetReservationEntityById(reservation.ItemReservationId))
             .Returns(reservation);
+        _mockItemRepository.Setup(x => x.GetItemEntityById(item.ItemId)).Returns(item);
         _mockReservationRepository
-            .Setup(x => x.ReturnBorrowedItem(It.IsAny<ItemReservation>(), It.IsAny<User>()))
+            .Setup(x => x.ReturnBorrowedItem(reservation, item, clerk))
             .Returns(returnedReservation);
 
         // Act

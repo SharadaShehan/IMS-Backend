@@ -343,21 +343,17 @@ namespace IMS.Presentation.Controllers
                 DecodedQRToken decodedQRToken = await _qRTokenProvider.validateQRToken(token);
                 if (!decodedQRToken.success)
                     return BadRequest(decodedQRToken.message);
-                if (decodedQRToken.eventId == null)
-                    return BadRequest("Invalid Token");
-                if (decodedQRToken.isReservation != true)
+                if (decodedQRToken.reservationId == null)
                     return BadRequest("Invalid Token");
                 // Get the reservationDTO if Available
                 ItemReservationDetailedDTO? itemReservationDTO =
                     _reservationService.GetReservationById(id);
-                if (itemReservationDTO == null)
-                    return BadRequest("Item not Available for Borrowing");
-                if (itemReservationDTO.status != "Reserved")
-                    return BadRequest("Item not Available for Borrowing");
+                if (itemReservationDTO == null || itemReservationDTO.status != "Reserved")
+                    return BadRequest("Reservation not Available for Borrowing");
                 // Verify the reservation
                 if (decodedQRToken.userId != itemReservationDTO.reservedUserId)
                     return BadRequest("Invalid Token");
-                if (decodedQRToken.eventId != itemReservationDTO.reservationId)
+                if (decodedQRToken.reservationId != itemReservationDTO.reservationId)
                     return BadRequest("Invalid Token");
                 // Borrow the item
                 ResponseDTO<ItemReservationDetailedDTO> responseDTO =
@@ -394,8 +390,7 @@ namespace IMS.Presentation.Controllers
                 // Get the token
                 string? token = await _qRTokenProvider.getQRToken(
                     itemReservationDTO.reservationId,
-                    clerkDto.userId,
-                    true
+                    clerkDto.userId
                 );
                 if (token == null)
                     return BadRequest("Token Generation Failed");
