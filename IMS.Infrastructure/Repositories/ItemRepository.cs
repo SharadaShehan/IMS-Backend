@@ -26,28 +26,54 @@ namespace IMS.Infrastructure.Repositories
                 .maintenances.Where(m => m.ItemId == id && m.Status != "Canceled" && m.IsActive)
                 .OrderByDescending(m => m.EndDate)
                 .FirstOrDefault();
-            return _dbContext
-                .items.Where(i => i.ItemId == id && i.IsActive)
-                .Select(i => new ItemDetailedDTO
+            ItemDetailedDTO? itemDto = null;
+            if (lastMaintenance != null)
+            {
+                User? technician = _dbContext
+                    .users.Where(x =>
+                        x.UserId == lastMaintenance.TechnicianId && x.IsActive == true
+                    )
+                    .FirstOrDefault();
+                if (technician != null)
                 {
-                    itemId = i.ItemId,
-                    itemName = i.Equipment.Name,
-                    itemModel = i.Equipment.Model,
-                    imageUrl = i.Equipment.ImageURL,
-                    equipmentId = i.EquipmentId,
-                    labId = i.Equipment.LabId,
-                    labName = i.Equipment.Lab.LabName,
-                    serialNumber = i.SerialNumber,
-                    lastMaintenanceOn = lastMaintenance != null ? lastMaintenance.EndDate : null,
-                    lastMaintenanceBy =
-                        lastMaintenance != null
-                            ? lastMaintenance.Technician.FirstName
-                                + " "
-                                + lastMaintenance.Technician.LastName
-                            : null,
-                    status = i.Status,
-                })
-                .FirstOrDefault();
+                    itemDto = _dbContext
+                        .items.Where(i => i.ItemId == id && i.IsActive)
+                        .Select(i => new ItemDetailedDTO
+                        {
+                            itemId = i.ItemId,
+                            itemName = i.Equipment.Name,
+                            itemModel = i.Equipment.Model,
+                            imageUrl = i.Equipment.ImageURL,
+                            equipmentId = i.EquipmentId,
+                            labId = i.Equipment.LabId,
+                            labName = i.Equipment.Lab.LabName,
+                            serialNumber = i.SerialNumber,
+                            lastMaintenanceOn = lastMaintenance.EndDate,
+                            lastMaintenanceBy = technician.FirstName + " " + technician.LastName,
+                            status = i.Status,
+                        })
+                        .FirstOrDefault();
+                }
+            }
+            else
+            {
+                itemDto = _dbContext
+                    .items.Where(i => i.ItemId == id && i.IsActive)
+                    .Select(i => new ItemDetailedDTO
+                    {
+                        itemId = i.ItemId,
+                        itemName = i.Equipment.Name,
+                        itemModel = i.Equipment.Model,
+                        imageUrl = i.Equipment.ImageURL,
+                        equipmentId = i.EquipmentId,
+                        labId = i.Equipment.LabId,
+                        labName = i.Equipment.Lab.LabName,
+                        serialNumber = i.SerialNumber,
+                        status = i.Status,
+                    })
+                    .FirstOrDefault();
+            }
+            return itemDto;
         }
 
         public List<ItemDTO> GetAllItemDTOs(int equipmentId)

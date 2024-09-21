@@ -1,4 +1,5 @@
-﻿using IMS.Application.DTO;
+﻿using System.Diagnostics;
+using IMS.Application.DTO;
 using IMS.Application.Interfaces;
 using IMS.Core.Model;
 
@@ -213,9 +214,16 @@ namespace IMS.Application.Services
             // Check if Reservation is Reserved
             if (reservation.Status != "Reserved")
                 return new ResponseDTO<ItemReservationDetailedDTO>("Item is Not Reserved");
+            // Check if Item is available
+            if (reservation.ItemId == null)
+                return new ResponseDTO<ItemReservationDetailedDTO>("Item is Not Found");
+            Item? item = _itemRepository.GetItemEntityById(reservation.ItemId ?? 0);
+            if (item == null)
+                return new ResponseDTO<ItemReservationDetailedDTO>("Item is Not Found");
             // Borrow Reserved Item
             ItemReservationDetailedDTO? borrowedReservation =
-                _reservationRepository.BorrowReservedItem(reservation, clerk);
+                _reservationRepository.BorrowReservedItem(reservation, item, clerk);
+            Debug.WriteLine("reached -2");
             if (borrowedReservation == null)
                 return new ResponseDTO<ItemReservationDetailedDTO>(
                     "Failed to Update Reserved Item to Borrowed"
@@ -270,9 +278,15 @@ namespace IMS.Application.Services
             // Check if Reservation is Borrowed
             if (reservation.Status != "Borrowed")
                 return new ResponseDTO<ItemReservationDetailedDTO>("Item is Not Borrowed");
+            // Check if Item is available
+            if (reservation.ItemId == null)
+                return new ResponseDTO<ItemReservationDetailedDTO>("Item is Not Found");
+            Item? item = _itemRepository.GetItemEntityById(reservation.ItemId ?? 0);
+            if (item == null)
+                return new ResponseDTO<ItemReservationDetailedDTO>("Item is Not Found");
             // Return Borrowed Item
             ItemReservationDetailedDTO? returnedReservation =
-                _reservationRepository.ReturnBorrowedItem(reservation, clerk);
+                _reservationRepository.ReturnBorrowedItem(reservation, item, clerk);
             if (returnedReservation == null)
                 return new ResponseDTO<ItemReservationDetailedDTO>(
                     "Failed to Update Borrowed Item to Returned"

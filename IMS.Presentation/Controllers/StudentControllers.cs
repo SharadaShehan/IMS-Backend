@@ -61,7 +61,7 @@ namespace IMS.Presentation.Controllers
                     );
                 if (!responseDTO.success)
                     return BadRequest(responseDTO.message);
-                return Ok(responseDTO.result);
+                return StatusCode(201, responseDTO.result);
             }
             catch (Exception ex)
             {
@@ -137,8 +137,7 @@ namespace IMS.Presentation.Controllers
                 // Get the QR token
                 string? token = await _qRTokenProvider.getQRToken(
                     itemReservationDTO.reservationId,
-                    studentDto.userId,
-                    true
+                    studentDto.userId
                 );
                 if (token == null)
                     return BadRequest("Token Generation Failed");
@@ -170,20 +169,20 @@ namespace IMS.Presentation.Controllers
                 DecodedQRToken decodedQRToken = await _qRTokenProvider.validateQRToken(token);
                 if (!decodedQRToken.success)
                     return BadRequest(decodedQRToken.message);
-                if (decodedQRToken.eventId == null || decodedQRToken.isReservation != true)
+                if (decodedQRToken.reservationId == null)
                     return BadRequest("Invalid Token");
                 // Get the reservationDTO if Available
                 ItemReservationDetailedDTO? itemReservationDTO =
                     _reservationService.GetReservationById(id);
                 if (itemReservationDTO == null || itemReservationDTO.status != "Borrowed")
-                    return BadRequest("Item not Available for Returning");
+                    return BadRequest("Reservation not Available for Borrowing");
                 // Verify the reservation
                 if (itemReservationDTO.reservedUserId != studentDto.userId)
                     return BadRequest("Only Borrowed User Can Return Item");
                 UserDTO? clerk = _userService.GetUserById(decodedQRToken.userId.Value);
                 if (clerk == null || clerk.role != "Clerk")
                     return BadRequest("Invalid Clerk User");
-                if (decodedQRToken.eventId != itemReservationDTO.reservationId)
+                if (decodedQRToken.reservationId != itemReservationDTO.reservationId)
                     return BadRequest("Invalid Token");
                 // Borrow the item
                 ResponseDTO<ItemReservationDetailedDTO> responseDTO =

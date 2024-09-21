@@ -952,7 +952,7 @@ public class ReservationRepositoryTests
             context.SaveChanges();
 
             // Act
-            var result = repository.BorrowReservedItem(reservation, clerk);
+            var result = repository.BorrowReservedItem(reservation, item, clerk);
 
             // Assert
             Assert.NotNull(result);
@@ -1130,7 +1130,7 @@ public class ReservationRepositoryTests
             context.SaveChanges();
 
             // Act
-            var result = repository.ReturnBorrowedItem(reservation, clerk);
+            var result = repository.ReturnBorrowedItem(reservation, item, clerk);
 
             // Assert
             Assert.NotNull(result);

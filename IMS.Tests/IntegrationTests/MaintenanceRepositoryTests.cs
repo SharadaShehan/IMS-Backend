@@ -1044,7 +1044,7 @@ public class MaintenanceRepositoryTests
             context.SaveChanges();
 
             // Act
-            var maintenanceDto = repository.BorrowItemForMaintenance(maintenance);
+            var maintenanceDto = repository.BorrowItemForMaintenance(maintenance, item);
 
             // Assert
             Assert.NotNull(maintenanceDto);
@@ -1219,6 +1219,7 @@ public class MaintenanceRepositoryTests
             // Act
             var maintenanceDto = repository.ReviewMaintenance(
                 maintenance,
+                item,
                 clerk,
                 reviewMaintenanceDTO
             );
@@ -1309,6 +1310,7 @@ public class MaintenanceRepositoryTests
             // Act
             var maintenanceDto = repository.ReviewMaintenance(
                 maintenance,
+                item,
                 clerk,
                 reviewMaintenanceDTO
             );

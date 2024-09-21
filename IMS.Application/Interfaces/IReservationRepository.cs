@@ -29,9 +29,17 @@ namespace IMS.Application.Interfaces
             User clerk,
             RespondReservationDTO respondReservationDTO
         );
-        ItemReservationDetailedDTO? BorrowReservedItem(ItemReservation reservation, User clerk);
+        ItemReservationDetailedDTO? BorrowReservedItem(
+            ItemReservation reservation,
+            Item item,
+            User clerk
+        );
         ItemReservationDetailedDTO? CancelReservation(ItemReservation reservation);
-        ItemReservationDetailedDTO? ReturnBorrowedItem(ItemReservation reservation, User clerk);
+        ItemReservationDetailedDTO? ReturnBorrowedItem(
+            ItemReservation reservation,
+            Item item,
+            User clerk
+        );
         bool CheckTimeSlotAvailability(DateTime startDate, DateTime endDate);
     }
 }

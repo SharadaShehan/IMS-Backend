@@ -1,3 +1,4 @@
+using System.Text;
 using FluentValidation;
 using IMS.Application.DTO;
 using IMS.Application.Interfaces;
@@ -9,7 +10,6 @@ using IMS.Presentation.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 

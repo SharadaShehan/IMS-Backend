@@ -18,10 +18,10 @@ namespace IMS.Application.DTO
         public string? imageUrl { get; set; }
 
         [Required]
-        public int LabId { get; set; }
+        public int labId { get; set; }
 
         [Required]
-        public string LabName { get; set; }
+        public string labName { get; set; }
 
         [Required]
         public int lastMaintenanceId { get; set; }

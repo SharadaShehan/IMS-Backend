@@ -20,13 +20,14 @@ namespace IMS.Application.Interfaces
             User technician,
             CreateMaintenanceDTO createMaintenanceDTO
         );
-        MaintenanceDetailedDTO? BorrowItemForMaintenance(Maintenance maintenance);
+        MaintenanceDetailedDTO? BorrowItemForMaintenance(Maintenance maintenance, Item item);
         MaintenanceDetailedDTO? SubmitMaintenanceUpdate(
             Maintenance maintenance,
             SubmitMaintenanceDTO submitMaintenanceDTO
         );
         MaintenanceDetailedDTO? ReviewMaintenance(
             Maintenance maintenance,
+            Item item,
             User clerk,
             ReviewMaintenanceDTO reviewMaintenanceDTO
         );

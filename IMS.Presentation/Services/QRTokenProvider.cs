@@ -8,7 +8,7 @@ namespace IMS.Presentation.Services
 {
     public interface IQRTokenProvider
     {
-        public Task<string?> getQRToken(int eventId, int userId, bool isReservation);
+        public Task<string?> getQRToken(int reservationId, int userId);
         public Task<DecodedQRToken> validateQRToken(string token);
     }
 
@@ -21,25 +21,17 @@ namespace IMS.Presentation.Services
             this.qRTokenSecret = configuration.GetSection("QRToken")["Secret"];
         }
 
-        public async Task<string?> getQRToken(int eventId, int userId, bool isReservation)
+        public async Task<string?> getQRToken(int reservationId, int userId)
         {
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(qRTokenSecret);
-                var claims = new[] { new Claim("UserId" as string, userId.ToString() as string) };
-                if (isReservation)
+                var key = Encoding.UTF8.GetBytes(qRTokenSecret);
+                var claims = new[]
                 {
-                    claims.Append(
-                        new Claim("ReservationId" as string, eventId.ToString() as string)
-                    );
-                }
-                else
-                {
-                    claims.Append(
-                        new Claim("MaintenanceId" as string, eventId.ToString() as string)
-                    );
-                }
+                    new Claim("UserId" as string, userId.ToString() as string),
+                    new Claim("ReservationId" as string, reservationId.ToString() as string),
+                };
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(claims),
@@ -68,7 +60,7 @@ namespace IMS.Presentation.Services
                 var tokenHandler = new JwtSecurityTokenHandler();
                 if (tokenHandler.CanReadToken(token))
                 {
-                    var key = Encoding.ASCII.GetBytes(qRTokenSecret);
+                    var key = Encoding.UTF8.GetBytes(qRTokenSecret);
                     // Set the token validation parameters
                     var validationParameters = new TokenValidationParameters
                     {
@@ -76,7 +68,7 @@ namespace IMS.Presentation.Services
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateIssuer = false,
                         ValidateAudience = false,
-                        ValidateLifetime = true,
+                        ValidateLifetime = false,
                         ClockSkew =
                             TimeSpan.Zero // Remove default clock skew of 5 mins
                         ,
@@ -89,25 +81,18 @@ namespace IMS.Presentation.Services
                         out SecurityToken validatedToken
                     );
                     var claims = principal.Claims;
-
                     // Get the userId from the claims
                     var userId = claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
-                    // Get the eventId from the claims
-                    var eventId = claims.FirstOrDefault(x => x.Type == "EventId")?.Value;
-                    // Get the isReservation from the claims
-                    var isReservation = claims
-                        .FirstOrDefault(x => x.Type == "IsReservation")
+                    // Get the reservationId from the claims
+                    var reservationId = claims
+                        .FirstOrDefault(x => x.Type == "ReservationId")
                         ?.Value;
 
                     // Check if the claims are not null
-                    if (userId != null && eventId != null && isReservation != null)
+                    if (userId != null && reservationId != null)
                     {
                         // Return the decoded token
-                        return new DecodedQRToken(
-                            int.Parse(eventId),
-                            int.Parse(userId),
-                            bool.Parse(isReservation)
-                        );
+                        return new DecodedQRToken(int.Parse(userId), int.Parse(reservationId));
                     }
                     else
                     {
@@ -136,16 +121,14 @@ namespace IMS.Presentation.Services
     {
         public bool success { get; set; }
         public int? userId { get; set; }
-        public int? eventId { get; set; }
-        public bool? isReservation { get; set; }
+        public int? reservationId { get; set; }
         public string? message { get; set; }
 
-        public DecodedQRToken(int eventId, int userId, bool isReservation)
+        public DecodedQRToken(int userId, int reservationId)
         {
             this.success = true;
             this.userId = userId;
-            this.eventId = eventId;
-            this.isReservation = isReservation;
+            this.reservationId = reservationId;
         }
 
         public DecodedQRToken(string message)
