@@ -45,6 +45,7 @@ namespace IMS.Presentation.Controllers
             {
                 // Validate the DTO
                 var result = await _requestEquipmentValidator.ValidateAsync(requestEquipmentDTO);
+
                 if (!result.IsValid)
                     return BadRequest(result.Errors);
                 // Get the User from auth token

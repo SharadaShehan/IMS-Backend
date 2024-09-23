@@ -84,15 +84,15 @@ namespace IMS.Application.Services
             // Check if Time Slot is Available
             if (
                 !_maintenanceRepository.CheckTimeSlotAvailability(
-                    createMaintenanceDTO.startDate,
-                    createMaintenanceDTO.endDate
+                    DateTime.Parse(createMaintenanceDTO.startDate),
+                    DateTime.Parse(createMaintenanceDTO.endDate)
                 )
             )
                 return new ResponseDTO<MaintenanceDetailedDTO>("Time Slot Not Available");
             if (
                 !_reservationRepository.CheckTimeSlotAvailability(
-                    createMaintenanceDTO.startDate,
-                    createMaintenanceDTO.endDate
+                    DateTime.Parse(createMaintenanceDTO.startDate),
+                    DateTime.Parse(createMaintenanceDTO.endDate)
                 )
             )
                 return new ResponseDTO<MaintenanceDetailedDTO>("Time Slot Not Available");
