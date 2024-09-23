@@ -258,8 +258,8 @@ namespace IMS.Infrastructure.Repositories
             {
                 ItemId = item.ItemId,
                 Item = item,
-                StartDate = createMaintenanceDTO.startDate,
-                EndDate = createMaintenanceDTO.endDate,
+                StartDate = DateTime.Parse(createMaintenanceDTO.startDate),
+                EndDate = DateTime.Parse(createMaintenanceDTO.endDate),
                 CreatedClerkId = clerk.UserId,
                 CreatedClerk = clerk,
                 TaskDescription = createMaintenanceDTO.taskDescription,
