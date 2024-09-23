@@ -182,7 +182,32 @@ namespace IMS.Presentation.Controllers
                 // Validate the DTO
                 var result = await _createMaintenanceValidator.ValidateAsync(createMaintenanceDTO);
                 if (!result.IsValid)
-                    return BadRequest(result.Errors);
+                {
+                    // Create a ValidationProblemDetails object
+                    ValidationProblemDetails validationProblemDetails = new ValidationProblemDetails
+                    {
+                        Status = 400,
+                        Title = "One or more validation errors occurred.",
+                        Instance = Guid.NewGuid().ToString(),
+                        Type = "https://httpstatuses.com/400",
+                    };
+                    // Loop through FluentValidation errors and add them to problemDetails
+                    foreach (var error in result.Errors)
+                    {
+                        if (!validationProblemDetails.Errors.ContainsKey(error.PropertyName))
+                        {
+                            validationProblemDetails.Errors[error.PropertyName] =
+                            [
+                                error.ErrorMessage,
+                            ];
+                        }
+                        validationProblemDetails
+                            .Errors[error.PropertyName]
+                            .Append(error.ErrorMessage);
+                    }
+                    // Return the ValidationProblemDetails object
+                    return BadRequest(validationProblemDetails);
+                }
                 // Get the User from the token
                 UserDTO? clerkDto = await _tokenParser.getUser(
                     HttpContext.Request.Headers["Authorization"].FirstOrDefault()
