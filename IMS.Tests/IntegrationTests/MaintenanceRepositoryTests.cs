@@ -960,8 +960,8 @@ public class MaintenanceRepositoryTests
                 {
                     itemId = 1,
                     taskDescription = "Test Repair",
-                    startDate = DateTime.Now.AddDays(3),
-                    endDate = DateTime.Now.AddDays(5),
+                    startDate = "2024-09-12",
+                    endDate = "2024-09-14",
                 }
             );
 

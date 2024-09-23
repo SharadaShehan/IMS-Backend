@@ -107,8 +107,8 @@ public class ReservationServiceTests
         var requestDTO = new RequestEquipmentDTO
         {
             equipmentId = equipment.EquipmentId,
-            startDate = System.DateTime.Now,
-            endDate = System.DateTime.Now.AddHours(1),
+            startDate = "2024-09-12",
+            endDate = "2024-09-13",
         };
 
         _mockUserRepository.Setup(repo => repo.GetUserEntityById(student.UserId)).Returns(student);
@@ -116,7 +116,12 @@ public class ReservationServiceTests
             .Setup(repo => repo.GetEquipmentEntityById(equipment.EquipmentId))
             .Returns(equipment);
         _mockReservationRepository
-            .Setup(repo => repo.CheckTimeSlotAvailability(requestDTO.startDate, requestDTO.endDate))
+            .Setup(repo =>
+                repo.CheckTimeSlotAvailability(
+                    DateTime.Parse(requestDTO.startDate),
+                    DateTime.Parse(requestDTO.endDate)
+                )
+            )
             .Returns(false);
 
         // Act
@@ -135,8 +140,8 @@ public class ReservationServiceTests
         var requestDTO = new RequestEquipmentDTO
         {
             equipmentId = equipment.EquipmentId,
-            startDate = System.DateTime.Now,
-            endDate = System.DateTime.Now.AddHours(1),
+            startDate = "2024-09-12",
+            endDate = "2024-09-13",
         };
         var reservationDTO = new ItemReservationDetailedDTO { equipmentId = 1 };
 
@@ -145,10 +150,20 @@ public class ReservationServiceTests
             .Setup(repo => repo.GetEquipmentEntityById(equipment.EquipmentId))
             .Returns(equipment);
         _mockReservationRepository
-            .Setup(repo => repo.CheckTimeSlotAvailability(requestDTO.startDate, requestDTO.endDate))
+            .Setup(repo =>
+                repo.CheckTimeSlotAvailability(
+                    DateTime.Parse(requestDTO.startDate),
+                    DateTime.Parse(requestDTO.endDate)
+                )
+            )
             .Returns(true);
         _mockMaintenanceRepository
-            .Setup(repo => repo.CheckTimeSlotAvailability(requestDTO.startDate, requestDTO.endDate))
+            .Setup(repo =>
+                repo.CheckTimeSlotAvailability(
+                    DateTime.Parse(requestDTO.startDate),
+                    DateTime.Parse(requestDTO.endDate)
+                )
+            )
             .Returns(true);
         _mockReservationRepository
             .Setup(repo => repo.RequestEquipmentReservation(equipment, student, requestDTO))
