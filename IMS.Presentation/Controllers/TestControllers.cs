@@ -23,7 +23,7 @@ namespace IMS.Presentation.Controllers
                     status = "success",
                     system = new
                     {
-                        version = "1.0.0",
+                        version = "0.0.1",
                         name = "Inventory Management System for Computer Labourataries",
                         description = "This is a test API for the Inventory Management System for Computer Labourataries",
                         author = "Group 22",
