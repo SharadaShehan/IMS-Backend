@@ -24,6 +24,7 @@ namespace IMS.Presentation.Controllers
         private readonly ItemService _itemService;
         private readonly MaintenanceService _maintenanceService;
         private readonly ReservationService _reservationService;
+        private readonly UserService _userService;
 
         public ClerkController(
             ITokenParser tokenParser,
@@ -38,7 +39,8 @@ namespace IMS.Presentation.Controllers
             EquipmentService equipmentService,
             ItemService itemService,
             MaintenanceService maintenanceService,
-            ReservationService reservationService
+            ReservationService reservationService,
+            UserService userService
         )
         {
             _tokenParser = tokenParser;
@@ -54,6 +56,7 @@ namespace IMS.Presentation.Controllers
             _itemService = itemService;
             _maintenanceService = maintenanceService;
             _reservationService = reservationService;
+            _userService = userService;
         }
 
         [HttpPost("equipments")]
@@ -446,6 +449,20 @@ namespace IMS.Presentation.Controllers
                     return BadRequest("Token Generation Failed");
                 // Return the token
                 return Ok(new QRTokenGeneratedDTO(token));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("technicians")]
+        [AuthorizationFilter(["Clerk"])]
+        public async Task<ActionResult<List<UserDTO>>> GetUsersList()
+        {
+            try
+            {
+                return _userService.GetAllTechnicians();
             }
             catch (Exception ex)
             {

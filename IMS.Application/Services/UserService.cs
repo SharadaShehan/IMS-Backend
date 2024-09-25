@@ -1,6 +1,5 @@
 ﻿using IMS.Application.DTO;
 using IMS.Application.Interfaces;
-using IMS.Core.Model;
 
 namespace IMS.Application.Services
 {
@@ -29,6 +28,11 @@ namespace IMS.Application.Services
             if (userDTO == null)
                 return new ResponseDTO<UserDTO>("User Not Found");
             return new ResponseDTO<UserDTO>(userDTO);
+        }
+
+        public List<UserDTO> GetAllTechnicians()
+        {
+            return _userRepository.GetAllTechnicianDTOs();
         }
     }
 }
