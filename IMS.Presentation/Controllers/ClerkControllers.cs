@@ -24,6 +24,7 @@ namespace IMS.Presentation.Controllers
         private readonly ItemService _itemService;
         private readonly MaintenanceService _maintenanceService;
         private readonly ReservationService _reservationService;
+        private readonly UserService _userService;
 
         public ClerkController(
             ITokenParser tokenParser,
@@ -38,7 +39,8 @@ namespace IMS.Presentation.Controllers
             EquipmentService equipmentService,
             ItemService itemService,
             MaintenanceService maintenanceService,
-            ReservationService reservationService
+            ReservationService reservationService,
+            UserService userService
         )
         {
             _tokenParser = tokenParser;
@@ -54,6 +56,7 @@ namespace IMS.Presentation.Controllers
             _itemService = itemService;
             _maintenanceService = maintenanceService;
             _reservationService = reservationService;
+            _userService = userService;
         }
 
         [HttpPost("equipments")]
@@ -182,7 +185,32 @@ namespace IMS.Presentation.Controllers
                 // Validate the DTO
                 var result = await _createMaintenanceValidator.ValidateAsync(createMaintenanceDTO);
                 if (!result.IsValid)
-                    return BadRequest(result.Errors);
+                {
+                    // Create a ValidationProblemDetails object
+                    ValidationProblemDetails validationProblemDetails = new ValidationProblemDetails
+                    {
+                        Status = 400,
+                        Title = "One or more validation errors occurred.",
+                        Instance = Guid.NewGuid().ToString(),
+                        Type = "https://httpstatuses.com/400",
+                    };
+                    // Loop through FluentValidation errors and add them to problemDetails
+                    foreach (var error in result.Errors)
+                    {
+                        if (!validationProblemDetails.Errors.ContainsKey(error.PropertyName))
+                        {
+                            validationProblemDetails.Errors[error.PropertyName] =
+                            [
+                                error.ErrorMessage,
+                            ];
+                        }
+                        validationProblemDetails
+                            .Errors[error.PropertyName]
+                            .Append(error.ErrorMessage);
+                    }
+                    // Return the ValidationProblemDetails object
+                    return BadRequest(validationProblemDetails);
+                }
                 // Get the User from the token
                 UserDTO? clerkDto = await _tokenParser.getUser(
                     HttpContext.Request.Headers["Authorization"].FirstOrDefault()
@@ -214,7 +242,32 @@ namespace IMS.Presentation.Controllers
                 // Validate the DTO
                 var result = await _reviewMaintenanceValidator.ValidateAsync(reviewMaintenanceDTO);
                 if (!result.IsValid)
-                    return BadRequest(result.Errors);
+                {
+                    // Create a ValidationProblemDetails object
+                    ValidationProblemDetails validationProblemDetails = new ValidationProblemDetails
+                    {
+                        Status = 400,
+                        Title = "One or more validation errors occurred.",
+                        Instance = Guid.NewGuid().ToString(),
+                        Type = "https://httpstatuses.com/400",
+                    };
+                    // Loop through FluentValidation errors and add them to problemDetails
+                    foreach (var error in result.Errors)
+                    {
+                        if (!validationProblemDetails.Errors.ContainsKey(error.PropertyName))
+                        {
+                            validationProblemDetails.Errors[error.PropertyName] =
+                            [
+                                error.ErrorMessage,
+                            ];
+                        }
+                        validationProblemDetails
+                            .Errors[error.PropertyName]
+                            .Append(error.ErrorMessage);
+                    }
+                    // Return the ValidationProblemDetails object
+                    return BadRequest(validationProblemDetails);
+                }
                 // Get the User from the token
                 UserDTO? clerkDto = await _tokenParser.getUser(
                     HttpContext.Request.Headers["Authorization"].FirstOrDefault()
@@ -300,7 +353,32 @@ namespace IMS.Presentation.Controllers
                     respondReservationDTO
                 );
                 if (!result.IsValid)
-                    return BadRequest(result.Errors);
+                {
+                    // Create a ValidationProblemDetails object
+                    ValidationProblemDetails validationProblemDetails = new ValidationProblemDetails
+                    {
+                        Status = 400,
+                        Title = "One or more validation errors occurred.",
+                        Instance = Guid.NewGuid().ToString(),
+                        Type = "https://httpstatuses.com/400",
+                    };
+                    // Loop through FluentValidation errors and add them to problemDetails
+                    foreach (var error in result.Errors)
+                    {
+                        if (!validationProblemDetails.Errors.ContainsKey(error.PropertyName))
+                        {
+                            validationProblemDetails.Errors[error.PropertyName] =
+                            [
+                                error.ErrorMessage,
+                            ];
+                        }
+                        validationProblemDetails
+                            .Errors[error.PropertyName]
+                            .Append(error.ErrorMessage);
+                    }
+                    // Return the ValidationProblemDetails object
+                    return BadRequest(validationProblemDetails);
+                }
                 // Get the User from the token
                 UserDTO? clerkDto = await _tokenParser.getUser(
                     HttpContext.Request.Headers["Authorization"].FirstOrDefault()
@@ -396,6 +474,20 @@ namespace IMS.Presentation.Controllers
                     return BadRequest("Token Generation Failed");
                 // Return the token
                 return Ok(new QRTokenGeneratedDTO(token));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("technicians")]
+        [AuthorizationFilter(["Clerk"])]
+        public async Task<ActionResult<List<UserDTO>>> GetUsersList()
+        {
+            try
+            {
+                return _userService.GetAllTechnicians();
             }
             catch (Exception ex)
             {

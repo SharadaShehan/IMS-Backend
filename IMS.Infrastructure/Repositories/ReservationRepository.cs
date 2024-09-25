@@ -305,8 +305,8 @@ namespace IMS.Infrastructure.Repositories
             {
                 EquipmentId = equipment.EquipmentId,
                 Equipment = equipment,
-                StartDate = requestEquipmentDTO.startDate,
-                EndDate = requestEquipmentDTO.endDate,
+                StartDate = DateTime.Parse(requestEquipmentDTO.startDate),
+                EndDate = DateTime.Parse(requestEquipmentDTO.endDate),
                 ReservedUserId = student.UserId,
                 ReservedUser = student,
                 CreatedAt = DateTime.Now,

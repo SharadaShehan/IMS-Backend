@@ -172,7 +172,7 @@ namespace IMS.Presentation.Controllers
         }
 
         [HttpGet("reservations/{id}")]
-        [AuthorizationFilter(["Clerk", "Technician", "SystemAdmin"])]
+        [AuthorizationFilter(["Clerk", "Technician", "SystemAdmin", "Student", "AcademicStaff"])]
         public async Task<ActionResult<ItemReservationDetailedDTO>> ViewDetailedReservation(int id)
         {
             try

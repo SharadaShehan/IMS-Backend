@@ -106,7 +106,14 @@ public class MaintenanceServiceTests
         var clerk = new User { UserId = clerkId, Role = "Clerk" };
         var item = new Item { ItemId = 1, Status = "Available" };
         var technician = new User { UserId = 2, Role = "Technician" };
-        var createMaintenanceDTO = new CreateMaintenanceDTO { itemId = 1, technicianId = 2 };
+        var createMaintenanceDTO = new CreateMaintenanceDTO
+        {
+            itemId = 1,
+            technicianId = 2,
+            startDate = "2024-09-12",
+            endDate = "2024-09-14",
+            taskDescription = "test",
+        };
         var maintenanceDetailedDTO = new MaintenanceDetailedDTO();
 
         _mockUserRepository.Setup(repo => repo.GetUserEntityById(clerkId)).Returns(clerk);
