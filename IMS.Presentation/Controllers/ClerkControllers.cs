@@ -71,11 +71,36 @@ namespace IMS.Presentation.Controllers
                 var result = await _createEquipmentValidator.ValidateAsync(createEquipmentDTO);
                 if (!result.IsValid)
                     return BadRequest(result.Errors);
+                // Get the User from auth token
+                UserDTO? clerkDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (clerkDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Create the Equipment
                 ResponseDTO<EquipmentDetailedDTO> responseDTO =
                     _equipmentService.CreateNewEquipment(createEquipmentDTO);
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} | {Status}",
+                        "CLERK",
+                        clerkDto.userId,
+                        "CREATE",
+                        "EQUIPMENT",
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                    "CLERK",
+                    clerkDto.userId,
+                    "CREATE",
+                    "EQUIPMENT",
+                    responseDTO.result?.equipmentId,
+                    "SUCCESS"
+                );
                 return StatusCode(201, responseDTO.result);
             }
             catch (Exception ex)
@@ -97,13 +122,39 @@ namespace IMS.Presentation.Controllers
                 var result = await _updateEquipmentValidator.ValidateAsync(updateEquipmentDTO);
                 if (!result.IsValid)
                     return BadRequest(result.Errors);
+                // Get the User from auth token
+                UserDTO? clerkDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (clerkDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Update the Equipment
                 ResponseDTO<EquipmentDetailedDTO> responseDTO = _equipmentService.UpdateEquipment(
                     id,
                     updateEquipmentDTO
                 );
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                        "CLERK",
+                        clerkDto.userId,
+                        "UPDATE",
+                        "EQUIPMENT",
+                        responseDTO.result?.equipmentId,
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                    "CLERK",
+                    clerkDto.userId,
+                    "UPDATE",
+                    "EQUIPMENT",
+                    responseDTO.result?.equipmentId,
+                    "SUCCESS"
+                );
                 return Ok(responseDTO.result);
             }
             catch (Exception ex)
@@ -118,12 +169,38 @@ namespace IMS.Presentation.Controllers
         {
             try
             {
+                // Get the User from auth token
+                UserDTO? clerkDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (clerkDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Delete the Equipment
                 ResponseDTO<EquipmentDetailedDTO> responseDTO = _equipmentService.DeleteEquipment(
                     id
                 );
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                        "CLERK",
+                        clerkDto.userId,
+                        "DELETE",
+                        "EQUIPMENT",
+                        responseDTO.result?.equipmentId,
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                    "CLERK",
+                    clerkDto.userId,
+                    "DELETE",
+                    "EQUIPMENT",
+                    responseDTO.result?.equipmentId,
+                    "SUCCESS"
+                );
                 return NoContent();
             }
             catch (Exception ex)
@@ -142,12 +219,37 @@ namespace IMS.Presentation.Controllers
                 var result = await _createItemValidator.ValidateAsync(createItemDTO);
                 if (!result.IsValid)
                     return BadRequest(result.Errors);
+                // Get the User from auth token
+                UserDTO? clerkDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (clerkDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Create the Item
                 ResponseDTO<ItemDetailedDTO> responseDTO = _itemService.CreateNewItem(
                     createItemDTO
                 );
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} | {Status}",
+                        "CLERK",
+                        clerkDto.userId,
+                        "CREATE",
+                        "ITEM",
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                    "CLERK",
+                    clerkDto.userId,
+                    "CREATE",
+                    "ITEM",
+                    responseDTO.result?.itemId,
+                    "SUCCESS"
+                );
                 return StatusCode(201, responseDTO.result);
             }
             catch (Exception ex)
@@ -162,10 +264,36 @@ namespace IMS.Presentation.Controllers
         {
             try
             {
+                // Get the User from auth token
+                UserDTO? clerkDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (clerkDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Delete the Item
                 ResponseDTO<ItemDetailedDTO> responseDTO = _itemService.DeleteItem(id);
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                        "CLERK",
+                        clerkDto.userId,
+                        "DELETE",
+                        "ITEM",
+                        responseDTO.result?.itemId,
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                    "CLERK",
+                    clerkDto.userId,
+                    "DELETE",
+                    "ITEM",
+                    responseDTO.result?.itemId,
+                    "SUCCESS"
+                );
                 return NoContent();
             }
             catch (Exception ex)
@@ -221,7 +349,26 @@ namespace IMS.Presentation.Controllers
                 ResponseDTO<MaintenanceDetailedDTO> responseDTO =
                     _maintenanceService.CreateNewMaintenance(clerkDto.userId, createMaintenanceDTO);
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} | {Status}",
+                        "CLERK",
+                        clerkDto.userId,
+                        "CREATE",
+                        "MAINTENANCE",
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                    "CLERK",
+                    clerkDto.userId,
+                    "CREATE",
+                    "MAINTENANCE",
+                    responseDTO.result?.maintenanceId,
+                    "SUCCESS"
+                );
                 return StatusCode(201, responseDTO.result);
             }
             catch (Exception ex)
@@ -282,7 +429,27 @@ namespace IMS.Presentation.Controllers
                         reviewMaintenanceDTO
                     );
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | REVIEW | {Status}",
+                        "CLERK",
+                        clerkDto.userId,
+                        "UPDATE",
+                        "MAINTENANCE",
+                        responseDTO.result?.maintenanceId,
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | REVIEW | {Status}",
+                    "CLERK",
+                    clerkDto.userId,
+                    "UPDATE",
+                    "MAINTENANCE",
+                    responseDTO.result?.maintenanceId,
+                    "SUCCESS"
+                );
                 return Ok(responseDTO.result);
             }
             catch (Exception ex)
@@ -393,7 +560,27 @@ namespace IMS.Presentation.Controllers
                         respondReservationDTO
                     );
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | RESPOND | {Status}",
+                        "CLERK",
+                        clerkDto.userId,
+                        "UPDATE",
+                        "RESERVATION",
+                        responseDTO.result?.reservationId,
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | RESPOND | {Status}",
+                    "CLERK",
+                    clerkDto.userId,
+                    "UPDATE",
+                    "RESERVATION",
+                    responseDTO.result?.reservationId,
+                    "SUCCESS"
+                );
                 return Ok(responseDTO.result);
             }
             catch (Exception ex)
@@ -437,7 +624,27 @@ namespace IMS.Presentation.Controllers
                 ResponseDTO<ItemReservationDetailedDTO> responseDTO =
                     _reservationService.BorrowReservedItem(id, clerkDto.userId);
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | [BORROW_ITEM] | {Status}",
+                        "CLERK",
+                        clerkDto.userId,
+                        "UPDATE",
+                        "RESERVATION",
+                        responseDTO.result?.reservationId,
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | [BORROW_ITEM] | {Status}",
+                    "CLERK",
+                    clerkDto.userId,
+                    "UPDATE",
+                    "RESERVATION",
+                    responseDTO.result?.reservationId,
+                    "SUCCESS"
+                );
                 return Ok(new QRTokenValidatedDTO());
             }
             catch (Exception ex)
