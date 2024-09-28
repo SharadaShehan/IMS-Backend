@@ -20,7 +20,6 @@ namespace IMS.Presentation.Filters
         {
             try
             {
-                Debug.WriteLine("Debugging-----------------------------------------------------");
                 var contextUser = context.HttpContext.User;
                 if (!contextUser.Identity.IsAuthenticated)
                 {

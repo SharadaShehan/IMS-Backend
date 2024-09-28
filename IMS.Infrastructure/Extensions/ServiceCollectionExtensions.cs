@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using IMS.Infrastructure.ScheduledJobs;
-using IMS.Infrastructure.Services;
-using IMS.Infrastructure.Services;
+﻿using IMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +13,8 @@ public static class ServiceCollectionExtensions
     )
     {
         // Database Server Service
-        var connectionString = configuration.GetConnectionString("DBConnection");
+        //var connectionString = configuration.GetConnectionString("DBConnection");
+        var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(connectionString));
 
         // Authentication Server Service
