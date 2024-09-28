@@ -13,7 +13,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 
 // Get the JWT Key and Application Insights Connection String from environment variables
-var JwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+var JwtKey = Environment.GetEnvironmentVariable("AUTH_SERVER_CLIENT_SECRET");
 var AppInsightsConnString = Environment.GetEnvironmentVariable("APPLICATION_INSIGHTS_CONNECTION_STRING");
 if (JwtKey == null || AppInsightsConnString == null)
 {
