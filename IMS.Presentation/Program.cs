@@ -1,4 +1,3 @@
-using System.Text;
 using FluentValidation;
 using IMS.Application.DTO;
 using IMS.Application.Interfaces;
@@ -11,6 +10,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
+
+// Get the JWT Key and Application Insights Connection String from environment variables
+var JwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+var AppInsightsConnString = Environment.GetEnvironmentVariable("APPLICATION_INSIGHTS_CONNECTION_STRING");
+if (JwtKey == null || AppInsightsConnString == null)
+{
+    throw new Exception("JWT Key or Application Insights Connection String not found in environment variables.");
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,7 +88,7 @@ builder.Services.AddSwaggerGen(opt =>
 });
 
 // Add services from Infrastructure Layer
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddInfrastructure();
 builder.Services.AddScoped<ITokenParser, TokenParser>();
 builder.Services.AddScoped<IQRTokenProvider, QRTokenProvider>();
 
@@ -115,7 +123,7 @@ builder
             ValidateLifetime = false,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+                Encoding.UTF8.GetBytes(JwtKey)
             ),
             ValidateIssuer = false,
             ValidateAudience = false,
@@ -124,7 +132,7 @@ builder
 
 builder.Logging.AddApplicationInsights(
     configureTelemetryConfiguration: (config) =>
-        config.ConnectionString = builder.Configuration.GetConnectionString("ApplicationInsights"),
+        config.ConnectionString = AppInsightsConnString,
     configureApplicationInsightsLoggerOptions: (options) => { }
 );
 
