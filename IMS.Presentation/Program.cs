@@ -8,6 +8,7 @@ using IMS.Infrastructure.Repositories;
 using IMS.Presentation.Services;
 using IMS.Presentation.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -120,6 +121,15 @@ builder
             ValidateAudience = false,
         };
     });
+
+builder.Logging.AddApplicationInsights(
+    configureTelemetryConfiguration: (config) =>
+        config.ConnectionString = builder.Configuration.GetConnectionString("ApplicationInsights"),
+    configureApplicationInsightsLoggerOptions: (options) => { }
+);
+
+builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Default", LogLevel.Trace);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

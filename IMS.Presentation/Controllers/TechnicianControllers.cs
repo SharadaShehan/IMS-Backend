@@ -71,7 +71,27 @@ namespace IMS.Presentation.Controllers
                 ResponseDTO<MaintenanceDetailedDTO> responseDTO =
                     _maintenanceService.BorrowItemForMaintenance(id, technicianDto.userId);
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | [BORROW_ITEM] | {Status}",
+                        "TECHNICIAN",
+                        technicianDto.userId,
+                        "UPDATE",
+                        "MAINTENANCE",
+                        responseDTO.result?.maintenanceId,
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | [BORROW_ITEM] | {Status}",
+                    "TECHNICIAN",
+                    technicianDto.userId,
+                    "UPDATE",
+                    "MAINTENANCE",
+                    responseDTO.result?.maintenanceId,
+                    "SUCCESS"
+                );
                 return Ok(responseDTO.result);
             }
             catch (Exception ex)
@@ -107,7 +127,27 @@ namespace IMS.Presentation.Controllers
                         submitMaintenanceDTO
                     );
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | [SUBMIT_ITEM] | {Status}",
+                        "TECHNICIAN",
+                        technicianDto.userId,
+                        "UPDATE",
+                        "MAINTENANCE",
+                        responseDTO.result?.maintenanceId,
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | [SUBMIT_ITEM] | {Status}",
+                    "TECHNICIAN",
+                    technicianDto.userId,
+                    "UPDATE",
+                    "MAINTENANCE",
+                    responseDTO.result?.maintenanceId,
+                    "SUCCESS"
+                );
                 return Ok(responseDTO.result);
             }
             catch (Exception ex)
