@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using IMS.Infrastructure.Extensions;
+﻿using IMS.Infrastructure.Extensions;
 using IMS.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace IMS.Presentation.Filters
 {
