@@ -1,4 +1,5 @@
-﻿using IMS.Infrastructure.Services;
+using IMS.Infrastructure.Repositories;
+using IMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +19,14 @@ public static class ServiceCollectionExtensions
         }
         services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(connectionString));
 
+        // Repositories for use in Infrastructure Layer
+        services.AddScoped<UserRepository, UserRepository>();
+        services.AddScoped<LabRepository, LabRepository>();
+        services.AddScoped<EquipmentRepository, EquipmentRepository>();
+        services.AddScoped<ItemRepository, ItemRepository>();
+        services.AddScoped<MaintenanceRepository, MaintenanceRepository>();
+        services.AddScoped<ReservationRepository, ReservationRepository>();
+
         // Authentication Server Service
         var authServerEndpoint = Environment.GetEnvironmentVariable("AUTH_SERVER_ENDPOINT");
         var authServerClientId = Environment.GetEnvironmentVariable("AUTH_SERVER_CLIENT_ID");
@@ -36,6 +45,23 @@ public static class ServiceCollectionExtensions
 
         // Authentication Server Polling Job
         //services.AddHostedService<AuthServerPollingService>();
+        
+        // Email Service
+        var emailClientApiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+        var emailClientSenderEmail = Environment.GetEnvironmentVariable("SENDGRID_SENDER_EMAIL");
+        if (emailClientApiKey == null || emailClientSenderEmail == null)
+        {
+            throw new Exception("Email Client API Key or Sender Email not found in environment variables.");
+        }
+        EmailServiceContextOptions serviceOptions = new EmailServiceContextOptions()
+        {
+            APIKey = emailClientApiKey,
+            SenderEmail = emailClientSenderEmail
+        };
+        services.AddSingleton<EmailService>(sp => new EmailService(serviceOptions));
+
+        // Notifitication Service Periodic Job
+        //services.AddHostedService<SendNotificationsService>();
 
         // Set the service provider for the service locator
         ServiceLocator.SetServiceProvider(services.BuildServiceProvider());

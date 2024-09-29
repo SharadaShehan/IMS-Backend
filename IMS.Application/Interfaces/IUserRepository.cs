@@ -10,5 +10,6 @@ namespace IMS.Application.Interfaces
         List<UserDTO> GetAllUserDTOs();
         UserDTO? UpdateUserRole(int userId, string roleName);
         List<UserDTO> GetAllTechnicianDTOs();
+        List<UserDTO> GetAllClerkDTOs();
     }
 }
