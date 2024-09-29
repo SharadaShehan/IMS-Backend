@@ -60,12 +60,39 @@ namespace IMS.Presentation.Controllers
         {
             try
             {
+                // Validate New Role
                 string userRolePattern = @"^(Clerk|Technician|Student|AcademicStaff|SystemAdmin)$";
                 if (!Regex.IsMatch(role, userRolePattern))
                     return BadRequest("Invalid Role");
+                // Get the User from auth token
+                UserDTO? adminDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (adminDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 ResponseDTO<UserDTO> responseDTO = _userService.UpdateUserRole(id, role);
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                        "ADMIN",
+                        adminDto.userId,
+                        "UPDATE",
+                        "USER",
+                        id,
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                    "ADMIN",
+                    adminDto.userId,
+                    "UPDATE",
+                    "USER",
+                    id,
+                    "SUCCESS"
+                );
                 return Ok(responseDTO.result);
             }
             catch (Exception ex)
@@ -84,10 +111,35 @@ namespace IMS.Presentation.Controllers
                 var result = await _createLabDTOValidator.ValidateAsync(createLabDTO);
                 if (!result.IsValid)
                     return BadRequest(result.Errors);
+                // Get the User from auth token
+                UserDTO? adminDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (adminDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Create the Lab
                 ResponseDTO<LabDTO> responseDTO = _labService.CreateNewLab(createLabDTO);
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} | {Status}",
+                        "ADMIN",
+                        adminDto.userId,
+                        "CREATE",
+                        "LAB",
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                    "ADMIN",
+                    adminDto.userId,
+                    "CREATE",
+                    "LAB",
+                    responseDTO.result?.labId,
+                    "SUCCESS"
+                );
                 return StatusCode(201, responseDTO.result);
             }
             catch (Exception ex)
@@ -106,10 +158,36 @@ namespace IMS.Presentation.Controllers
                 var result = await _updateLabDTOValidator.ValidateAsync(updateLabDTO);
                 if (!result.IsValid)
                     return BadRequest(result.Errors);
+                // Get the User from auth token
+                UserDTO? adminDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (adminDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Update the Lab
                 ResponseDTO<LabDTO> responseDTO = _labService.UpdateLab(id, updateLabDTO);
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                        "ADMIN",
+                        adminDto.userId,
+                        "UPDATE",
+                        "LAB",
+                        responseDTO.result?.labId,
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                    "ADMIN",
+                    adminDto.userId,
+                    "UPDATE",
+                    "LAB",
+                    responseDTO.result?.labId,
+                    "SUCCESS"
+                );
                 return Ok(responseDTO.result);
             }
             catch (Exception ex)
@@ -124,10 +202,36 @@ namespace IMS.Presentation.Controllers
         {
             try
             {
+                // Get the User from auth token
+                UserDTO? adminDto = await _tokenParser.getUser(
+                    HttpContext.Request.Headers["Authorization"].FirstOrDefault()
+                );
+                if (adminDto == null)
+                    throw new Exception("Invalid Token/Authorization Header");
                 // Delete the Lab
                 ResponseDTO<LabDTO> responseDTO = _labService.DeleteLab(id);
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                        "ADMIN",
+                        adminDto.userId,
+                        "DELETE",
+                        "LAB",
+                        responseDTO.result?.labId,
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                    "ADMIN",
+                    adminDto.userId,
+                    "DELETE",
+                    "LAB",
+                    responseDTO.result?.labId,
+                    "SUCCESS"
+                );
                 return NoContent();
             }
             catch (Exception ex)

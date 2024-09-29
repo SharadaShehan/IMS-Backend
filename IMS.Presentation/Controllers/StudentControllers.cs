@@ -84,8 +84,28 @@ namespace IMS.Presentation.Controllers
                         studentDto.userId,
                         requestEquipmentDTO
                     );
+                string role = (studentDto.role == "Student") ? "STUDENT" : "ACADEMIC_STAFF";
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} | {Status}",
+                        role,
+                        studentDto.userId,
+                        "CREATE",
+                        "RESERVATION",
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                    role,
+                    studentDto.userId,
+                    "CREATE",
+                    "RESERVATION",
+                    responseDTO.result?.reservationId,
+                    "SUCCESS"
+                );
                 return StatusCode(201, responseDTO.result);
             }
             catch (Exception ex)
@@ -132,8 +152,29 @@ namespace IMS.Presentation.Controllers
                 // Cancel the reservation
                 ResponseDTO<ItemReservationDetailedDTO> responseDTO =
                     _reservationService.CancelReservation(id, studentDto.userId);
+                string role = (studentDto.role == "Student") ? "STUDENT" : "ACADEMIC_STAFF";
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                        role,
+                        studentDto.userId,
+                        "DELETE",
+                        "RESERVATION",
+                        responseDTO.result?.reservationId,
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | {Status}",
+                    role,
+                    studentDto.userId,
+                    "DELETE",
+                    "RESERVATION",
+                    responseDTO.result?.reservationId,
+                    "SUCCESS"
+                );
                 return NoContent();
             }
             catch (Exception ex)
@@ -212,8 +253,29 @@ namespace IMS.Presentation.Controllers
                 // Borrow the item
                 ResponseDTO<ItemReservationDetailedDTO> responseDTO =
                     _reservationService.ReturnBorrowedItem(id, clerk.userId);
+                string role = (studentDto.role == "Student") ? "STUDENT" : "ACADEMIC_STAFF";
                 if (!responseDTO.success)
+                {
+                    _logger.LogInformation(
+                        "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | [RETURN_ITEM] | {Status}",
+                        role,
+                        studentDto.userId,
+                        "UPDATE",
+                        "RESERVATION",
+                        responseDTO.result?.reservationId,
+                        "FAILED"
+                    );
                     return BadRequest(responseDTO.message);
+                }
+                _logger.LogInformation(
+                    "{UserRole} (Id:{UserId}) {Action} {ObjectType} (Id:{ObjectId}) | [RETURN_ITEM] | {Status}",
+                    role,
+                    studentDto.userId,
+                    "UPDATE",
+                    "RESERVATION",
+                    responseDTO.result?.reservationId,
+                    "SUCCESS"
+                );
                 return Ok(new QRTokenValidatedDTO());
             }
             catch (Exception ex)
