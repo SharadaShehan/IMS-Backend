@@ -87,5 +87,21 @@ namespace IMS.Infrastructure.Repositories
                 })
                 .ToList();
         }
+
+        public List<UserDTO> GetAllClerkDTOs()
+        {
+            return _dbContext
+                .users.Where(u => u.IsActive && u.Role == "Clerk")
+                .Select(u => new UserDTO
+                {
+                    userId = u.UserId,
+                    email = u.Email,
+                    firstName = u.FirstName,
+                    lastName = u.LastName,
+                    contactNumber = u.ContactNumber,
+                    role = u.Role,
+                })
+                .ToList();
+        }
     }
 }

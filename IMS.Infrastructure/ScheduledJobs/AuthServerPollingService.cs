@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using IMS.Core.Model;
+﻿using IMS.Core.Model;
 using IMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,9 +52,15 @@ namespace IMS.Infrastructure.ScheduledJobs
             {
                 var _dbContext = scope.ServiceProvider.GetService<DataBaseContext>();
 
+                if (_dbContext == null)
+                {
+                    _logger.LogError("Failed to inject DB Context");
+                    return;
+                }
+
                 foreach (var authUser in authUserDTOs)
                 {
-                    User dbUser = await _dbContext
+                    User? dbUser = await _dbContext
                         .users.AsNoTracking()
                         .FirstOrDefaultAsync(dbUser => dbUser.Email == authUser.email);
 
