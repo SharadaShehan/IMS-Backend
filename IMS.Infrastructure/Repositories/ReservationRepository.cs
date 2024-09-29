@@ -448,5 +448,40 @@ namespace IMS.Infrastructure.Repositories
                 && (rsv.Status == "Reserved" || rsv.Status == "Borrowed")
             );
         }
+
+        public List<DueItemReservationDTO> GetAllDueItemReservationDTOs()
+        {
+            return _dbContext
+                .itemReservations.Where(rsv =>
+                    rsv.IsActive
+                    && rsv.Status == "Borrowed"
+                    && rsv.EndDate.Date.CompareTo(DateTime.Now.Date) <= 0
+                )
+                .Select(rsv => new DueItemReservationDTO
+                {
+                    reservationId = rsv.ItemReservationId,
+                    equipmentId = rsv.EquipmentId,
+                    itemName = rsv.Equipment.Name,
+                    itemModel = rsv.Equipment.Model,
+                    imageUrl = rsv.Equipment.ImageURL,
+                    itemId = rsv.ItemId,
+                    itemSerialNumber = rsv.Item != null ? rsv.Item.SerialNumber : null,
+                    labId = rsv.Equipment.LabId,
+                    labName = rsv.Equipment.Lab.LabName,
+                    startDate = rsv.StartDate,
+                    endDate = rsv.EndDate,
+                    reservedUserId = rsv.ReservedUserId,
+                    reservedUserName = rsv.ReservedUser.FirstName + " " + rsv.ReservedUser.LastName,
+                    reservedUserEmail = rsv.ReservedUser.Email,
+                    createdAt = rsv.CreatedAt,
+                    respondedAt = rsv.RespondedAt,
+                    borrowedAt = rsv.BorrowedAt,
+                    returnedAt = rsv.ReturnedAt,
+                    cancelledAt = rsv.CancelledAt,
+                    status = rsv.Status,
+                })
+                .OrderByDescending(rsv => rsv.endDate)
+                .ToList();
+        }
     }
 }

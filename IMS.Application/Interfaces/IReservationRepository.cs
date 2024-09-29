@@ -41,5 +41,6 @@ namespace IMS.Application.Interfaces
             User clerk
         );
         bool CheckTimeSlotAvailability(DateTime startDate, DateTime endDate);
+        List<DueItemReservationDTO> GetAllDueItemReservationDTOs();
     }
 }
