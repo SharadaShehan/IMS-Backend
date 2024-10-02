@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # Visual Studio
 .vs/
+
+# environment file
+IMS.Presentation/appsettings.json
