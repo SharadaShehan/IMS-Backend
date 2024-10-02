@@ -1,7 +1,6 @@
-﻿using IMS.Infrastructure.Repositories;
+using IMS.Infrastructure.Repositories;
 using IMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IMS.Infrastructure.Extensions;
@@ -9,12 +8,15 @@ namespace IMS.Infrastructure.Extensions;
 public static class ServiceCollectionExtensions
 {
     public static void AddInfrastructure(
-        this IServiceCollection services,
-        IConfiguration configuration
+        this IServiceCollection services
     )
     {
         // Database Server Service
-        var connectionString = configuration.GetConnectionString("DBConnection");
+        var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+        if (connectionString == null)
+        {
+            throw new Exception("Database Connection String not found in environment variables.");
+        }
         services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(connectionString));
 
         // Repositories for use in Infrastructure Layer
@@ -26,21 +28,35 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ReservationRepository, ReservationRepository>();
 
         // Authentication Server Service
+        var authServerEndpoint = Environment.GetEnvironmentVariable("AUTH_SERVER_ENDPOINT");
+        var authServerClientId = Environment.GetEnvironmentVariable("AUTH_SERVER_CLIENT_ID");
+        var authServerClientSecret = Environment.GetEnvironmentVariable("AUTH_SERVER_CLIENT_SECRET");
+        if (authServerEndpoint == null || authServerClientId == null || authServerClientSecret == null)
+        {
+            throw new Exception("Authentication Server Endpoint, Client ID, or Client Secret not found in environment variables.");
+        }
         AuthServerContextOptions authServerOptions = new AuthServerContextOptions()
         {
-            Endpoint = configuration.GetSection("AuthenticationServer")["Endpoint"],
-            ClientId = configuration.GetSection("AuthenticationServer")["ClientId"],
-            ClientSecret = configuration.GetSection("AuthenticationServer")["ClientSecret"],
+            Endpoint = authServerEndpoint,
+            ClientId = authServerClientId,
+            ClientSecret = authServerClientSecret
         };
         services.AddSingleton<AuthServerContext>(sp => new AuthServerContext(authServerOptions));
 
         // Authentication Server Polling Job
         //services.AddHostedService<AuthServerPollingService>();
-
+        
+        // Email Service
+        var emailClientApiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+        var emailClientSenderEmail = Environment.GetEnvironmentVariable("SENDGRID_SENDER_EMAIL");
+        if (emailClientApiKey == null || emailClientSenderEmail == null)
+        {
+            throw new Exception("Email Client API Key or Sender Email not found in environment variables.");
+        }
         EmailServiceContextOptions serviceOptions = new EmailServiceContextOptions()
         {
-            APIKey = configuration.GetSection("EmailClient")["APIKey"],
-            SenderEmail = configuration.GetSection("EmailClient")["SenderEmail"]
+            APIKey = emailClientApiKey,
+            SenderEmail = emailClientSenderEmail
         };
         services.AddSingleton<EmailService>(sp => new EmailService(serviceOptions));
 
@@ -53,8 +69,12 @@ public static class ServiceCollectionExtensions
         // Blob Storage Service
         services.AddSingleton<IBlobStorageClient>(sp =>
         {
-            var connectionString = configuration.GetSection("AzureBlobStorage")["ConnectionString"];
-            var containerName = configuration.GetSection("AzureBlobStorage")["ContainerName"];
+            var connectionString = Environment.GetEnvironmentVariable("BLOB_STORAGE_CONNECTION_STRING");
+            var containerName = Environment.GetEnvironmentVariable("BLOB_STORAGE_CONTAINER_NAME");
+            if (connectionString == null || containerName == null)
+            {
+                throw new Exception("Blob Storage Connection String or Container Name not found in environment variables.");
+            }
             return new BlobStorageClient(connectionString, containerName);
         });
     }
