@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
 
 namespace IMS.Presentation.Services
 {
@@ -16,9 +16,14 @@ namespace IMS.Presentation.Services
     {
         private readonly string qRTokenSecret;
 
-        public QRTokenProvider(IConfiguration configuration)
+        public QRTokenProvider()
         {
-            this.qRTokenSecret = configuration.GetSection("QRToken")["Secret"];
+            var qRTokenSecret = Environment.GetEnvironmentVariable("QR_TOKEN_SECRET");
+            if (qRTokenSecret == null)
+            {
+                throw new Exception("QR Token Secret not found in environment variables.");
+            }
+            this.qRTokenSecret = qRTokenSecret;
         }
 
         public async Task<string?> getQRToken(int reservationId, int userId)
