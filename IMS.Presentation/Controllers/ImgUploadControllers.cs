@@ -39,10 +39,13 @@ namespace IMS.Presentation.Controllers
                 );
                 if (!result.IsValid)
                     return BadRequest(result.Errors);
+                // Generate a unique image name
+                Guid uuid = Guid.NewGuid();
+                string imageName = uuid.ToString();
                 // Generate the presigned URL
                 string blobName =
                     "labs/"
-                    + presignedUrlRequestDTO.imageName
+                    + imageName
                     + "."
                     + presignedUrlRequestDTO.extension;
                 TimeSpan expiryDuration = TimeSpan.FromMinutes(10);
@@ -72,10 +75,13 @@ namespace IMS.Presentation.Controllers
                 );
                 if (!result.IsValid)
                     return BadRequest(result.Errors);
+                // Generate a unique image name
+                Guid uuid = Guid.NewGuid();
+                string imageName = uuid.ToString();
                 // Generate the presigned URL
                 string blobName =
                     "equipments/"
-                    + presignedUrlRequestDTO.imageName
+                    + imageName
                     + "."
                     + presignedUrlRequestDTO.extension;
                 TimeSpan expiryDuration = TimeSpan.FromMinutes(10);
