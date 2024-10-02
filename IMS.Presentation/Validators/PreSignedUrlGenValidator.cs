@@ -12,16 +12,9 @@ namespace IMS.Presentation.Validators
             "jpeg",
             "webp",
         };
-        private readonly string imageNamePattern = @"^.{5,20}$";
 
         public PreSignedUrlGenValidator()
         {
-            RuleFor(x => x.imageName)
-                .NotEmpty()
-                .WithMessage("Image Name is required.")
-                .Matches(imageNamePattern)
-                .WithMessage("Invalid Image Name. Must be between 5 and 20 characters.");
-
             RuleFor(x => x.extension)
                 .NotEmpty()
                 .WithMessage("Extension is required.")
