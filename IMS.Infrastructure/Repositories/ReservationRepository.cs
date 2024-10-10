@@ -1,4 +1,4 @@
-﻿using IMS.Application.DTO;
+﻿﻿using IMS.Application.DTO;
 using IMS.Application.Interfaces;
 using IMS.Core.Model;
 using IMS.Infrastructure.Services;
@@ -481,6 +481,79 @@ namespace IMS.Infrastructure.Repositories
                     status = rsv.Status,
                 })
                 .OrderByDescending(rsv => rsv.endDate)
+                .ToList();
+        }
+
+        public List<DueItemReservationDTO> GetAllPickupPendingReservationDTOs()
+        {
+            return _dbContext
+                .itemReservations.Where(rsv =>
+                    rsv.IsActive
+                    && rsv.Status == "Reserved"
+                    && rsv.StartDate.Date.CompareTo(DateTime.Now.Date) <= 0
+                )
+                .Select(rsv => new DueItemReservationDTO
+                {
+                    reservationId = rsv.ItemReservationId,
+                    equipmentId = rsv.EquipmentId,
+                    itemName = rsv.Equipment.Name,
+                    itemModel = rsv.Equipment.Model,
+                    imageUrl = rsv.Equipment.ImageURL,
+                    itemId = rsv.ItemId,
+                    itemSerialNumber = rsv.Item != null ? rsv.Item.SerialNumber : null,
+                    labId = rsv.Equipment.LabId,
+                    labName = rsv.Equipment.Lab.LabName,
+                    startDate = rsv.StartDate,
+                    endDate = rsv.EndDate,
+                    reservedUserId = rsv.ReservedUserId,
+                    reservedUserName = rsv.ReservedUser.FirstName + " " + rsv.ReservedUser.LastName,
+                    reservedUserEmail = rsv.ReservedUser.Email,
+                    createdAt = rsv.CreatedAt,
+                    respondedAt = rsv.RespondedAt,
+                    borrowedAt = rsv.BorrowedAt,
+                    returnedAt = rsv.ReturnedAt,
+                    cancelledAt = rsv.CancelledAt,
+                    status = rsv.Status,
+                })
+                .OrderByDescending(rsv => rsv.startDate)
+                .ToList();
+        }
+
+        public List<EquipmentReservationsCountForMonthDTO> GetReservationsCountForMonth(int year, int month)
+        {
+            return _dbContext
+                .itemReservations.Where(rsv =>
+                    rsv.IsActive
+                    && rsv.StartDate.Year == year
+                    && rsv.StartDate.Month == month
+                )
+                .GroupBy(rsv => rsv.EquipmentId)
+                .Select(rsv => new EquipmentReservationsCountForMonthDTO
+                {
+                    equipmentId = rsv.Key,
+                    name = rsv.First().Equipment.Name,
+                    model = rsv.First().Equipment.Model,
+                    count = rsv.Count(),
+                    labId = rsv.First().Equipment.LabId,
+                    labName = rsv.First().Equipment.Lab.LabName,
+                })
+                .ToList();
+        }
+
+        public List<EquipmentReservationsCountByMonthDTO> GetReservationsCountByMonth(int equipmentId)
+        {
+            return _dbContext
+                .itemReservations.Where(rsv =>
+                    rsv.IsActive
+                    && rsv.EquipmentId == equipmentId
+                )
+                .GroupBy(rsv => new { rsv.StartDate.Year, rsv.StartDate.Month })
+                .Select(rsv => new EquipmentReservationsCountByMonthDTO
+                {
+                    year = rsv.Key.Year,
+                    month = rsv.Key.Month,
+                    count = rsv.Count(),
+                })
                 .ToList();
         }
     }

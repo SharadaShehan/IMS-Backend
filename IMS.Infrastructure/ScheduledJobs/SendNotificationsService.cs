@@ -1,4 +1,4 @@
-﻿using IMS.Application.DTO;
+﻿﻿using IMS.Application.DTO;
 using IMS.Infrastructure.Repositories;
 using IMS.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -118,7 +118,7 @@ namespace IMS.Infrastructure.ScheduledJobs
                     <h2>Item Reservation Reminder</h2>
                     <p>Item : {reservation?.itemName} ({reservation?.itemModel})</p>
                     <p>Serial Number : {reservation?.itemSerialNumber}</p>
-                    <p>Reserved On : {reservation?.startDate.ToString("dd MMM yyyy")}</p>
+                    <p>Borrowed On : {reservation?.startDate.ToString("dd MMM yyyy")}</p>
                     <p>Due Date : {reservation?.endDate.ToString("dd MMM yyyy")}</p>";
 
                     if (reservation == null) continue;
@@ -131,6 +131,50 @@ namespace IMS.Infrastructure.ScheduledJobs
                     else
                     {
                         _logger.LogError($@"Failed to send item reservation reminder to {reservation?.reservedUserName}");
+                    }
+                }
+            }
+        }
+
+        private async Task RemindPickupPendingItemReservations(CancellationToken stoppingToken)
+        {
+            // Implement your logic here
+            _logger.LogInformation("Executing work at: {time}", DateTimeOffset.Now);
+
+            string subject = "Reminder to Pickup Reserved Item";
+            string plainTextContent = "";
+
+            using (var scope = _serviceProvider.CreateScope()) // this will use `IServiceScopeFactory` internally
+            {
+                ReservationRepository? _reservationRepository = scope.ServiceProvider.GetService<ReservationRepository>();
+                if (_reservationRepository == null)
+                {
+                    _logger.LogError("Failed to inject reservationRepository");
+                    return;
+                }
+
+                List<DueItemReservationDTO> reservations = _reservationRepository.GetAllPickupPendingReservationDTOs();
+                if (reservations == null || reservations.Count == 0) return;
+
+                foreach (var reservation in reservations)
+                {
+                    string htmlContent = $@"
+                    <h2>Item Reservation Pickup Reminder</h2>
+                    <p>Item : {reservation?.itemName} ({reservation?.itemModel})</p>
+                    <p>Serial Number : {reservation?.itemSerialNumber}</p>
+                    <p>Reserved On : {reservation?.createdAt.ToString("dd MMM yyyy")}</p>
+                    <p>Pickup Date : {reservation?.startDate.ToString("dd MMM yyyy")}</p>";
+
+                    if (reservation == null) continue;
+
+                    var success = await _emailService.SendEmail(reservation.reservedUserEmail, subject, plainTextContent, htmlContent);
+                    if (success)
+                    {
+                        _logger.LogInformation($@"Item reservation pickup reminder successfully sent to {reservation?.reservedUserName}");
+                    }
+                    else
+                    {
+                        _logger.LogError($@"Failed to send item reservation pickup reminder to {reservation?.reservedUserName}");
                     }
                 }
             }

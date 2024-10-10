@@ -1,11 +1,11 @@
-﻿using System.Text.RegularExpressions;
-using FluentValidation;
+﻿﻿using FluentValidation;
 using IMS.Application.DTO;
 using IMS.Application.Services;
 using IMS.Infrastructure.Services;
 using IMS.Presentation.Filters;
 using IMS.Presentation.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace IMS.Presentation.Controllers
 {
@@ -20,6 +20,7 @@ namespace IMS.Presentation.Controllers
         private readonly IValidator<CreateLabDTO> _createLabDTOValidator;
         private readonly UserService _userService;
         private readonly LabService _labService;
+        private readonly ReservationService _reservationService;
 
         public AdminController(
             DataBaseContext dbContext,
@@ -28,7 +29,8 @@ namespace IMS.Presentation.Controllers
             IValidator<CreateLabDTO> createLabDTOValidator,
             ITokenParser tokenParser,
             UserService userService,
-            LabService labService
+            LabService labService,
+            ReservationService reservationService
         )
         {
             _dbContext = dbContext;
@@ -38,6 +40,7 @@ namespace IMS.Presentation.Controllers
             _tokenParser = tokenParser;
             _userService = userService;
             _labService = labService;
+            _reservationService = reservationService;
         }
 
         [HttpGet("users")]
@@ -239,5 +242,34 @@ namespace IMS.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("reservations")]
+        [AuthorizationFilter(["SystemAdmin"])]
+        public async Task<ActionResult<List<EquipmentReservationsCountForMonthDTO>>> GetEquipmentReservationsForMonth([FromQuery] int year, [FromQuery] int month)
+        {
+            try
+            {
+                return _reservationService.GetEquipmentReservesCountForMonth(year, month);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("reservations/{equipmentId}")]
+        [AuthorizationFilter(["SystemAdmin"])]
+        public async Task<ActionResult<List<EquipmentReservationsCountByMonthDTO>>> GetEquipmentReservationsByMonth(int equipmentId)
+        {
+            try
+            {
+                return _reservationService.GetEquipmentReservesCountByMonth(equipmentId);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
