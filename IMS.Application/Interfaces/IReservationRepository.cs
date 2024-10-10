@@ -42,5 +42,8 @@ namespace IMS.Application.Interfaces
         );
         bool CheckTimeSlotAvailability(DateTime startDate, DateTime endDate);
         List<DueItemReservationDTO> GetAllDueItemReservationDTOs();
+        List<DueItemReservationDTO> GetAllPickupPendingReservationDTOs();
+        List<EquipmentReservationsCountForMonthDTO> GetReservationsCountForMonth(int year, int month);
+        List<EquipmentReservationsCountByMonthDTO> GetReservationsCountByMonth(int equipmentId);
     }
 }

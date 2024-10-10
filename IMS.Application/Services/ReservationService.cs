@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using IMS.Application.DTO;
+﻿using IMS.Application.DTO;
 using IMS.Application.Interfaces;
 using IMS.Core.Model;
+using System.Diagnostics;
 
 namespace IMS.Application.Services
 {
@@ -293,5 +293,16 @@ namespace IMS.Application.Services
                 );
             return new ResponseDTO<ItemReservationDetailedDTO>(returnedReservation);
         }
+
+        public List<EquipmentReservationsCountForMonthDTO> GetEquipmentReservesCountForMonth(int year, int month)
+        {
+            return _reservationRepository.GetReservationsCountForMonth(year, month);
+        }
+
+        public List<EquipmentReservationsCountByMonthDTO> GetEquipmentReservesCountByMonth(int equipmentId)
+        {
+            return _reservationRepository.GetReservationsCountByMonth(equipmentId);
+        }
+
     }
 }
