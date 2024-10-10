@@ -1,4 +1,5 @@
 ﻿using IMS.Infrastructure.Repositories;
+using IMS.Infrastructure.ScheduledJobs;
 using IMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
