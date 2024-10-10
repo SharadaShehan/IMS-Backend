@@ -2,6 +2,7 @@ using IMS.Infrastructure.Repositories;
 using IMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using IMS.Infrastructure.ScheduledJobs;
 
 namespace IMS.Infrastructure.Extensions;
 
