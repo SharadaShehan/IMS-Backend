@@ -4,12 +4,14 @@
 
 ### Prerequisites
 
-- [.NET 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
-- [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/)
-- [Application Insights](https://azure.microsoft.com/en-us/services/monitor/)
-- [SendGrid](https://sendgrid.com/)
-- [Authentication Server](https://github.com/CS3203-SEP-21-Group-22/authentication-server)
+- [.NET v8+](https://dotnet.microsoft.com/download/dotnet/8.0) installed on your local machine.
+- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) installed on your local machine or running on a server.
+- [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/) with a container created.
+- [Application Insights](https://azure.microsoft.com/en-us/services/monitor/) resource created.
+- [SendGrid](https://sendgrid.com/) account with an API key and a verified sender email.
+- [Authentication Server](https://github.com/CS3203-SEP-21-Group-22/authentication-server) setup and running.
+
+#### Save the connection strings for the SQL Server database, Application Insights resource and Azure Blob Storage container as well as the API key and sender email for SendGrid. You will need these values to configure the application.
 
 ### Steps
 
@@ -37,7 +39,13 @@
    cd IMS.Presentation
    ```
 
-5. Create a new file named `appsettings.json` with the following content. Replace values in Uppercase with your own values.
+5. Restore missing packages (optional but recommended).
+
+   ```
+   dotnet restore
+   ```
+
+6. Create a new file named `appsettings.json` with the following content. Replace values in Uppercase with values you saved in the prerequisites step. For QRToken Secret, you can use any random string.
 
    ```json
    {
@@ -77,7 +85,13 @@
    }
    ```
 
-6. Run the following command to start the application.
+7. Apply database migrations by running the following command.
+
    ```
-    dotnet run
+   dotnet ef database update
+   ```
+
+8. Run the following command to start the application.
+   ```
+   dotnet run
    ```
